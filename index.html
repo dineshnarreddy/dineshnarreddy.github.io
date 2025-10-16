@@ -1,8 +1,82 @@
-index.html
-about.html
-features.html
-university.html
-impact.html
-gallery.html
-contact.html
-styles.css
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Mango Edge AI – Home</title>
+  <meta name="description" content="AI + IoT system for smallholder mango farmers; University of Portsmouth research project." />
+  <link rel="stylesheet" href="styles.css" />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&display=swap" rel="stylesheet">
+</head>
+<body>
+<header class="nav">
+  <div class="container nav-inner">
+    <a class="brand" href="index.html">Mango Edge AI</a>
+    <nav>
+      <a href="about.html">About</a>
+      <a href="features.html">Features</a>
+      <a href="university.html">University</a>
+      <a href="impact.html">Impact (AP)</a>
+      <a href="gallery.html">Gallery</a>
+      <a href="contact.html" class="button">Contact</a>
+    </nav>
+  </div>
+</header>
+
+<main class="hero hero-home">
+  <div class="container hero-inner">
+    <div class="hero-text">
+      <h1>AI + IoT for smallholder mango farmers</h1>
+      <p>
+        A practical, low-power system that gives <strong>explainable</strong> recommendations for irrigation,
+        fertilizer, and pest management — built to run at the farm edge and work offline.
+      </p>
+      <div class="hero-cta">
+        <a class="button" href="about.html">See the Project</a>
+        <a class="button button-secondary" href="impact.html">Why this matters →</a>
+      </div>
+    </div>
+    <div class="hero-art">
+      <img class="hero-photo" src="https://upload.wikimedia.org/wikipedia/commons/6/65/Mango_Orchards.JPG" alt="Mango orchard (Wikimedia Commons)">
+    </div>
+  </div>
+</main>
+
+<section class="section alt">
+  <div class="container">
+    <h2>Three pillars</h2>
+    <div class="grid three">
+      <div class="card">
+        <h3>Irrigation</h3>
+        <p>Edge analytics + rain probability to recommend <em>when</em> and <em>how long</em> to irrigate.</p>
+      </div>
+      <div class="card">
+        <h3>Fertilizer</h3>
+        <p>Simple rules evolving to ML models with <em>local farm data</em> fine-tuning.</p>
+      </div>
+      <div class="card">
+        <h3>Pest</h3>
+        <p>On-device TFLite signals + explainable guidance to reduce risk and costs.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="section">
+  <div class="container">
+    <h2>Research context</h2>
+    <p>Conducted as part of a PhD at the <strong>Faculty of Business and Law, University of Portsmouth</strong>.</p>
+    <p><a href="university.html">Learn more about our academic collaboration →</a></p>
+  </div>
+</section>
+
+<footer class="footer">
+  <div class="container footer-inner">
+    <span>© 2025 Mango Edge AI</span>
+    <span>Built with GitHub Pages</span>
+  </div>
+</footer>
+</body>
+</html>
