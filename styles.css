@@ -1,4 +1,4 @@
-/* Mango Edge AI – minimal, clean design */
+/* Multi-page Mango Edge AI – clean, modern */
 :root{
   --bg:#0b1220;
   --muted:#0f172a;
@@ -7,10 +7,9 @@
   --sub:#a3aed0;
   --accent:#0ea5e9;
   --accent2:#f97316;
-  --ring: rgba(14,165,233,.35);
 }
 *{box-sizing:border-box}
-html,body{margin:0;padding:0;background:#0b1220;color:var(--text);font-family:Inter,system-ui,Arial,sans-serif;line-height:1.6}
+html,body{margin:0;padding:0;background:#0b1220;color:var(--text);font-family:Inter,system-ui,Arial,sans-serif;line-height:1.65}
 a{color:#a5d8ff;text-decoration:none}
 a:hover{text-decoration:underline}
 .container{max-width:1080px;margin:0 auto;padding:0 20px}
@@ -20,25 +19,30 @@ a:hover{text-decoration:underline}
 .nav a{margin-left:18px}
 .button{display:inline-block;padding:10px 16px;border-radius:12px;background:var(--accent);color:#00111a;font-weight:700;border:1px solid rgba(255,255,255,.1)}
 .button-secondary{background:transparent;border:1px solid rgba(255,255,255,.2);color:#e2e8f0}
-.hero{padding:80px 0;background:linear-gradient(180deg, rgba(14,165,233,.12), transparent 35%)}
+.hero{padding:64px 0;background:linear-gradient(180deg, rgba(14,165,233,.12), transparent 35%)}
+.hero-home{background:linear-gradient(180deg, rgba(14,165,233,.12), rgba(249,115,22,.10) 60%, transparent 100%)}
 .hero-inner{display:grid;grid-template-columns:1.2fr .8fr;gap:32px;align-items:center}
 .hero h1{font-size:40px;line-height:1.15;margin:0 0 12px}
 .hero p{color:var(--sub);max-width:48ch}
-.hero-cta{margin-top:16px;display:flex;gap:12px}
+.hero-cta{margin-top:16px;display:flex;gap:12px;flex-wrap:wrap}
+.hero-photo{width:100%;border-radius:16px;border:1px solid rgba(255,255,255,.08);box-shadow:0 10px 30px rgba(0,0,0,.35)}
 .section{padding:64px 0}
 .alt{background:linear-gradient(180deg, rgba(249,115,22,.08), transparent 90%)}
 .grid{display:grid;gap:18px}
 .grid.two{grid-template-columns:repeat(2,1fr)}
 .grid.three{grid-template-columns:repeat(3,1fr)}
 .card{background:var(--card);border:1px solid rgba(255,255,255,.06);border-radius:16px;padding:18px}
-h2{font-size:28px;margin:0 0 18px}
+h1,h2{margin:0 0 18px}
+h1{font-size:32px}
+h2{font-size:26px}
 h3{margin:0 0 10px}
 .timeline{list-style:none;padding:0;margin:0}
 .timeline li{background:var(--card);border:1px solid rgba(255,255,255,.06);padding:14px 16px;border-radius:14px;margin-bottom:10px}
 .timeline span{display:inline-block;background:var(--accent);color:#00111a;font-weight:800;border-radius:999px;padding:2px 10px;margin-right:8px}
-.img-card{width:100%;height:auto;border-radius:14px;border:1px solid rgba(255,255,255,.06)}
-.contact{background:linear-gradient(180deg, rgba(14,165,233,.08), transparent 100%)}
-.contact-list{line-height:2}
+.img-card{background:var(--card);border:1px solid rgba(255,255,255,.06);border-radius:14px;padding:12px}
+.img-card img{width:100%;height:auto;border-radius:10px}
+.note{color:#cbd5e1;font-size:.95rem;margin-top:6px}
+.contact-list li{margin:8px 0}
 .footer{border-top:1px solid rgba(255,255,255,.06);padding:18px 0;background:#0a0f1d;color:#a3aed0}
 .footer-inner{display:flex;justify-content:space-between;align-items:center}
 @media (max-width: 860px){
