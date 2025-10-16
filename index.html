@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Mango Edge AI – AI + IoT for Smallholder Farmers</title>
+  <meta name="description" content="Mango Edge AI: An AI + IoT system to help smallholder mango farmers with irrigation, fertilizer, and pest decisions. Research collaboration with the University of Portsmouth." />
+  <link rel="stylesheet" href="styles.css" />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&display=swap" rel="stylesheet">
+</head>
+<body>
+  <header class="nav">
+    <div class="container nav-inner">
+      <a class="brand" href="#home">Mango Edge AI</a>
+      <nav>
+        <a href="#about">About</a>
+        <a href="#features">Features</a>
+        <a href="#research">University</a>
+        <a href="#roadmap">Roadmap</a>
+        <a href="#gallery">Images</a>
+        <a href="#contact" class="button">Contact</a>
+      </nav>
+    </div>
+  </header>
+
+  <main id="home" class="hero">
+    <div class="container hero-inner">
+      <div class="hero-text">
+        <h1>AI + IoT for smallholder mango farmers</h1>
+        <p>
+          A practical, low-power system that gives **explainable** recommendations for irrigation,
+          fertilizer, and pest management — built to run at the farm edge and work offline.
+        </p>
+        <div class="hero-cta">
+          <a class="button" href="#about">Learn more</a>
+          <a class="button button-secondary" href="#contact">Partner with us</a>
+        </div>
+      </div>
+      <div class="hero-art">
+        <!-- Simple SVG illustration -->
+        <svg width="360" height="260" viewBox="0 0 360 260" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+          <rect x="10" y="20" width="340" height="200" rx="16" stroke="#0ea5e9" stroke-width="3" fill="#e0f2fe"/>
+          <circle cx="80" cy="120" r="34" fill="#f97316"/>
+          <rect x="140" y="80" width="200" height="24" rx="6" fill="#bae6fd"/>
+          <rect x="140" y="116" width="180" height="14" rx="6" fill="#93c5fd"/>
+          <rect x="140" y="140" width="160" height="14" rx="6" fill="#93c5fd"/>
+          <rect x="140" y="164" width="120" height="14" rx="6" fill="#93c5fd"/>
+          <path d="M80 86c-8 8-12 18-12 28 0 10 4 20 12 28 8-8 12-18 12-28 0-10-4-20-12-28z" fill="#fb923c"/>
+        </svg>
+      </div>
+    </div>
+  </main>
+
+  <section id="about" class="section">
+    <div class="container">
+      <h2>About the project</h2>
+      <p>
+        <strong>Mango Edge AI</strong> is a PhD research project focused on affordable, reliable farm decisions
+        for small-scale mango growers in Kadiri, Andhra Pradesh (India). The system combines low-power
+        IoT sensors (soil moisture, humidity, temperature) with machine learning models to give actionable
+        advice farmers can trust.
+      </p>
+      <ul class="grid two">
+        <li class="card">
+          <h3>Why now?</h3>
+          <p>Water stress, rising input costs, and climate variability make timely decisions critical.
+             Our offline-first approach works even with limited connectivity.</p>
+        </li>
+        <li class="card">
+          <h3>Who benefits?</h3>
+          <p>Smallholder mango farmers, local extension workers, and CSR/impact partners
+             supporting sustainable agriculture in rural communities.</p>
+        </li>
+      </ul>
+    </div>
+  </section>
+
+  <section id="features" class="section alt">
+    <div class="container">
+      <h2>Features</h2>
+      <div class="grid three">
+        <div class="card">
+          <h3>Current</h3>
+          <ul>
+            <li>Edge device (Raspberry Pi) with MQTT + TimescaleDB</li>
+            <li>Irrigation recommendation — explainable rules + ML baseline</li>
+            <li>Simple dashboard &amp; SMS/WhatsApp alerts</li>
+          </ul>
+        </div>
+        <div class="card">
+          <h3>Next 6–12 months</h3>
+          <ul>
+            <li>Fertilizer planning (rules → ML)</li>
+            <li>Pest risk signals (TFLite on device)</li>
+            <li>Weather fusion (IMD, Open‑Meteo, NASA POWER)</li>
+          </ul>
+        </div>
+        <div class="card">
+          <h3>Future</h3>
+          <ul>
+            <li>Farmer mobile app (offline-first)</li>
+            <li>Model fine‑tuning on local farm data</li>
+            <li>Scaling to tomatoes (UK comparison) &amp; other crops</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="research" class="section">
+    <div class="container">
+      <h2>Research &amp; Collaboration</h2>
+      <p>
+        This project is conducted as part of a PhD at the <strong>University of Portsmouth</strong>.
+        We welcome collaboration with researchers, NGOs, and CSR teams interested in
+        evaluating field impact and co-developing deployments.
+      </p>
+    </div>
+  </section>
+
+  <section id="roadmap" class="section alt">
+    <div class="container">
+      <h2>Roadmap</h2>
+      <ol class="timeline">
+        <li><span>P0</span> Baseline stack (DB schemas, MQTT bridge, simulated data)</li>
+        <li><span>P1</span> Irrigation module MVP + WhatsApp alerts</li>
+        <li><span>P2</span> Fertilizer recommendations</li>
+        <li><span>P3</span> Pest module (edge TFLite)</li>
+        <li><span>P4</span> Packaging for Raspberry Pi + field pilot</li>
+      </ol>
+    </div>
+  </section>
+
+  <section id="gallery" class="section">
+    <div class="container">
+      <h2>Images</h2>
+      <p>Replace the placeholders below with your real photos when available.</p>
+      <div class="grid three">
+        <img class="img-card" src="https://placehold.co/600x400?text=Farm+Photo+1" alt="Farm image 1 placeholder">
+        <img class="img-card" src="https://placehold.co/600x400?text=Sensors+Photo+2" alt="Sensors image 2 placeholder">
+        <img class="img-card" src="https://placehold.co/600x400?text=Team+Photo+3" alt="Team image 3 placeholder">
+      </div>
+    </div>
+  </section>
+
+  <section id="contact" class="section contact">
+    <div class="container">
+      <h2>Contact</h2>
+      <p>Interested in partnering, funding, or piloting? Reach out:</p>
+      <ul class="contact-list">
+        <li>Email: <a href="mailto:dinesh.narreddy@myport.ac.uk">dinesh.narreddy@myport.ac.uk</a></li>
+        <li>LinkedIn: <a href="https://www.linkedin.com/in/dinesh-narreddy-545303230/" target="_blank" rel="noopener">Dinesh Kumar Reddy Narreddy</a></li>
+      </ul>
+    </div>
+  </section>
+
+  <footer class="footer">
+    <div class="container footer-inner">
+      <span>© <span id="year"></span> Mango Edge AI</span>
+      <span>Built with GitHub Pages</span>
+    </div>
+  </footer>
+
+  <script>
+    document.getElementById('year').textContent = new Date().getFullYear();
+  </script>
+</body>
+</html>
