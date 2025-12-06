@@ -3,55 +3,61 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Mango Edge AI – Home</title>
-  <meta name="description" content="AI + IoT system for smallholder mango farmers; University of Portsmouth research project." />
+  <title>Mango Edge AI – Smart Farming Assistant</title>
+  <meta name="description"
+        content="AI + IoT assistant for farmers and greenhouses – simple, explainable advice on irrigation, fertilizer and pest risk. Part of a PhD at a UK university." />
   <link rel="stylesheet" href="styles.css" />
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
 </head>
 <body>
 
+<!-- ================= NAVBAR ================= -->
 <header class="nav">
   <div class="container nav-inner">
-    <a class="brand" href="index.html">Mango Edge AI</a>
-    <nav>
+    <a class="brand" href="index.html">
+      <span class="brand-mark">🍃</span>
+      <span>Mango Edge AI</span>
+    </a>
+    <nav class="nav-links">
       <a href="about.html">About</a>
       <a href="features.html">Features</a>
       <a href="university.html">University</a>
       <a href="impact.html">Impact (AP)</a>
       <a href="gallery.html">Gallery</a>
-      <!-- AI chat link in navbar -->
-      <a href="https://agriedgeai-chat-ibryb35vjgrs5jw7gfbjtf.streamlit.app" target="_blank" rel="noopener">AI Chat</a>
-      <a href="contact.html" class="button">Contact</a>
+      <a href="https://agriedgeai-chat-ibryb35vjgrs5jw7gfbjtf.streamlit.app"
+         target="_blank" rel="noopener" class="nav-pill">
+        AI Chat
+      </a>
+      <a href="contact.html" class="button button-small">Contact</a>
     </nav>
   </div>
 </header>
 
-<main class="hero hero-home">
+<!-- ================= HERO ================= -->
+<main class="hero">
+  <div class="hero-gradient"></div>
   <div class="container hero-inner">
     <div class="hero-text">
+      <p class="hero-kicker">AI + IoT assistant for farms & greenhouses</p>
       <h1>Smart farming help, in simple language.</h1>
-      <p>
-        Our AI assistant uses <strong>weather, soil, sensors and leaf images</strong> to guide
-        irrigation, fertilizer and pest control – for open-field mango orchards and tomato
-        greenhouses.
+      <p class="hero-sub">
+        Our assistant turns <strong>weather, soil, sensors and leaf images</strong> into
+        clear, explainable advice on irrigation, fertilizer and pest risk – for
+        open-field mango orchards and modern greenhouses.
       </p>
 
       <div class="hero-cta">
-        <!-- Open-field farmer path -->
-        <a class="button" href="impact.html">
+        <a class="button" href="https://agriedgeai-chat-ibryb35vjgrs5jw7gfbjtf.streamlit.app"
+           target="_blank" rel="noopener">
+          Try AI Demo
+        </a>
+        <a class="button button-secondary" href="impact.html">
           I'm a Farmer
         </a>
-
-        <!-- Greenhouse grower path -->
-        <a class="button button-secondary" href="features.html">
+        <a class="button button-tertiary" href="features.html">
           I'm a Greenhouse Grower
-        </a>
-
-        <!-- Direct link to the chat demo -->
-        <a class="button button-secondary" href="https://agriedgeai-chat-ibryb35vjgrs5jw7gfbjtf.streamlit.app" target="_blank" rel="noopener">
-          Open AI Demo
         </a>
       </div>
 
@@ -61,129 +67,263 @@
     </div>
 
     <div class="hero-art">
-      <img class="hero-photo"
-           src="https://upload.wikimedia.org/wikipedia/commons/6/65/Mango_Orchards.JPG"
-           alt="Mango orchard (Wikimedia Commons)">
+      <div class="hero-card">
+        <img class="hero-photo"
+             src="https://upload.wikimedia.org/wikipedia/commons/6/65/Mango_Orchards.JPG"
+             alt="Mango orchard (Wikimedia Commons)">
+        <div class="hero-overlay-card">
+          <p class="hero-overlay-title">Today’s suggestion</p>
+          <p class="hero-overlay-body">
+            Irrigate Plot 2 for <strong>30 minutes</strong> this evening.
+            <span class="hero-chip">Low rain risk</span>
+          </p>
+        </div>
+      </div>
     </div>
   </div>
 </main>
 
-<section class="section alt">
+<!-- ================= WHAT IT DOES ================= -->
+<section class="section section-alt">
   <div class="container">
-    <h2>What the assistant can help with</h2>
+    <h2 class="section-title">What the assistant can help with</h2>
+    <p class="section-subtitle">
+      Three main jobs – irrigation, fertilizer and pest risk – all explained in
+      simple words farmers can trust.
+    </p>
+
     <div class="grid three">
-      <div class="card">
-        <h3>Irrigation</h3>
+      <article class="card">
+        <h3>Irrigation • Save water</h3>
         <p>
-          Tells you <strong>when to water, how much, and for how long</strong> – based on soil
-          moisture, crop stage, weather forecast and pump capacity.
+          Decide <strong>when to water, how much, and for how long</strong> based on
+          soil moisture, crop stage, weather forecast and pump capacity.
         </p>
-      </div>
-      <div class="card">
-        <h3>Fertilizer</h3>
-        <p>
-          Stage-wise nutrition plans that respect local costs and avoid over-use of chemicals,
-          with templates for each growth phase.
-        </p>
-      </div>
-      <div class="card">
-        <h3>Pest &amp; Disease</h3>
-        <p>
-          Weather-based outbreak alerts plus <strong>image-based diagnosis</strong> from leaf photos
-          and drone images – more than just a leaf-scanner app.
-        </p>
-      </div>
-    </div>
-  </div>
-</section>
-
-<section class="section">
-  <div class="container">
-    <h2>Why this matters</h2>
-    <div class="grid two">
-      <div>
-        <ul>
-          <li><strong>Reduce guesswork</strong> – decisions based on data, not only tradition.</li>
-          <li><strong>Save water, energy and fertilizer</strong> – fewer unnecessary irrigations and sprays.</li>
-          <li><strong>Protect yield</strong> – early warnings for high disease-risk days.</li>
-          <li><strong>Works offline or with weak internet</strong> – runs on a small edge device on the farm.</li>
+        <ul class="card-list">
+          <li>Daily or weekly guidance for each plot</li>
+          <li>Uses rainfall probability to avoid waste</li>
+          <li>Works even with basic sensor setups</li>
         </ul>
-      </div>
-      <div>
+      </article>
+
+      <article class="card">
+        <h3>Fertilizer • Save money</h3>
         <p>
-          The goal is simple: practical AI that small and medium farmers can trust, not a black box.
-          Every recommendation comes with a short “<em>why</em>” explanation.
+          Stage-wise nutrition plans that respect local costs and avoid over-use
+          of chemicals, with templates for each growth phase.
         </p>
-      </div>
+        <ul class="card-list">
+          <li>Pre-flush, flowering, fruit set, post-harvest</li>
+          <li>Supports local fertilizer names and mixes</li>
+          <li>Designed for small and medium farmers</li>
+        </ul>
+      </article>
+
+      <article class="card">
+        <h3>Pest &amp; Disease • Protect yield</h3>
+        <p>
+          Weather-based outbreak alerts plus
+          <strong>image-based diagnosis</strong> from leaf photos and drone images –
+          more than just a leaf-scanner app.
+        </p>
+        <ul class="card-list">
+          <li>High-risk day warnings via WhatsApp</li>
+          <li>Supports mango, tomato and more crops</li>
+          <li>Built on lightweight TFLite models</li>
+        </ul>
+      </article>
     </div>
   </div>
 </section>
 
-<section class="section alt">
+<!-- ================= WHY IT MATTERS ================= -->
+<section class="section">
+  <div class="container grid two">
+    <div>
+      <h2 class="section-title">Why this matters</h2>
+      <ul class="bullet-list">
+        <li><strong>Reduce guesswork</strong> – decisions based on data, not only tradition.</li>
+        <li><strong>Save water, energy and fertilizer</strong> – fewer unnecessary irrigations and sprays.</li>
+        <li><strong>Protect yield</strong> – early warnings for high disease-risk days.</li>
+        <li><strong>Works offline or with weak internet</strong> – runs on a small edge device.</li>
+      </ul>
+    </div>
+    <div class="metrics-card">
+      <p class="metrics-label">Early trial highlights</p>
+      <div class="metrics-grid">
+        <div>
+          <p class="metrics-number">22%</p>
+          <p class="metrics-caption">energy savings in UK tomato greenhouse test</p>
+        </div>
+        <div>
+          <p class="metrics-number">30–40%</p>
+          <p class="metrics-caption">irrigation optimisation in mango simulations</p>
+        </div>
+      </div>
+      <p class="metrics-footnote">
+        Numbers are from research prototypes – the goal is to keep improving as more farms join.
+      </p>
+    </div>
+  </div>
+</section>
+
+<!-- ================= TWO MODES ================= -->
+<section class="section section-alt">
   <div class="container">
-    <h2>Two modes: open-field and greenhouse</h2>
+    <h2 class="section-title">Two modes: open-field & greenhouse</h2>
+    <p class="section-subtitle">
+      Same AI brain, two delivery styles – one for smallholder fields, one for
+      climate-controlled greenhouses.
+    </p>
+
     <div class="grid two">
-      <div class="card">
+      <article class="card card-split">
         <h3>Open-field Mango &amp; Other Crops</h3>
         <p>
-          Designed first for mango orchards in places like Andhra Pradesh, and extendable to
-          other crops.
+          Designed first for mango orchards in places like Andhra Pradesh,
+          and extendable to other crops over time.
         </p>
-        <ul>
-          <li>Uses soil sensors where available, plus simple local weather data.</li>
-          <li>Works with WhatsApp images and basic phones.</li>
+        <ul class="card-list">
+          <li>Uses soil sensors where available plus simple local weather data.</li>
+          <li>Advice delivered via WhatsApp or mobile app.</li>
           <li>
-            Typical message: <em>“Irrigate Plot 2 for 30 minutes this evening.
-            Rain risk tomorrow is low.”</em>
+            Typical message:
+            <em>“Irrigate Plot 2 for 30 minutes this evening. Rain risk tomorrow is low.”</em>
           </li>
         </ul>
         <a class="button button-secondary" href="impact.html">
           Learn more about open-field mode →
         </a>
-      </div>
+      </article>
 
-      <div class="card">
+      <article class="card card-split">
         <h3>Greenhouse (Tomato, later other crops)</h3>
         <p>
-          For climate-controlled greenhouses that want to cut energy and CO₂ while keeping plants
-          comfortable.
+          For climate-controlled greenhouses that want to cut energy and CO₂
+          while keeping plants comfortable.
         </p>
-        <ul>
-          <li>Uses internal climate sensors + outside weather and energy data.</li>
-          <li>Suggests smart temperature, ventilation, screen and irrigation settings.</li>
+        <ul class="card-list">
+          <li>Uses indoor climate sensors + outside weather + energy data.</li>
+          <li>Suggests smart temperature, screen and irrigation settings.</li>
           <li>
-            Built from real tomato greenhouse data and able to show estimated
+            Built from real tomato greenhouse data and able to estimate
             <strong>energy savings</strong>.
           </li>
         </ul>
         <a class="button button-secondary" href="features.html">
           Learn more about greenhouse mode →
         </a>
-      </div>
+      </article>
     </div>
   </div>
 </section>
 
+<!-- ================= HOW IT WORKS ================= -->
 <section class="section">
   <div class="container">
-    <h2>Backed by research, built with farmers in mind</h2>
-    <p>
-      This assistant is part of an ongoing PhD project on
-      <strong>AI &amp; IoT for smallholder farmers</strong> at a UK university.
-      It combines a systematic literature review, simulation studies and
-      <strong>real farm &amp; greenhouse trials</strong> in India and the UK.
+    <h2 class="section-title">How it works</h2>
+    <p class="section-subtitle">
+      A simple pipeline – collect data, run AI on the edge, send clear advice back
+      to the farmer or greenhouse manager.
     </p>
-    <p>
-      The vision is to keep the core technology <strong>affordable and accessible</strong> for
-      small farmers, while also offering advanced features for commercial greenhouses.
-    </p>
+
+    <ol class="steps">
+      <li>
+        <h3>1. Collect data</h3>
+        <p>
+          Sensors (soil moisture, temperature, humidity), weather (IMD, NASA POWER),
+          soil type, crop variety and simple images from phones or drones.
+        </p>
+      </li>
+      <li>
+        <h3>2. Analyse on the edge device</h3>
+        <p>
+          A Raspberry Pi or similar device runs lightweight ML models locally,
+          so the system keeps working even with poor connectivity.
+        </p>
+      </li>
+      <li>
+        <h3>3. AI decision engine</h3>
+        <p>
+          Irrigation, fertilizer and pest risk modules combine rules with ML
+          to generate recommendations tailored to each field or greenhouse.
+        </p>
+      </li>
+      <li>
+        <h3>4. Explainable recommendations</h3>
+        <p>
+          Every suggestion comes with a short explanation like:
+          <em>“Soil is dry, temperature is high and no rain is expected.”</em>
+        </p>
+      </li>
+      <li>
+        <h3>5. Farmer interface</h3>
+        <p>
+          Advice appears as WhatsApp messages, app notifications or a
+          greenhouse dashboard that staff can act on immediately.
+        </p>
+      </li>
+    </ol>
   </div>
 </section>
 
+<!-- ================= RESEARCH / PARTNERS ================= -->
+<section class="section section-alt">
+  <div class="container">
+    <h2 class="section-title">Backed by research, built with farmers in mind</h2>
+    <p class="section-subtitle">
+      Mango Edge AI, GreenhouseEdgeAI and the future MultiCropEdgeAI are part of
+      an ongoing PhD project on <strong>AI &amp; IoT for smallholder farmers</strong>.
+    </p>
+
+    <div class="research-grid">
+      <div>
+        <h3>Academic foundation</h3>
+        <p>
+          Developed as PhD research at a UK university, combining a systematic
+          literature review, simulations and real-world pilots in India and the UK.
+        </p>
+      </div>
+      <div>
+        <h3>Tech stack</h3>
+        <p>
+          Edge-first architecture using Raspberry Pi, LoRa / MQTT, TimescaleDB,
+          classical ML and neural networks exported to TensorFlow Lite.
+        </p>
+      </div>
+      <div>
+        <h3>Farmer-first principles</h3>
+        <p>
+          Focus on explainable AI, low running costs and designs that can work with
+          basic devices and limited connectivity.
+        </p>
+      </div>
+    </div>
+
+    <div class="logo-strip">
+      <span class="logo-pill">University of Portsmouth</span>
+      <span class="logo-pill">NASA POWER</span>
+      <span class="logo-pill">IMD / local weather</span>
+      <span class="logo-pill">Raspberry Pi</span>
+      <span class="logo-pill">LoRa / MQTT</span>
+    </div>
+  </div>
+</section>
+
+<!-- ================= FOOTER ================= -->
 <footer class="footer">
   <div class="container footer-inner">
-    <span>© 2025 Mango Edge AI</span>
-    <span>Built with GitHub Pages</span>
+    <div>
+      <p class="footer-brand">© 2025 Mango Edge AI</p>
+      <p class="footer-note">
+        Research-led AI assistant for farmers and greenhouses. Goal: keep the
+        core tool affordable or open for smallholder farmers.
+      </p>
+    </div>
+    <div class="footer-links">
+      <a href="https://github.com/dineshnarreddy" target="_blank" rel="noopener">GitHub</a>
+      <a href="contact.html">Contact</a>
+    </div>
   </div>
 </footer>
 
