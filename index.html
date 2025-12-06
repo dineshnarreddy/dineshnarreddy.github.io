@@ -3,9 +3,9 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Mango Edge AI – Smart Farming Assistant</title>
+  <title>Smart Agriculture AI – Mango & Greenhouse Assistant</title>
   <meta name="description"
-        content="AI + IoT assistant for farmers and greenhouses – simple, explainable advice on irrigation, fertilizer and pest risk. Part of a PhD at a UK university." />
+        content="Smart Agriculture AI: MangoEdgeAI, GreenhouseEdgeAI and MultiCropEdgeAI – AI + IoT assistants for farmers and greenhouses, with simple, explainable advice on irrigation, fertilizer and pest risk." />
   <link rel="stylesheet" href="styles.css" />
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -18,7 +18,7 @@
   <div class="container nav-inner">
     <a class="brand" href="index.html">
       <span class="brand-mark">🍃</span>
-      <span>Mango Edge AI</span>
+      <span>Smart Agriculture AI</span>
     </a>
     <nav class="nav-links">
       <a href="about.html">About</a>
@@ -68,9 +68,10 @@
 
     <div class="hero-art">
       <div class="hero-card">
+        <!-- Use a local image file; upload mango-hero.jpg into this repo -->
         <img class="hero-photo"
-             src="https://upload.wikimedia.org/wikipedia/commons/6/65/Mango_Orchards.JPG"
-             alt="Mango orchard (Wikimedia Commons)">
+             src="mango-hero.jpg"
+             alt="Mango orchard">
         <div class="hero-overlay-card">
           <p class="hero-overlay-title">Today’s suggestion</p>
           <p class="hero-overlay-body">
@@ -163,6 +164,59 @@
       <p class="metrics-footnote">
         Numbers are from research prototypes – the goal is to keep improving as more farms join.
       </p>
+    </div>
+  </div>
+</section>
+
+<!-- ============== PRODUCTS: FAMILY OVERVIEW ============== -->
+<section class="section section-alt">
+  <div class="container">
+    <h2 class="section-title">Products in the Smart Agriculture AI family</h2>
+    <p class="section-subtitle">
+      One architecture, three products – starting with mango orchards and tomato greenhouses,
+      and growing into a multi-crop platform.
+    </p>
+
+    <div class="grid three">
+      <article class="card">
+        <h3>MangoEdgeAI (Open-field)</h3>
+        <p>
+          Edge AI assistant for smallholder mango farmers. Gives daily irrigation,
+          stage-wise fertilizer plans and pest-risk alerts for orchards in places
+          like Kadiri and other mango regions.
+        </p>
+        <ul class="card-list">
+          <li>Works with soil sensors or “no-sensor” mode.</li>
+          <li>Uses IMD / NASA weather plus local soil type.</li>
+          <li>Advice delivered via WhatsApp or simple mobile app.</li>
+        </ul>
+      </article>
+
+      <article class="card">
+        <h3>GreenhouseEdgeAI (Tomato)</h3>
+        <p>
+          Climate and irrigation assistant for tomato greenhouses. Tested on real
+          UK greenhouse data with promising energy savings.
+        </p>
+        <ul class="card-list">
+          <li>Optimises heating, ventilation, screens and CO₂.</li>
+          <li>Tracks comfort bands for temperature and humidity.</li>
+          <li>Aim: lower energy bills while keeping plants stable.</li>
+        </ul>
+      </article>
+
+      <article class="card">
+        <h3>MultiCropEdgeAI (Under development)</h3>
+        <p>
+          Future multi-crop version to support tomato, chilli, cotton, rice,
+          groundnut and more – using the same edge + weather + image pipeline.
+        </p>
+        <ul class="card-list">
+          <li>Same Raspberry Pi / edge-device architecture.</li>
+          <li>Expandable pest &amp; disease image library.</li>
+          <li>Goal: one platform for many crops and regions.</li>
+        </ul>
+      </article>
     </div>
   </div>
 </section>
@@ -272,7 +326,7 @@
   <div class="container">
     <h2 class="section-title">Backed by research, built with farmers in mind</h2>
     <p class="section-subtitle">
-      Mango Edge AI, GreenhouseEdgeAI and the future MultiCropEdgeAI are part of
+      MangoEdgeAI, GreenhouseEdgeAI and the future MultiCropEdgeAI are part of
       an ongoing PhD project on <strong>AI &amp; IoT for smallholder farmers</strong>.
     </p>
 
@@ -314,7 +368,7 @@
 <footer class="footer">
   <div class="container footer-inner">
     <div>
-      <p class="footer-brand">© 2025 Mango Edge AI</p>
+      <p class="footer-brand">© 2025 Smart Agriculture AI</p>
       <p class="footer-note">
         Research-led AI assistant for farmers and greenhouses. Goal: keep the
         core tool affordable or open for smallholder farmers.
