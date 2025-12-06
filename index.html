@@ -1,91 +1,160 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Mango Edge AI – Home</title>
-  <meta name="description" content="AI + IoT system for smallholder mango farmers; University of Portsmouth research project." />
-  <link rel="stylesheet" href="styles.css" />
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&display=swap" rel="stylesheet">
-</head>
-<body>
-<header class="nav">
-  <div class="container nav-inner">
-    <a class="brand" href="index.html">Mango Edge AI</a>
-    <nav>
-      <a href="about.html">About</a>
-      <a href="features.html">Features</a>
-      <a href="university.html">University</a>
-      <a href="impact.html">Impact (AP)</a>
-      <a href="gallery.html">Gallery</a>
-
-      <!-- AI Chat Link -->
-      <a href="https://agriedgeai-chat-ibryb35vjgrs5jw7gfbjtf.streamlit.app" target="_blank">AI Chat</a>
-
-      <a href="contact.html" class="button">Contact</a>
-    </nav>
-  </div>
-</header>
-
 <main class="hero hero-home">
   <div class="container hero-inner">
     <div class="hero-text">
-      <h1>AI + IoT for smallholder mango farmers</h1>
+      <h1>Smart farming help, in simple language.</h1>
       <p>
-        A practical, low-power system that gives <strong>explainable</strong> recommendations for irrigation,
-        fertilizer, and pest management — built to run at the farm edge and work offline.
+        Our AI assistant uses <strong>weather, soil, sensors and leaf images</strong> to guide
+        irrigation, fertilizer and pest control – for open-field mango orchards and tomato
+        greenhouses.
       </p>
-      <div class="hero-cta">
-        <a class="button" href="about.html">See the Project</a>
-        <a class="button button-secondary" href="impact.html">Why this matters →</a>
 
-        <!-- AI Demo Button -->
-        <a class="button button-secondary" href="https://agriedgeai-chat-ibryb35vjgrs5jw7gfbjtf.streamlit.app" target="_blank">
-          Open AI Demo
+      <div class="hero-cta">
+        <!-- Open-field farmer path -->
+        <a class="button" href="impact.html">
+          I'm a Farmer
+        </a>
+
+        <!-- Greenhouse grower path -->
+        <a class="button button-secondary" href="features.html">
+          I'm a Greenhouse Grower
+        </a>
+
+        <!-- Direct link to the chat demo -->
+        <a class="button button-secondary" href="https://agriedgeai-chat-ibryb35vjgrs5jw7gfbjtf.streamlit.app" target="_blank" rel="noopener">
+          Try AI Assistant
         </a>
       </div>
+
+      <p class="hero-badge">
+        Built as part of a PhD at a UK university • Tested on real greenhouse data
+      </p>
     </div>
+
     <div class="hero-art">
-      <img class="hero-photo" src="https://upload.wikimedia.org/wikipedia/commons/6/65/Mango_Orchards.JPG" alt="Mango orchard (Wikimedia Commons)">
+      <img class="hero-photo"
+           src="https://upload.wikimedia.org/wikipedia/commons/6/65/Mango_Orchards.JPG"
+           alt="Mango orchard (Wikimedia Commons)">
     </div>
   </div>
 </main>
 
+<!-- Three pillars / what the tool does -->
 <section class="section alt">
   <div class="container">
-    <h2>Three pillars</h2>
+    <h2>What the assistant can help with</h2>
     <div class="grid three">
       <div class="card">
         <h3>Irrigation</h3>
-        <p>Edge analytics + rain probability to recommend <em>when</em> and <em>how long</em> to irrigate.</p>
+        <p>
+          Tells you <strong>when to water, how much, and for how long</strong> – based on soil
+          moisture, crop stage, weather forecast and pump capacity.
+        </p>
       </div>
       <div class="card">
         <h3>Fertilizer</h3>
-        <p>Simple rules evolving to ML models with <em>local farm data</em> fine-tuning.</p>
+        <p>
+          Stage-wise nutrition plans that respect local costs and avoid over-use of chemicals,
+          with templates for each growth phase.
+        </p>
       </div>
       <div class="card">
-        <h3>Pest</h3>
-        <p>On-device TFLite signals + explainable guidance to reduce risk and costs.</p>
+        <h3>Pest &amp; Disease</h3>
+        <p>
+          Weather-based outbreak alerts plus <strong>image-based diagnosis</strong> from leaf photos
+          and drone images – more than just a leaf-scanner app.
+        </p>
       </div>
     </div>
   </div>
 </section>
 
+<!-- Why this matters -->
 <section class="section">
   <div class="container">
-    <h2>Research context</h2>
-    <p>Conducted as part of a PhD at the <strong>Faculty of Business and Law, University of Portsmouth</strong>.</p>
-    <p><a href="university.html">Learn more about our academic collaboration →</a></p>
+    <h2>Why this matters</h2>
+    <div class="grid two">
+      <div>
+        <ul>
+          <li><strong>Reduce guesswork</strong> – decisions based on data, not only tradition.</li>
+          <li><strong>Save water, energy and fertilizer</strong> – fewer unnecessary irrigations and sprays.</li>
+          <li><strong>Protect yield</strong> – early warnings for high disease-risk days.</li>
+          <li><strong>Works offline or with weak internet</strong> – runs on a small edge device on the farm.</li>
+        </ul>
+      </div>
+      <div>
+        <p>
+          The goal is simple: practical AI that small and medium farmers can trust, not a black box.
+          Every recommendation comes with a short “<em>why</em>” explanation.
+        </p>
+      </div>
+    </div>
   </div>
 </section>
 
-<footer class="footer">
-  <div class="container footer-inner">
-    <span>© 2025 Mango Edge AI</span>
-    <span>Built with GitHub Pages</span>
+<!-- Two modes: open-field vs greenhouse -->
+<section class="section alt">
+  <div class="container">
+    <h2>Two modes: open-field and greenhouse</h2>
+    <div class="grid two">
+      <div class="card">
+        <h3>Open-field Mango &amp; Other Crops</h3>
+        <p>
+          Designed first for mango orchards in places like Andhra Pradesh, and extendable to
+          other crops.
+        </p>
+        <ul>
+          <li>Uses soil sensors where available, plus simple local weather data.</li>
+          <li>Works with WhatsApp images and basic phones.</li>
+          <li>
+            Typical message: <em>“Irrigate Plot 2 for 30 minutes this evening.
+            Rain risk tomorrow is low.”</em>
+          </li>
+        </ul>
+        <a class="button button-secondary" href="impact.html">
+          Learn more about open-field mode →
+        </a>
+      </div>
+
+      <div class="card">
+        <h3>Greenhouse (Tomato, later other crops)</h3>
+        <p>
+          For climate-controlled greenhouses that want to cut energy and CO₂ while keeping plants
+          comfortable.
+        </p>
+        <ul>
+          <li>Uses internal climate sensors + outside weather and energy data.</li>
+          <li>Suggests smart temperature, ventilation, screen and irrigation settings.</li>
+          <li>
+            Built from real tomato greenhouse data and able to show estimated
+            <strong>energy savings</strong>.
+          </li>
+        </ul>
+        <a class="button button-secondary" href="features.html">
+          Learn more about greenhouse mode →
+        </a>
+      </div>
+    </div>
   </div>
-</footer>
-</body>
-</html>
+</section>
+
+<!-- Research strip -->
+<section class="section">
+  <div class="container">
+    <h2>Backed by research, built with farmers in mind</h2>
+    <p>
+      This assistant is part of an ongoing PhD project on
+      <strong>AI &amp; IoT for smallholder farmers</strong> at a UK university.
+      It combines a systematic literature review, simulation studies and
+      <strong>real farm &amp; greenhouse trials</strong> in India and the UK.
+    </p>
+    <p>
+      The vision is to keep the core technology <strong>affordable and accessible</strong> for
+      small farmers, while also offering advanced features for commercial greenhouses.
+    </p>
+    <!-- You can later add logos here in a flex row -->
+    <!-- <div class="logo-row">
+         <img src="img/uop-logo.png" alt="University of Portsmouth">
+         <img src="img/partner-placeholder.png" alt="Industry partner">
+       </div> -->
+  </div>
+</section>
