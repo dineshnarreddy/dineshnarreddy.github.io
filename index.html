@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Smart Agriculture AI – Mango & Greenhouse Assistant</title>
   <meta name="description"
-        content="Smart Agriculture AI: MangoEdgeAI, GreenhouseEdgeAI and MultiCropEdgeAI – AI + IoT assistants for farmers and greenhouses, with simple, explainable advice on irrigation, fertilizer and pest risk." />
+        content="Smart Agriculture AI: MangoEdgeAI, GreenhouseEdgeAI and MultiCropEdgeAI – AI + IoT assistants for farms and greenhouses, with simple, explainable advice on irrigation, fertilizer and pest risk." />
   <link rel="stylesheet" href="styles.css" />
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -20,16 +20,19 @@
       <span class="brand-mark">🍃</span>
       <span>Smart Agriculture AI</span>
     </a>
+
     <nav class="nav-links">
       <a href="about.html">About</a>
       <a href="features.html">Features</a>
       <a href="university.html">University</a>
       <a href="impact.html">Impact (AP)</a>
       <a href="gallery.html">Gallery</a>
+
       <a href="https://agriedgeai-chat-ibryb35vjgrs5jw7gfbjtf.streamlit.app"
          target="_blank" rel="noopener" class="nav-pill">
         AI Chat
       </a>
+
       <a href="contact.html" class="button button-small">Contact</a>
     </nav>
   </div>
@@ -42,12 +45,13 @@
   <div class="container hero-inner">
     <div class="hero-text">
       <p class="hero-kicker">AI + IoT assistant for farms & greenhouses</p>
+
       <h1>Smart farming help, in simple language.</h1>
 
       <p class="hero-sub">
-        Our assistant turns <strong>weather, soil, sensors and leaf images</strong> into
-        clear, explainable advice on irrigation, fertilizer and pest risk – for
-        open-field mango orchards and modern greenhouses.
+        Our assistant turns <strong>weather, soil, sensors and leaf images</strong> into clear,
+        explainable advice on irrigation, fertilizer and pest risk — built for
+        <strong>smallholder open-fields</strong> and <strong>modern greenhouses</strong>.
       </p>
 
       <div class="hero-cta">
@@ -55,260 +59,320 @@
            target="_blank" rel="noopener">
           Try AI Demo
         </a>
-        <a class="button button-secondary" href="impact.html">
-          I'm a Farmer
-        </a>
-        <a class="button button-tertiary" href="features.html">
-          I'm a Greenhouse Grower
-        </a>
+        <a class="button button-secondary" href="impact.html">I’m a Farmer</a>
+        <a class="button button-tertiary" href="features.html">I’m a Greenhouse Grower</a>
       </div>
 
-      <!-- NEW: product switcher strip -->
-      <div class="product-switcher">
-        <div class="product-pill active">
-          <p class="product-title">MangoEdgeAI</p>
-          <p class="product-sub">Open-field orchards</p>
-        </div>
-        <div class="product-pill">
-          <p class="product-title">GreenhouseEdgeAI</p>
-          <p class="product-sub">Tomato greenhouse</p>
-        </div>
-        <div class="product-pill">
-          <p class="product-title">MultiCropEdgeAI</p>
-          <p class="product-sub">In development</p>
-        </div>
+      <div class="trust-row">
+        <span class="trust-pill">PhD project (UK)</span>
+        <span class="trust-dot">•</span>
+        <span class="trust-pill">Edge-first (Raspberry Pi)</span>
+        <span class="trust-dot">•</span>
+        <span class="trust-pill">Explainable recommendations</span>
       </div>
 
-      <p class="hero-badge">
-        Built as part of a PhD at a UK university • Tested on real greenhouse data
-      </p>
+      <div class="status-strip">
+        <div class="status-item">
+          <p class="status-label">MangoEdgeAI</p>
+          <p class="status-value"><span class="badge ok">Live</span> Open-field orchard assistant</p>
+        </div>
+        <div class="status-item">
+          <p class="status-label">GreenhouseEdgeAI</p>
+          <p class="status-value"><span class="badge ok">Live</span> Tomato greenhouse assistant</p>
+        </div>
+        <div class="status-item">
+          <p class="status-label">MultiCropEdgeAI</p>
+          <p class="status-value"><span class="badge wait">In progress</span> Multi-crop expansion</p>
+        </div>
+      </div>
     </div>
 
     <div class="hero-art">
       <div class="hero-card">
-        <!-- FIXED: use a local image inside the repo -->
+        <!-- ✅ This file exists in your repo (based on your screenshot) -->
         <img class="hero-photo"
-             src="assets/img/mango-hero.jpg"
-             alt="Mango orchard">
+             src="fresh-green-leaves-with-water-drops_1284-41617.avif"
+             alt="Fresh green leaves with water drops">
+
         <div class="hero-overlay-card">
           <p class="hero-overlay-title">Today’s suggestion</p>
           <p class="hero-overlay-body">
             Irrigate Plot 2 for <strong>30 minutes</strong> this evening.
             <span class="hero-chip">Low rain risk</span>
           </p>
-
-          <!-- NEW: mini status row like a real product -->
-          <div class="mini-status">
-            <div class="mini-item">
-              <span class="mini-label">Soil moisture</span>
-              <span class="mini-value">Low</span>
-            </div>
-            <div class="mini-item">
-              <span class="mini-label">Rain chance</span>
-              <span class="mini-value">12%</span>
-            </div>
-            <div class="mini-item">
-              <span class="mini-label">Pest risk</span>
-              <span class="mini-value">Medium</span>
-            </div>
-          </div>
-
         </div>
       </div>
     </div>
-
   </div>
 </main>
-
-<!-- ================= TRUST STRIP ================= -->
-<section class="section section-tight">
-  <div class="container">
-    <div class="trust-strip">
-      <div class="trust-item">
-        <p class="trust-title">Edge-first</p>
-        <p class="trust-desc">Runs on Raspberry Pi / low-power devices.</p>
-      </div>
-      <div class="trust-item">
-        <p class="trust-title">Works offline</p>
-        <p class="trust-desc">Keeps running even with weak internet.</p>
-      </div>
-      <div class="trust-item">
-        <p class="trust-title">Explainable</p>
-        <p class="trust-desc">Shows “why” behind each recommendation.</p>
-      </div>
-      <div class="trust-item">
-        <p class="trust-title">Research-led</p>
-        <p class="trust-desc">Built as part of a PhD project in the UK.</p>
-      </div>
-    </div>
-  </div>
-</section>
 
 <!-- ================= WHAT IT DOES ================= -->
 <section class="section section-alt">
   <div class="container">
     <h2 class="section-title">What the assistant can help with</h2>
     <p class="section-subtitle">
-      Three main jobs – irrigation, fertilizer and pest risk – all explained in
-      simple words farmers can trust.
+      Three core jobs — irrigation, fertilizer, and pest risk — designed to be practical,
+      low-cost and understandable.
     </p>
 
     <div class="grid three">
       <article class="card">
         <h3>Irrigation • Save water</h3>
         <p>
-          Decide <strong>when to water, how much, and for how long</strong> based on
-          soil moisture, crop stage, weather forecast and pump capacity.
+          Decide <strong>when to water, how much, and for how long</strong> using soil moisture,
+          crop stage, forecast rain probability and pump capacity.
         </p>
         <ul class="card-list">
-          <li>Daily or weekly guidance for each plot</li>
-          <li>Uses rainfall probability to avoid waste</li>
-          <li>Works even with basic sensor setups</li>
+          <li>Plot-wise recommendations</li>
+          <li>Rain veto to avoid waste</li>
+          <li>Works with or without sensors</li>
         </ul>
       </article>
 
       <article class="card">
         <h3>Fertilizer • Save money</h3>
         <p>
-          Stage-wise nutrition plans that respect local costs and avoid over-use
-          of chemicals, with templates for each growth phase.
+          Stage-wise nutrition plans that respect local costs and reduce over-application,
+          evolving from templates into data-driven optimisation.
         </p>
         <ul class="card-list">
-          <li>Pre-flush, flowering, fruit set, post-harvest</li>
-          <li>Supports local fertilizer names and mixes</li>
-          <li>Designed for small and medium farmers</li>
+          <li>Pre-flush → flowering → fruit set</li>
+          <li>Local fertilizer names & mixes</li>
+          <li>Farmer-first + explainable</li>
         </ul>
       </article>
 
       <article class="card">
         <h3>Pest &amp; Disease • Protect yield</h3>
         <p>
-          Weather-based outbreak alerts plus
-          <strong>image-based diagnosis</strong> from leaf photos and drone images –
-          more than just a leaf-scanner app.
+          Weather-based outbreak alerts plus <strong>image-based diagnosis</strong> from leaf photos
+          and drone images — not just a leaf-scanner app.
         </p>
         <ul class="card-list">
-          <li>High-risk day warnings via WhatsApp</li>
-          <li>Supports mango, tomato and more crops</li>
-          <li>Built on lightweight TFLite models</li>
+          <li>Risk days via WhatsApp alerts</li>
+          <li>Lightweight edge vision models</li>
+          <li>Suggested next actions (not panic)</li>
         </ul>
       </article>
     </div>
   </div>
 </section>
 
-<!-- ================= NEW: VISION / WHATSAPP STRIP ================= -->
+<!-- ================= PRODUCT SWITCHER (SaaS FEEL) ================= -->
 <section class="section">
   <div class="container">
-    <h2 class="section-title">Not just leaf photos — full decision support</h2>
-    <p class="section-subtitle">
-      Many apps only scan leaves. Smart Agriculture AI combines images with sensors + weather + soil to give a usable action.
-    </p>
-
-    <div class="media-grid">
-      <div class="media-card">
-        <img src="assets/img/ai-leaf.jpg" alt="AI detecting disease from leaf images">
-        <div class="media-caption">
-          <p class="media-title">Image-based diagnosis</p>
-          <p class="media-desc">From phone uploads or drone images — lightweight models for edge devices.</p>
-        </div>
+    <div class="section-head">
+      <div>
+        <h2 class="section-title">One platform, three products</h2>
+        <p class="section-subtitle">
+          Same edge + data pipeline, tailored to different environments.
+          Start with MangoEdgeAI and GreenhouseEdgeAI — MultiCropEdgeAI expands next.
+        </p>
       </div>
+      <a class="link-soft" href="features.html">See features →</a>
+    </div>
 
-      <div class="media-card">
-        <img src="assets/img/farmer-phone.jpg" alt="Farmer using phone in field">
-        <div class="media-caption">
-          <p class="media-title">WhatsApp / mobile delivery</p>
-          <p class="media-desc">Simple messages farmers can act on immediately (offline-friendly).</p>
+    <div class="product-switch">
+      <input type="radio" name="prod" id="prod1" checked>
+      <label for="prod1">MangoEdgeAI (Open-field)</label>
+
+      <input type="radio" name="prod" id="prod2">
+      <label for="prod2">GreenhouseEdgeAI (Tomato)</label>
+
+      <input type="radio" name="prod" id="prod3">
+      <label for="prod3">MultiCropEdgeAI (In progress)</label>
+
+      <div class="product-panels">
+        <div class="panel p1">
+          <div class="panel-grid">
+            <div>
+              <h3 class="panel-title">MangoEdgeAI — Orchard decision assistant</h3>
+              <p class="panel-text">
+                Built for small and medium mango orchards. Combines soil, weather and crop stage
+                to recommend irrigation duration, stage-wise fertilizer plans and pest-risk warnings.
+              </p>
+              <ul class="panel-list">
+                <li><strong>Edge-first:</strong> runs on Raspberry Pi</li>
+                <li><strong>Offline-ready:</strong> syncs when internet is available</li>
+                <li><strong>Explainable:</strong> every recommendation has a “why”</li>
+              </ul>
+              <div class="panel-actions">
+                <a class="button button-secondary" href="impact.html">Open-field mode →</a>
+                <a class="button button-tertiary" href="gallery.html">See examples →</a>
+              </div>
+            </div>
+            <div class="panel-media">
+              <img src="Feature_DeepLearning_main2.jpg" alt="Farmer using mobile in the field">
+              <p class="media-caption">Example: farmer-friendly advice through simple interfaces.</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="panel p2">
+          <div class="panel-grid">
+            <div>
+              <h3 class="panel-title">GreenhouseEdgeAI — Climate & energy assistant</h3>
+              <p class="panel-text">
+                Designed for tomato greenhouses with multiple zones. Helps staff keep plants in comfort bands
+                while reducing energy and CO₂ using explainable decision logic.
+              </p>
+              <ul class="panel-list">
+                <li><strong>Zones:</strong> different greenhouse sections can be managed separately</li>
+                <li><strong>Control guidance:</strong> heating / vents / screens / irrigation</li>
+                <li><strong>Evidence:</strong> early research shows ~22% energy saving potential</li>
+              </ul>
+              <div class="panel-actions">
+                <a class="button button-secondary" href="features.html">Greenhouse mode →</a>
+                <a class="button button-tertiary" href="university.html">Research context →</a>
+              </div>
+            </div>
+            <div class="panel-media">
+              <img src="convolutional-neural-networks-1.jpg" alt="AI detection illustration">
+              <p class="media-caption">Example: combining sensor + vision signals for risk detection.</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="panel p3">
+          <div class="panel-grid">
+            <div>
+              <h3 class="panel-title">MultiCropEdgeAI — scalable multi-crop expansion</h3>
+              <p class="panel-text">
+                A future platform supporting multiple crops (tomato, chilli, cotton, rice, groundnut and more)
+                using a shared disease library + weather-risk + edge inference pipeline.
+              </p>
+              <ul class="panel-list">
+                <li><strong>Same architecture:</strong> edge + weather + soil + images</li>
+                <li><strong>Expandable disease library:</strong> crop-wise + severity labels</li>
+                <li><strong>Goal:</strong> one practical tool for many regions</li>
+              </ul>
+              <div class="panel-actions">
+                <a class="button button-secondary" href="contact.html">Partner with us →</a>
+                <a class="button button-tertiary" href="about.html">Project overview →</a>
+              </div>
+            </div>
+            <div class="panel-media">
+              <div class="media-ghost">
+                <p class="ghost-title">Under development</p>
+                <p class="ghost-text">We’re expanding crop modules + datasets. Partners welcome.</p>
+              </div>
+              <p class="media-caption">Next: multi-crop rollout with the same edge-first design.</p>
+            </div>
+          </div>
         </div>
       </div>
     </div>
+
   </div>
 </section>
 
-<!-- ================= WHY IT MATTERS ================= -->
-<section class="section">
-  <div class="container grid two">
-    <div>
-      <h2 class="section-title">Why this matters</h2>
-      <ul class="bullet-list">
-        <li><strong>Reduce guesswork</strong> – decisions based on data, not only tradition.</li>
-        <li><strong>Save water, energy and fertilizer</strong> – fewer unnecessary irrigations and sprays.</li>
-        <li><strong>Protect yield</strong> – early warnings for high disease-risk days.</li>
-        <li><strong>Works offline or with weak internet</strong> – runs on a small edge device.</li>
-      </ul>
-    </div>
-    <div class="metrics-card">
-      <p class="metrics-label">Early trial highlights</p>
-      <div class="metrics-grid">
-        <div>
-          <p class="metrics-number">22%</p>
-          <p class="metrics-caption">energy savings in UK tomato greenhouse test</p>
-        </div>
-        <div>
-          <p class="metrics-number">30–40%</p>
-          <p class="metrics-caption">irrigation optimisation in mango simulations</p>
-        </div>
-      </div>
-      <p class="metrics-footnote">
-        Numbers are from research prototypes – the goal is to keep improving as more farms join.
-      </p>
-    </div>
-  </div>
-</section>
-
-<!-- ============== PRODUCTS: FAMILY OVERVIEW ============== -->
+<!-- ================= “PRIVA STYLE” DASHBOARD PREVIEW ================= -->
 <section class="section section-alt">
   <div class="container">
-    <h2 class="section-title">Products in the Smart Agriculture AI family</h2>
-    <p class="section-subtitle">
-      One architecture, three products – starting with mango orchards and tomato greenhouses,
-      and growing into a multi-crop platform.
-    </p>
-
-    <div class="grid three">
-      <article class="card product-card">
-        <span class="tag tag-live">LIVE</span>
-        <h3>MangoEdgeAI (Open-field)</h3>
-        <p>
-          Edge AI assistant for smallholder mango farmers. Gives daily irrigation,
-          stage-wise fertilizer plans and pest-risk alerts for orchards in places
-          like Kadiri and other mango regions.
+    <div class="section-head">
+      <div>
+        <h2 class="section-title">Dashboard preview (greenhouse-style)</h2>
+        <p class="section-subtitle">
+          Inspired by professional greenhouse software: zones, climate tiles, irrigation tiles and clear actions.
+          (This is a design preview — the AI engine will connect behind it.)
         </p>
-        <ul class="card-list">
-          <li>Works with soil sensors or “no-sensor” mode.</li>
-          <li>Uses IMD / NASA weather plus local soil type.</li>
-          <li>Advice delivered via WhatsApp or simple mobile app.</li>
-        </ul>
-      </article>
-
-      <article class="card product-card">
-        <span class="tag tag-live">LIVE</span>
-        <h3>GreenhouseEdgeAI (Tomato)</h3>
-        <p>
-          Climate and irrigation assistant for tomato greenhouses. Tested on real
-          UK greenhouse data with promising energy savings.
-        </p>
-        <ul class="card-list">
-          <li>Optimises heating, ventilation, screens and CO₂.</li>
-          <li>Tracks comfort bands for temperature and humidity.</li>
-          <li>Aim: lower energy bills while keeping plants stable.</li>
-        </ul>
-      </article>
-
-      <article class="card product-card">
-        <span class="tag tag-dev">IN DEVELOPMENT</span>
-        <h3>MultiCropEdgeAI</h3>
-        <p>
-          Future multi-crop version to support tomato, chilli, cotton, rice,
-          groundnut and more – using the same edge + weather + image pipeline.
-        </p>
-        <ul class="card-list">
-          <li>Same Raspberry Pi / edge-device architecture.</li>
-          <li>Expandable pest &amp; disease image library.</li>
-          <li>Goal: one platform for many crops and regions.</li>
-        </ul>
-      </article>
+      </div>
+      <a class="link-soft" href="https://agriedgeai-chat-ibryb35vjgrs5jw7gfbjtf.streamlit.app" target="_blank" rel="noopener">Try demo →</a>
     </div>
+
+    <div class="dashboard">
+      <div class="dash-top">
+        <div class="zone-tabs">
+          <span class="zone-pill active">Zone A</span>
+          <span class="zone-pill">Zone B</span>
+          <span class="zone-pill">Zone C</span>
+          <span class="zone-pill">All zones</span>
+        </div>
+        <div class="dash-meta">
+          <span class="dash-badge">Today</span>
+          <span class="dash-muted">External rain risk: Low • Wind: Moderate</span>
+        </div>
+      </div>
+
+      <div class="kpi-grid">
+        <div class="kpi">
+          <p class="kpi-label">Temperature</p>
+          <p class="kpi-value">21.4°C</p>
+          <p class="kpi-sub">Comfort band: OK</p>
+        </div>
+        <div class="kpi">
+          <p class="kpi-label">Humidity</p>
+          <p class="kpi-value">72%</p>
+          <p class="kpi-sub">VPD: stable</p>
+        </div>
+        <div class="kpi">
+          <p class="kpi-label">CO₂</p>
+          <p class="kpi-value">820 ppm</p>
+          <p class="kpi-sub">Target: 800–950</p>
+        </div>
+        <div class="kpi">
+          <p class="kpi-label">Irrigation</p>
+          <p class="kpi-value">Next: 18:30</p>
+          <p class="kpi-sub">Duration: 12 min</p>
+        </div>
+      </div>
+
+      <div class="dash-grid">
+        <div class="dash-card">
+          <div class="dash-card-head">
+            <h3>Climate trend</h3>
+            <span class="mini-tag">Temp vs setpoint</span>
+          </div>
+          <div class="fake-chart"></div>
+          <p class="dash-note">AI suggests minor vent adjustment to reduce humidity spike.</p>
+        </div>
+
+        <div class="dash-card">
+          <div class="dash-card-head">
+            <h3>Energy & savings</h3>
+            <span class="mini-tag">Weekly view</span>
+          </div>
+          <div class="fake-bars"></div>
+          <p class="dash-note"><strong>Estimated saving:</strong> 18–25% this week (research prototype).</p>
+        </div>
+
+        <div class="dash-card">
+          <div class="dash-card-head">
+            <h3>Actions</h3>
+            <span class="mini-tag">Explainable</span>
+          </div>
+
+          <ul class="action-list">
+            <li>
+              <span class="action-dot ok"></span>
+              <div>
+                <p class="action-title">Irrigate Zone A for 12 minutes (18:30)</p>
+                <p class="action-sub">Why: soil trending dry + low rain risk + stable temp.</p>
+              </div>
+            </li>
+            <li>
+              <span class="action-dot warn"></span>
+              <div>
+                <p class="action-title">Check humidity spike risk (19:00–21:00)</p>
+                <p class="action-sub">Why: forecast RH ↑ + limited airflow period.</p>
+              </div>
+            </li>
+            <li>
+              <span class="action-dot info"></span>
+              <div>
+                <p class="action-title">Optional leaf image scan (pest check)</p>
+                <p class="action-sub">Why: conditions match early outbreak pattern.</p>
+              </div>
+            </li>
+          </ul>
+
+          <div class="dash-actions">
+            <a class="button button-secondary" href="contact.html">Request pilot access →</a>
+          </div>
+        </div>
+      </div>
+    </div>
+
   </div>
 </section>
 
@@ -317,8 +381,7 @@
   <div class="container">
     <h2 class="section-title">How it works</h2>
     <p class="section-subtitle">
-      A simple pipeline – collect data, run AI on the edge, send clear advice back
-      to the farmer or greenhouse manager.
+      Collect data → run AI on the edge → send clear advice back to the farmer or greenhouse team.
     </p>
 
     <ol class="steps">
@@ -326,78 +389,64 @@
         <h3>1. Collect data</h3>
         <p>
           Sensors (soil moisture, temperature, humidity), weather (IMD, NASA POWER),
-          soil type, crop variety and simple images from phones or drones.
+          soil type, crop stage and optional images from phones or drones.
         </p>
       </li>
       <li>
         <h3>2. Analyse on the edge device</h3>
         <p>
-          A Raspberry Pi or similar device runs lightweight ML models locally,
-          so the system keeps working even with poor connectivity.
+          Raspberry Pi or similar runs lightweight ML models locally so it works even with weak internet.
         </p>
       </li>
       <li>
         <h3>3. AI decision engine</h3>
         <p>
-          Irrigation, fertilizer and pest risk modules combine rules with ML
-          to generate recommendations tailored to each field or greenhouse.
+          Irrigation + fertilizer + pest modules combine rules with ML to generate plot/zone-specific recommendations.
         </p>
       </li>
       <li>
         <h3>4. Explainable recommendations</h3>
         <p>
-          Every suggestion comes with a short explanation like:
-          <em>“Soil is dry, temperature is high and no rain is expected.”</em>
+          Every suggestion includes a “why” explanation, so people can trust it and override if needed.
         </p>
       </li>
       <li>
-        <h3>5. Farmer interface</h3>
+        <h3>5. Interfaces</h3>
         <p>
-          Advice appears as WhatsApp messages, app notifications or a
-          greenhouse dashboard that staff can act on immediately.
+          WhatsApp, app notifications or greenhouse dashboards — depending on what the user prefers.
         </p>
       </li>
     </ol>
   </div>
 </section>
 
-<!-- ================= RESEARCH / PARTNERS ================= -->
+<!-- ================= RESEARCH ================= -->
 <section class="section section-alt">
   <div class="container">
     <h2 class="section-title">Backed by research, built with farmers in mind</h2>
     <p class="section-subtitle">
-      MangoEdgeAI, GreenhouseEdgeAI and the future MultiCropEdgeAI are part of
-      an ongoing PhD project on <strong>AI &amp; IoT for smallholder farmers</strong>.
+      Ongoing PhD work in the UK, combining literature review, simulations and real-world pilots in India and the UK.
     </p>
 
     <div class="research-grid">
       <div>
         <h3>Academic foundation</h3>
-        <p>
-          Developed as PhD research at a UK university, combining a systematic
-          literature review, simulations and real-world pilots in India and the UK.
-        </p>
+        <p>Research-led design, transparent reasoning, and measurable outcomes.</p>
       </div>
       <div>
         <h3>Tech stack</h3>
-        <p>
-          Edge-first architecture using Raspberry Pi, LoRa / MQTT, TimescaleDB,
-          classical ML and neural networks exported to TensorFlow Lite.
-        </p>
+        <p>Edge-first: Raspberry Pi • LoRa/MQTT • TimescaleDB • ML/TFLite.</p>
       </div>
       <div>
-        <h3>Farmer-first principles</h3>
-        <p>
-          Focus on explainable AI, low running costs and designs that can work with
-          basic devices and limited connectivity.
-        </p>
+        <h3>Responsible AI</h3>
+        <p>Explainable advice, farmer control, and safe decision support principles.</p>
       </div>
     </div>
 
     <div class="logo-strip">
       <span class="logo-pill">University of Portsmouth</span>
       <span class="logo-pill">NASA POWER</span>
-      <span class="logo-pill">IMD / local weather</span>
+      <span class="logo-pill">IMD / Local weather</span>
       <span class="logo-pill">Raspberry Pi</span>
       <span class="logo-pill">LoRa / MQTT</span>
     </div>
@@ -410,8 +459,7 @@
     <div>
       <p class="footer-brand">© 2025 Smart Agriculture AI</p>
       <p class="footer-note">
-        Research-led AI assistant for farmers and greenhouses. Goal: keep the
-        core tool affordable or open for smallholder farmers.
+        Research-led AI assistant for farmers and greenhouses. Goal: keep the core tool affordable or open for smallholder farmers.
       </p>
     </div>
     <div class="footer-links">
