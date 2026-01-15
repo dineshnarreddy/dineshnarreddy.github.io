@@ -11,10 +11,10 @@
       --panel-border:rgba(255,255,255,0.10);
       --text:#e8eefc;
       --muted:rgba(232,238,252,0.7);
-
       --ok: rgba(16,185,129,0.95);
       --warn: rgba(251,191,36,0.95);
       --info: rgba(59,130,246,0.95);
+      --sel: rgba(59,130,246,0.22);
     }
     body{
       margin:0;
@@ -81,10 +81,8 @@
       border-radius:14px; padding:12px; }
     .label{ color:var(--muted); font-size:12px; }
     .value{ font-size:18px; font-weight:700; margin-top:6px; }
-
     .msg{ margin-top:12px; color:var(--muted); font-size:13px; }
 
-    /* Farms list */
     .farmRow{
       display:flex; align-items:flex-start; justify-content:space-between; gap:10px;
       padding:10px 12px;
@@ -92,6 +90,13 @@
       border:1px solid rgba(255,255,255,0.10);
       background: rgba(0,0,0,0.16);
       margin-top:10px;
+      cursor:pointer;
+      transition: transform .12s ease, border-color .12s ease, background .12s ease;
+    }
+    .farmRow:hover{ transform: translateY(-1px); border-color: rgba(255,255,255,0.18); }
+    .farmRow.selected{
+      background: var(--sel);
+      border-color: rgba(59,130,246,0.45);
     }
     .farmName{ font-weight:800; }
     .farmMeta{ color: var(--muted); font-size:12px; margin-top:2px; }
@@ -193,7 +198,7 @@
     <div class="grid">
       <div class="card">
         <h2>Farm Overview</h2>
-        <p>This shows farms stored in Supabase (<strong>public.farms</strong>). Next step later: charts + AI outputs.</p>
+        <p>This shows farms stored in Supabase (<strong>public.farms</strong>). Next: click a farm and show AI tiles per farm.</p>
 
         <div class="chips">
           <div class="chip"><span class="dot ok"></span> Framework test: PASS</div>
@@ -201,10 +206,15 @@
           <div class="chip"><span class="dot info"></span> WhatsApp delivery: pending</div>
         </div>
 
+        <div class="card" style="margin-top:14px;background:rgba(0,0,0,0.12);">
+          <h2 style="margin:0;">Selected farm</h2>
+          <div class="msg" id="selectedFarmLine">No farm selected yet. Click one below.</div>
+        </div>
+
         <div class="kpis">
-          <div class="kpi"><div class="label">Irrigation status</div><div class="value" id="kpiIrr">Prototype</div></div>
-          <div class="kpi"><div class="label">Fertilizer status</div><div class="value" id="kpiFert">Prototype</div></div>
-          <div class="kpi"><div class="label">Pest risk</div><div class="value" id="kpiPest">Prototype</div></div>
+          <div class="kpi"><div class="label">Irrigation status</div><div class="value" id="kpiIrr">—</div></div>
+          <div class="kpi"><div class="label">Fertilizer status</div><div class="value" id="kpiFert">—</div></div>
+          <div class="kpi"><div class="label">Pest risk</div><div class="value" id="kpiPest">—</div></div>
           <div class="kpi"><div class="label">Last update</div><div class="value" id="kpiLast">—</div></div>
         </div>
 
@@ -260,11 +270,6 @@
             <label>Longitude</label>
             <input id="lon" placeholder="e.g., 78.290156" />
           </div>
-
-          <div class="field">
-            <label>(Optional) Notes</label>
-            <input id="notes" placeholder="e.g., Mango, PRE_FLUSH" />
-          </div>
         </div>
 
         <div class="help" style="margin-top:10px;">
@@ -293,6 +298,11 @@
     const farmsHint = document.getElementById("farmsHint");
     const farmsList = document.getElementById("farmsList");
 
+    const selectedFarmLine = document.getElementById("selectedFarmLine");
+
+    const kpiIrr = document.getElementById("kpiIrr");
+    const kpiFert = document.getElementById("kpiFert");
+    const kpiPest = document.getElementById("kpiPest");
     const kpiLast = document.getElementById("kpiLast");
 
     // Modal elements
@@ -308,7 +318,17 @@
     const countryEl = document.getElementById("country");
     const latEl = document.getElementById("lat");
     const lonEl = document.getElementById("lon");
-    const notesEl = document.getElementById("notes");
+
+    let selectedFarm = null; // {id,farm_name,country,lat,lon}
+
+    function escapeHtml(str){
+      return String(str ?? "")
+        .replaceAll("&","&amp;")
+        .replaceAll("<","&lt;")
+        .replaceAll(">","&gt;")
+        .replaceAll('"',"&quot;")
+        .replaceAll("'","&#039;");
+    }
 
     function showModal(on){
       errBox.classList.remove("show");
@@ -329,6 +349,33 @@
       btnSave.textContent = on ? "Saving..." : "Save farm";
     }
 
+    function setSelectedFarm(farm){
+      selectedFarm = farm;
+
+      if (!farm){
+        selectedFarmLine.textContent = "No farm selected yet. Click one below.";
+        kpiIrr.textContent = "—";
+        kpiFert.textContent = "—";
+        kpiPest.textContent = "—";
+        kpiLast.textContent = "—";
+        localStorage.removeItem("selectedFarmId");
+        return;
+      }
+
+      const where = [farm.country, (farm.lat!=null && farm.lon!=null ? `${farm.lat}, ${farm.lon}` : "")].filter(Boolean).join(" • ");
+      selectedFarmLine.innerHTML =
+        `<strong>${escapeHtml(farm.farm_name)}</strong> <span style="color:rgba(232,238,252,0.6)"> (Farm ID: ${farm.id})</span><br/>
+         <span style="color:rgba(232,238,252,0.7)">${escapeHtml(where || "Location not set")}</span>`;
+
+      // For now: demo values per selected farm (next step we will connect to AI tables)
+      kpiIrr.textContent = "Prototype";
+      kpiFert.textContent = "Prototype";
+      kpiPest.textContent = "Prototype";
+      kpiLast.textContent = new Date().toLocaleString();
+
+      localStorage.setItem("selectedFarmId", String(farm.id));
+    }
+
     btnWebsite.addEventListener("click", () => window.location.href = "/");
     btnAddFarmTop.addEventListener("click", () => showModal(true));
     btnAddFarmSmall.addEventListener("click", () => showModal(true));
@@ -344,17 +391,15 @@
     const email = session.user?.email || "Unknown";
     userLine.textContent = `Signed in as: ${email}`;
 
-    // KPIs
-    kpiLast.textContent = new Date().toLocaleString();
-    statusMsg.textContent = "Dashboard loaded ✅ Now you can add farms. Next: charts + AI outputs per farm.";
-
     // Logout
     btnLogout.addEventListener("click", async () => {
       await supabase.auth.signOut();
       window.location.href = "/login.html";
     });
 
-    // 2) Load farms (RLS will only show user's farms if policy is correct)
+    statusMsg.textContent = "Step 3 ✅ Click a farm row to select it. Next: connect AI outputs per farm.";
+
+    // 2) Load farms and render clickable rows
     async function loadFarms(){
       farmsHint.textContent = "Loading farms...";
       farmsList.innerHTML = "";
@@ -366,19 +411,27 @@
 
       if (error){
         farmsHint.textContent = "Could not load farms yet (RLS/policy not ready).";
+        setSelectedFarm(null);
         return;
       }
 
       if (!data || data.length === 0){
         farmsHint.textContent = 'No farms yet. Click "Add Farm".';
+        setSelectedFarm(null);
         return;
       }
 
       farmsHint.textContent = "";
+
+      const savedId = localStorage.getItem("selectedFarmId");
+      const defaultFarm = savedId ? data.find(x => String(x.id) === String(savedId)) : data[0];
+      if (defaultFarm) setSelectedFarm(defaultFarm);
+
       farmsList.innerHTML = data.map(f => {
         const where = [f.country, (f.lat!=null && f.lon!=null ? `${f.lat}, ${f.lon}` : "")].filter(Boolean).join(" • ");
+        const isSel = selectedFarm && String(selectedFarm.id) === String(f.id);
         return `
-          <div class="farmRow">
+          <div class="farmRow ${isSel ? "selected" : ""}" data-id="${f.id}">
             <div>
               <div class="farmName">${escapeHtml(f.farm_name || "Farm")}</div>
               <div class="farmMeta">${escapeHtml(where || "Location not set")}</div>
@@ -388,21 +441,23 @@
           </div>
         `;
       }).join("");
-    }
 
-    // Helper to avoid broken HTML
-    function escapeHtml(str){
-      return String(str ?? "")
-        .replaceAll("&","&amp;")
-        .replaceAll("<","&lt;")
-        .replaceAll(">","&gt;")
-        .replaceAll('"',"&quot;")
-        .replaceAll("'","&#039;");
+      // click handlers
+      farmsList.querySelectorAll(".farmRow").forEach(el => {
+        el.addEventListener("click", () => {
+          const id = el.getAttribute("data-id");
+          const farm = data.find(x => String(x.id) === String(id));
+          setSelectedFarm(farm);
+          // re-render selection highlight
+          farmsList.querySelectorAll(".farmRow").forEach(r => r.classList.remove("selected"));
+          el.classList.add("selected");
+        });
+      });
     }
 
     await loadFarms();
 
-    // 3) Save farm  ✅ IMPORTANT: include owner_id so RLS passes
+    // 3) Save farm ✅ include owner_id (RLS)
     btnSave.addEventListener("click", async () => {
       errBox.classList.remove("show");
       errBox.textContent = "";
@@ -410,14 +465,10 @@
       const farm_name = (farmNameEl.value || "").trim();
       const country = (countryEl.value || "").trim() || null;
 
-      // lat/lon optional
       const latRaw = (latEl.value || "").trim();
       const lonRaw = (lonEl.value || "").trim();
       const lat = latRaw === "" ? null : Number(latRaw);
       const lon = lonRaw === "" ? null : Number(lonRaw);
-
-      // notes not in your table -> ignored safely (kept for future)
-      const notes = (notesEl.value || "").trim();
 
       if (!farm_name) return showError("Farm name is required.");
       if (latRaw !== "" && Number.isNaN(lat)) return showError("Latitude must be a number.");
@@ -426,7 +477,6 @@
 
       setSaving(true);
 
-      // Insert with owner_id => fixes your RLS error
       const { error } = await supabase
         .from("farms")
         .insert([{
@@ -444,19 +494,17 @@
         return;
       }
 
-      // Clear + refresh
       farmNameEl.value = "";
       countryEl.value = "";
       latEl.value = "";
       lonEl.value = "";
-      notesEl.value = "";
 
       showModal(false);
       await loadFarms();
-      statusMsg.textContent = "Farm saved ✅ Next: we will connect this farm to AI outputs + charts.";
+      statusMsg.textContent = "Farm saved ✅ Now click the farm to see selected farm tiles. Next: AI outputs per farm.";
     });
 
-    // (Optional) notifications (your table may not exist yet)
+    // Notifications optional
     const { data: notifs, error: nerr } = await supabase
       .from("notifications")
       .select("created_at,title,msg,severity")
