@@ -4,7 +4,6 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
   <title>AgriEdgeAI – Dashboard</title>
-
   <style>
     :root{
       --bg:#070b18;
@@ -15,14 +14,15 @@
       --ok: rgba(16,185,129,0.95);
       --warn: rgba(251,191,36,0.95);
       --info: rgba(59,130,246,0.95);
-      --sel: rgba(59,130,246,0.22);
+      --critical: rgba(239,68,68,0.95);
+      --selected: rgba(59,130,246,0.14);
+      --selected-border: rgba(59,130,246,0.40);
     }
     body{
       margin:0;
-      background:
-        radial-gradient(1200px 800px at 70% 20%, rgba(59,130,246,0.25), transparent 60%),
-        radial-gradient(900px 600px at 20% 90%, rgba(16,185,129,0.20), transparent 55%),
-        var(--bg);
+      background: radial-gradient(1200px 800px at 70% 20%, rgba(59,130,246,0.25), transparent 60%),
+                  radial-gradient(900px 600px at 20% 90%, rgba(16,185,129,0.20), transparent 55%),
+                  var(--bg);
       font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
       color: var(--text);
       min-height:100vh;
@@ -34,7 +34,7 @@
       border-bottom: 1px solid rgba(255,255,255,0.08);
       padding:16px 20px;
       display:flex; align-items:center; justify-content:space-between; gap:12px;
-      z-index:10;
+      z-index: 10;
     }
     .left{ display:flex; align-items:center; gap:10px; }
     .logo{ width:34px;height:34px;border-radius:12px;
@@ -65,121 +65,144 @@
     .chips{ display:flex; gap:10px; flex-wrap:wrap; margin-top:10px; }
     .chip{
       display:inline-flex; align-items:center; gap:8px;
-      padding:8px 10px;
-      border-radius:999px;
-      border:1px solid rgba(255,255,255,0.12);
+      padding:8px 10px; border-radius:999px;
+      border: 1px solid rgba(255,255,255,0.12);
       background: rgba(0,0,0,0.18);
-      font-size:13px;
+      font-size: 13px;
       color: rgba(232,238,252,0.85);
     }
-    .dot{ width:10px; height:10px; border-radius:999px; }
-    .dot.ok{ background: var(--ok); }
-    .dot.warn{ background: var(--warn); }
-    .dot.info{ background: var(--info); }
+    .dot{ width:10px; height:10px; border-radius:999px; background: var(--info); }
 
     .kpis{ display:grid; grid-template-columns:repeat(2,1fr); gap:10px; margin-top:12px; }
-    .kpi{
-      background: rgba(0,0,0,0.18);
-      border:1px solid rgba(255,255,255,0.10);
-      border-radius:14px;
-      padding:12px;
-    }
+    .kpi{ background: rgba(0,0,0,0.18); border:1px solid rgba(255,255,255,0.10);
+      border-radius:14px; padding:12px; }
     .label{ color:var(--muted); font-size:12px; }
     .value{ font-size:18px; font-weight:700; margin-top:6px; }
+
     .msg{ margin-top:12px; color:var(--muted); font-size:13px; }
 
-    .farmRow{
-      display:flex; align-items:flex-start; justify-content:space-between; gap:10px;
-      padding:10px 12px;
+    .row-between{ display:flex; align-items:center; justify-content:space-between; gap:10px; }
+
+    .selected-box{
+      margin-top: 12px;
+      padding: 12px;
+      border-radius: 14px;
+      border: 1px solid rgba(255,255,255,0.10);
+      background: rgba(0,0,0,0.18);
+    }
+    .selected-title{ margin:0 0 6px; font-weight:800; }
+    .selected-sub{ margin:0; color: var(--muted); font-size: 13px; }
+
+    .farm-list{ margin-top: 12px; display:grid; gap:10px; }
+    .farm-item{
       border-radius:14px;
-      border:1px solid rgba(255,255,255,0.10);
-      background: rgba(0,0,0,0.16);
-      margin-top:10px;
-      cursor:pointer;
-      transition: transform .12s ease, border-color .12s ease, background .12s ease;
+      border: 1px solid rgba(255,255,255,0.10);
+      background: rgba(0,0,0,0.18);
+      padding: 12px;
+      cursor: pointer;
+      transition: transform 0.12s ease, border-color 0.12s ease, background 0.12s ease;
     }
-    .farmRow:hover{ transform: translateY(-1px); border-color: rgba(255,255,255,0.18); }
-    .farmRow.selected{
-      background: var(--sel);
-      border-color: rgba(59,130,246,0.45);
+    .farm-item:hover{ transform: translateY(-1px); border-color: rgba(255,255,255,0.18); }
+    .farm-item.selected{
+      background: var(--selected);
+      border-color: var(--selected-border);
     }
-    .farmName{ font-weight:800; }
-    .farmMeta{ color: var(--muted); font-size:12px; margin-top:2px; }
+    .farm-name{ margin:0; font-weight:800; font-size: 18px; }
+    .farm-meta{ margin:4px 0 0; color: var(--muted); font-size: 13px; }
+    .farm-id{ margin:4px 0 0; color: rgba(232,238,252,0.78); font-size: 13px; }
+
+    .notif{
+      margin-top: 10px;
+      padding: 10px 12px;
+      border-radius: 14px;
+      border: 1px solid rgba(255,255,255,0.10);
+      background: rgba(0,0,0,0.18);
+    }
+    .notif-title{ margin:0; font-weight:800; font-size: 14px; }
+    .notif-msg{ margin:4px 0 0; color: rgba(232,238,252,0.8); font-size: 13px; line-height: 1.4; }
+    .notif-time{ margin:6px 0 0; color: rgba(232,238,252,0.55); font-size: 12px; }
+    .sev{ display:inline-flex; align-items:center; gap:8px; }
+    .sev .dot{ background: var(--info); }
+    .sev.ok .dot{ background: var(--ok); }
+    .sev.warn .dot{ background: var(--warn); }
+    .sev.critical .dot{ background: var(--critical); }
 
     /* Modal */
-    .overlay{
-      position:fixed; inset:0;
+    .modal-backdrop{
+      position: fixed; inset: 0;
       background: rgba(0,0,0,0.55);
       display:none;
-      align-items:center; justify-content:center;
+      align-items:center;
+      justify-content:center;
       padding: 18px;
       z-index: 50;
     }
-    .overlay.show{ display:flex; }
+    .modal-backdrop.show{ display:flex; }
     .modal{
-      width:100%;
-      max-width:720px;
-      background: rgba(10,14,30,0.88);
-      border: 1px solid rgba(255,255,255,0.10);
+      width: 100%;
+      max-width: 720px;
       border-radius: 18px;
-      box-shadow: 0 30px 80px rgba(0,0,0,0.55);
+      border: 1px solid rgba(255,255,255,0.10);
+      background: rgba(10,15,30,0.92);
       backdrop-filter: blur(10px);
-      overflow:hidden;
+      box-shadow: 0 18px 60px rgba(0,0,0,0.55);
+      padding: 16px;
     }
-    .modalHead{
-      display:flex; align-items:center; justify-content:space-between; gap:12px;
-      padding: 16px 16px 12px;
-      border-bottom: 1px solid rgba(255,255,255,0.08);
+    .modal-head{
+      display:flex;
+      align-items:flex-start;
+      justify-content:space-between;
+      gap:10px;
+      margin-bottom: 10px;
     }
-    .modalHead h3{ margin:0; font-size:18px; }
-    .help{ color: var(--muted); font-size:13px; margin-top:4px; }
+    .modal h3{ margin:0; font-size: 20px; }
+    .modal p{ margin:6px 0 0; color: var(--muted); font-size: 13px; }
     .xbtn{
-      width:38px; height:38px; border-radius:12px;
-      border:1px solid rgba(255,255,255,0.14);
-      background: rgba(255,255,255,0.10);
+      width: 42px; height: 42px; border-radius: 14px;
+      border: 1px solid rgba(255,255,255,0.12);
+      background: rgba(255,255,255,0.08);
       color: var(--text);
-      cursor:pointer;
-      font-size:18px;
-      line-height: 0;
+      cursor:pointer; font-weight:800;
     }
-    .modalBody{ padding: 14px 16px 16px; }
-    .formGrid{
+    .form-grid{
       display:grid;
       grid-template-columns: 1fr;
-      gap: 12px;
-      margin-top: 14px;
+      gap: 10px;
+      margin-top: 12px;
     }
-    @media (min-width:720px){
-      .formGrid{ grid-template-columns: 1fr 1fr; }
-      .span2{ grid-column: 1 / -1; }
+    @media (min-width: 760px){
+      .form-grid{ grid-template-columns: 1fr 1fr; }
+      .span-2{ grid-column: span 2; }
     }
-    .field label{ display:block; font-size:13px; color: var(--muted); margin-bottom:6px; }
-    .field input{
+    label{ display:block; font-size: 13px; color: var(--muted); margin-bottom: 6px; }
+    input{
       width:100%;
       padding: 12px;
-      border-radius: 12px;
-      border: 1px solid rgba(255,255,255,0.16);
-      background: rgba(0,0,0,0.18);
+      border-radius: 14px;
+      border: 1px solid rgba(255,255,255,0.14);
+      background: rgba(0,0,0,0.20);
       color: var(--text);
-      outline:none;
-      box-sizing:border-box;
+      outline: none;
+      box-sizing: border-box;
     }
-    .modalFoot{
-      display:flex; justify-content:flex-end; gap:10px; flex-wrap:wrap;
-      padding: 12px 16px 16px;
-      border-top: 1px solid rgba(255,255,255,0.08);
+    .modal-actions{
+      display:flex;
+      justify-content:flex-end;
+      gap: 10px;
+      margin-top: 12px;
+      flex-wrap: wrap;
     }
-    .errorBox{
+    .err{
       margin-top: 10px;
       padding: 10px 12px;
-      border-radius: 12px;
-      border: 1px solid rgba(255,255,255,0.12);
-      background: rgba(251, 113, 133, 0.15);
-      color: rgba(255,255,255,0.90);
+      border-radius: 14px;
+      border: 1px solid rgba(239,68,68,0.35);
+      background: rgba(239,68,68,0.10);
+      color: rgba(255,220,220,0.95);
       display:none;
       font-size: 13px;
     }
-    .errorBox.show{ display:block; }
+    .err.show{ display:block; }
   </style>
 </head>
 
@@ -203,17 +226,17 @@
     <div class="grid">
       <div class="card">
         <h2>Farm Overview</h2>
-        <p>This shows farms stored in Supabase (<strong>public.farms</strong>). Click a farm to select it.</p>
+        <p>This shows farms stored in Supabase (<b>public.farms</b>). Next: click a farm and show AI tiles per farm.</p>
 
         <div class="chips">
-          <div class="chip"><span class="dot ok"></span> Framework test: PASS</div>
-          <div class="chip"><span class="dot warn"></span> Real-time data: pending</div>
-          <div class="chip"><span class="dot info"></span> WhatsApp delivery: pending</div>
+          <span class="chip"><span class="dot" style="background:var(--ok)"></span>Framework test: PASS</span>
+          <span class="chip"><span class="dot" style="background:var(--warn)"></span>Real-time data: pending</span>
+          <span class="chip"><span class="dot" style="background:var(--info)"></span>WhatsApp delivery: pending</span>
         </div>
 
-        <div class="card" style="margin-top:14px;background:rgba(0,0,0,0.12);">
-          <h2 style="margin:0;">Selected farm</h2>
-          <div class="msg" id="selectedFarmLine">No farm selected yet. Click one below.</div>
+        <div class="selected-box" id="selectedBox">
+          <p class="selected-title">Selected farm</p>
+          <p class="selected-sub" id="selectedText">None selected yet. Click a farm below.</p>
         </div>
 
         <div class="kpis">
@@ -223,13 +246,13 @@
           <div class="kpi"><div class="label">Last update</div><div class="value" id="kpiLast">—</div></div>
         </div>
 
-        <div class="card" style="margin-top:14px;background:rgba(0,0,0,0.12);">
-          <div style="display:flex;align-items:center;justify-content:space-between;gap:10px;">
-            <h2 style="margin:0;">Your farms</h2>
-            <button class="btn" id="btnAddFarmSmall">+ Add</button>
-          </div>
-          <div class="msg" id="farmsHint">Loading farms...</div>
-          <div id="farmsList"></div>
+        <div class="row-between" style="margin-top:14px;">
+          <h2 style="margin:0;font-size:16px;">Your farms</h2>
+          <button class="btn" id="btnAddFarmInline">+ Add</button>
+        </div>
+
+        <div class="farm-list" id="farmList">
+          <div class="msg">Loading farms...</div>
         </div>
 
         <div class="msg" id="statusMsg"></div>
@@ -237,56 +260,55 @@
 
       <div class="card">
         <h2>Notifications</h2>
-        <p>Later we’ll create a notifications table and show last alerts here.</p>
-        <div class="msg" id="notifBox">No alerts yet.</div>
+        <p>Shows the last alerts for the selected farm (<b>public.notifications</b>).</p>
+        <div id="notifBox" class="msg">Select a farm to load alerts.</div>
       </div>
     </div>
   </main>
 
-  <!-- Add Farm Modal -->
-  <div class="overlay" id="overlay">
+  <!-- Modal -->
+  <div class="modal-backdrop" id="modalBackdrop">
     <div class="modal">
-      <div class="modalHead">
+      <div class="modal-head">
         <div>
           <h3>Add a farm</h3>
-          <div class="help">This creates a row in <strong>public.farms</strong>. Only you can see your farms (RLS).</div>
+          <p>This creates a row in <b>public.farms</b>. Only you can see your farms (RLS).</p>
         </div>
-        <button class="xbtn" id="btnClose" title="Close">×</button>
+        <button class="xbtn" id="btnCloseModal">×</button>
       </div>
 
-      <div class="modalBody">
-        <div class="formGrid">
-          <div class="field span2">
-            <label>Farm name *</label>
-            <input id="farmName" placeholder="e.g., Kadiri Demo" />
-          </div>
-
-          <div class="field">
-            <label>Country</label>
-            <input id="country" placeholder="e.g., India / UK" />
-          </div>
-
-          <div class="field">
-            <label>Latitude</label>
-            <input id="lat" placeholder="e.g., 14.208045" />
-          </div>
-
-          <div class="field">
-            <label>Longitude</label>
-            <input id="lon" placeholder="e.g., 78.290156" />
-          </div>
+      <div class="form-grid">
+        <div class="span-2">
+          <label>Farm name *</label>
+          <input id="farmName" placeholder="Kadiri Demo" />
         </div>
 
-        <div class="help" style="margin-top:10px;">
-          Tip: Lat/Lon can be empty for now. We’ll use it later for weather + recommendations.
+        <div>
+          <label>Country</label>
+          <input id="country" placeholder="India" />
         </div>
 
-        <div class="errorBox" id="errBox"></div>
+        <div>
+          <label>Latitude</label>
+          <input id="lat" placeholder="14.208045" />
+        </div>
+
+        <div>
+          <label>Longitude</label>
+          <input id="lon" placeholder="78.290156" />
+        </div>
+
+        <div>
+          <label>(Optional) Notes</label>
+          <input id="notes" placeholder="e.g., Mango, PRE_FLUSH" />
+        </div>
       </div>
 
-      <div class="modalFoot">
+      <div class="err" id="errBox"></div>
+
+      <div class="modal-actions">
         <button class="btn" id="btnCancel">Cancel</button>
-        <button class="btn primary" id="btnSave">Save farm</button>
+        <button class="btn primary" id="btnSaveFarm">Save farm</button>
       </div>
     </div>
   </div>
@@ -297,37 +319,257 @@
     const userLine = document.getElementById("userLine");
     const statusMsg = document.getElementById("statusMsg");
     const btnLogout = document.getElementById("btnLogout");
-    const notifBox = document.getElementById("notifBox");
     const btnWebsite = document.getElementById("btnWebsite");
 
-    const farmsHint = document.getElementById("farmsHint");
-    const farmsList = document.getElementById("farmsList");
-
-    const selectedFarmLine = document.getElementById("selectedFarmLine");
+    const farmListEl = document.getElementById("farmList");
+    const selectedText = document.getElementById("selectedText");
 
     const kpiIrr = document.getElementById("kpiIrr");
     const kpiFert = document.getElementById("kpiFert");
     const kpiPest = document.getElementById("kpiPest");
     const kpiLast = document.getElementById("kpiLast");
 
+    const notifBox = document.getElementById("notifBox");
+
     // Modal elements
-    const overlay = document.getElementById("overlay");
-    const btnAddFarmTop = document.getElementById("btnAddFarmTop");
-    const btnAddFarmSmall = document.getElementById("btnAddFarmSmall");
-    const btnClose = document.getElementById("btnClose");
+    const modalBackdrop = document.getElementById("modalBackdrop");
+    const btnCloseModal = document.getElementById("btnCloseModal");
     const btnCancel = document.getElementById("btnCancel");
-    const btnSave = document.getElementById("btnSave");
+    const btnSaveFarm = document.getElementById("btnSaveFarm");
+    const btnAddFarmTop = document.getElementById("btnAddFarmTop");
+    const btnAddFarmInline = document.getElementById("btnAddFarmInline");
     const errBox = document.getElementById("errBox");
 
     const farmNameEl = document.getElementById("farmName");
     const countryEl = document.getElementById("country");
     const latEl = document.getElementById("lat");
     const lonEl = document.getElementById("lon");
+    const notesEl = document.getElementById("notes");
 
-    let selectedFarm = null;
+    let selectedFarmId = null;
 
-    function escapeHtml(str){
-      return String(str ?? "")
+    function showModal() {
+      errBox.classList.remove("show");
+      errBox.textContent = "";
+      modalBackdrop.classList.add("show");
+      farmNameEl.focus();
+    }
+
+    function closeModal() {
+      modalBackdrop.classList.remove("show");
+    }
+
+    function showError(msg) {
+      errBox.textContent = msg;
+      errBox.classList.add("show");
+    }
+
+    function setKPIsEmpty() {
+      kpiIrr.textContent = "—";
+      kpiFert.textContent = "—";
+      kpiPest.textContent = "—";
+      kpiLast.textContent = "—";
+    }
+
+    function fmtTime(ts) {
+      if (!ts) return "—";
+      try { return new Date(ts).toLocaleString(); } catch { return ts; }
+    }
+
+    async function ensureAuthOrRedirect() {
+      const { data: { session } } = await supabase.auth.getSession();
+      if (!session) window.location.href = "/login.html";
+      return session;
+    }
+
+    async function loadFarms() {
+      farmListEl.innerHTML = `<div class="msg">Loading farms...</div>`;
+
+      const { data: farms, error } = await supabase
+        .from("farms")
+        .select("id,farm_name,country,lat,lon,created_at")
+        .order("created_at", { ascending: false });
+
+      if (error) {
+        farmListEl.innerHTML = `<div class="msg">Farms not loading yet: ${error.message}</div>`;
+        return [];
+      }
+
+      if (!farms || farms.length === 0) {
+        farmListEl.innerHTML = `<div class="msg">No farms yet. Click “Add Farm”.</div>`;
+        return [];
+      }
+
+      farmListEl.innerHTML = farms.map(f => `
+        <div class="farm-item" data-id="${f.id}">
+          <div style="display:flex;justify-content:space-between;gap:12px;align-items:flex-start;flex-wrap:wrap;">
+            <div>
+              <p class="farm-name">${escapeHtml(f.farm_name || "Untitled farm")}</p>
+              <p class="farm-meta">${escapeHtml(f.country || "—")} • ${f.lat ?? "—"}, ${f.lon ?? "—"}</p>
+              <p class="farm-id">Farm ID: ${f.id}</p>
+            </div>
+            <div style="color:rgba(232,238,252,0.55);font-size:12px;">
+              ${fmtTime(f.created_at)}
+            </div>
+          </div>
+        </div>
+      `).join("");
+
+      // click handlers
+      farmListEl.querySelectorAll(".farm-item").forEach(item => {
+        item.addEventListener("click", () => {
+          const id = Number(item.getAttribute("data-id"));
+          selectFarm(id, farms);
+        });
+      });
+
+      // restore last selected
+      const saved = localStorage.getItem("selected_farm_id");
+      if (saved) {
+        const id = Number(saved);
+        const exists = farms.some(f => f.id === id);
+        if (exists) selectFarm(id, farms);
+      }
+
+      return farms;
+    }
+
+    function highlightSelected(id) {
+      farmListEl.querySelectorAll(".farm-item").forEach(el => {
+        const fid = Number(el.getAttribute("data-id"));
+        el.classList.toggle("selected", fid === id);
+      });
+    }
+
+    async function selectFarm(id, farms) {
+      selectedFarmId = id;
+      localStorage.setItem("selected_farm_id", String(id));
+      highlightSelected(id);
+
+      const farm = farms.find(f => f.id === id);
+      if (!farm) return;
+
+      selectedText.innerHTML = `<b>${escapeHtml(farm.farm_name || "Untitled")}</b> (Farm ID: ${farm.id})<br>${escapeHtml(farm.country || "—")} • ${farm.lat ?? "—"}, ${farm.lon ?? "—"}`;
+
+      // Load status + notifications
+      await Promise.all([
+        loadFarmStatus(id),
+        loadNotifications(id)
+      ]);
+    }
+
+    async function loadFarmStatus(farmId) {
+      setKPIsEmpty();
+
+      const { data, error } = await supabase
+        .from("farm_status")
+        .select("irrigation_status,fertilizer_status,pest_status,last_update")
+        .eq("farm_id", farmId)
+        .maybeSingle();
+
+      if (error) {
+        kpiIrr.textContent = "—";
+        kpiFert.textContent = "—";
+        kpiPest.textContent = "—";
+        kpiLast.textContent = "—";
+        statusMsg.textContent = `Status not loading yet: ${error.message}`;
+        return;
+      }
+
+      // If no row exists (older farms created before trigger), create it now
+      if (!data) {
+        const { error: insErr } = await supabase
+          .from("farm_status")
+          .insert([{ farm_id: farmId }]);
+
+        if (insErr) {
+          statusMsg.textContent = `Status row missing and insert blocked: ${insErr.message}`;
+          return;
+        }
+        return loadFarmStatus(farmId);
+      }
+
+      kpiIrr.textContent = data.irrigation_status || "Prototype";
+      kpiFert.textContent = data.fertilizer_status || "Prototype";
+      kpiPest.textContent = data.pest_status || "Prototype";
+      kpiLast.textContent = fmtTime(data.last_update);
+
+      statusMsg.textContent = "Dashboard loaded ✅ Next: connect this farm to AI outputs + charts.";
+    }
+
+    async function loadNotifications(farmId) {
+      notifBox.innerHTML = `<div class="msg">Loading alerts...</div>`;
+
+      const { data: notifs, error } = await supabase
+        .from("notifications")
+        .select("created_at,title,msg,severity")
+        .eq("farm_id", farmId)
+        .order("created_at", { ascending: false })
+        .limit(8);
+
+      if (error) {
+        notifBox.innerHTML = `<div class="msg">Notifications not loading yet: ${escapeHtml(error.message)}</div>`;
+        return;
+      }
+
+      if (!notifs || notifs.length === 0) {
+        notifBox.innerHTML = `<div class="msg">No alerts yet for this farm.</div>`;
+        return;
+      }
+
+      notifBox.innerHTML = notifs.map(n => {
+        const sev = (n.severity || "info").toLowerCase();
+        const cls = ["ok","warn","info","critical"].includes(sev) ? sev : "info";
+        return `
+          <div class="notif">
+            <div class="sev ${cls}">
+              <span class="dot"></span>
+              <p class="notif-title">${escapeHtml(n.title || (cls.toUpperCase()))}</p>
+            </div>
+            <p class="notif-msg">${escapeHtml(n.msg || "")}</p>
+            <p class="notif-time">${fmtTime(n.created_at)}</p>
+          </div>
+        `;
+      }).join("");
+    }
+
+    async function addFarm() {
+      errBox.classList.remove("show");
+      errBox.textContent = "";
+
+      const farm_name = (farmNameEl.value || "").trim();
+      if (!farm_name) return showError("Farm name is required.");
+
+      const country = (countryEl.value || "").trim() || null;
+      const lat = (latEl.value || "").trim();
+      const lon = (lonEl.value || "").trim();
+
+      const latNum = lat ? Number(lat) : null;
+      const lonNum = lon ? Number(lon) : null;
+
+      if (lat && Number.isNaN(latNum)) return showError("Latitude must be a number.");
+      if (lon && Number.isNaN(lonNum)) return showError("Longitude must be a number.");
+
+      const { data, error } = await supabase
+        .from("farms")
+        .insert([{ farm_name, country, lat: latNum, lon: lonNum }])
+        .select("id")
+        .single();
+
+      if (error) return showError(`Save failed: ${error.message}`);
+
+      closeModal();
+
+      // reload farms, select new farm
+      const farms = await loadFarms();
+      if (data?.id) {
+        const exists = farms.some(f => f.id === data.id);
+        if (exists) selectFarm(data.id, farms);
+      }
+    }
+
+    function escapeHtml(s) {
+      return String(s ?? "")
         .replaceAll("&","&amp;")
         .replaceAll("<","&lt;")
         .replaceAll(">","&gt;")
@@ -335,200 +577,30 @@
         .replaceAll("'","&#039;");
     }
 
-    function showModal(on){
-      errBox.classList.remove("show");
-      errBox.textContent = "";
-      overlay.classList.toggle("show", !!on);
-      if (on) setTimeout(() => farmNameEl.focus(), 50);
-    }
+    // ========= Init =========
+    const session = await ensureAuthOrRedirect();
+    userLine.textContent = `Signed in as: ${session.user?.email || "Unknown"}`;
 
-    function showError(msg){
-      errBox.textContent = msg || "Something went wrong.";
-      errBox.classList.add("show");
-    }
-
-    function setSaving(on){
-      btnSave.disabled = on;
-      btnCancel.disabled = on;
-      btnClose.disabled = on;
-      btnSave.textContent = on ? "Saving..." : "Save farm";
-    }
-
-    function setSelectedFarm(farm){
-      selectedFarm = farm;
-
-      if (!farm){
-        selectedFarmLine.textContent = "No farm selected yet. Click one below.";
-        kpiIrr.textContent = "—";
-        kpiFert.textContent = "—";
-        kpiPest.textContent = "—";
-        kpiLast.textContent = "—";
-        localStorage.removeItem("selectedFarmId");
-        return;
-      }
-
-      const where = [farm.country, (farm.lat!=null && farm.lon!=null ? `${farm.lat}, ${farm.lon}` : "")].filter(Boolean).join(" • ");
-      selectedFarmLine.innerHTML =
-        `<strong>${escapeHtml(farm.farm_name)}</strong>
-         <span style="color:rgba(232,238,252,0.6)"> (Farm ID: ${farm.id})</span><br/>
-         <span style="color:rgba(232,238,252,0.7)">${escapeHtml(where || "Location not set")}</span>`;
-
-      kpiIrr.textContent = "Prototype";
-      kpiFert.textContent = "Prototype";
-      kpiPest.textContent = "Prototype";
-      kpiLast.textContent = new Date().toLocaleString();
-
-      localStorage.setItem("selectedFarmId", String(farm.id));
-    }
-
-    btnWebsite.addEventListener("click", () => window.location.href = "/");
-    btnAddFarmTop.addEventListener("click", () => showModal(true));
-    btnAddFarmSmall.addEventListener("click", () => showModal(true));
-    btnClose.addEventListener("click", () => showModal(false));
-    btnCancel.addEventListener("click", () => showModal(false));
-    overlay.addEventListener("click", (e) => { if (e.target === overlay) showModal(false); });
-
-    // Auth check
-    const { data: { session } } = await supabase.auth.getSession();
-    if (!session) window.location.href = "/login.html";
-
-    const userId = session.user?.id;
-    const email = session.user?.email || "Unknown";
-    userLine.textContent = `Signed in as: ${email}`;
-
-    // Logout
     btnLogout.addEventListener("click", async () => {
       await supabase.auth.signOut();
+      localStorage.removeItem("selected_farm_id");
       window.location.href = "/login.html";
     });
 
-    statusMsg.textContent = "Step 3 ✅ Click a farm to select it. Selected farm will show above.";
+    btnWebsite.addEventListener("click", () => window.location.href = "/");
 
-    async function loadFarms(){
-      farmsHint.textContent = "Loading farms...";
-      farmsList.innerHTML = "";
-
-      const { data, error } = await supabase
-        .from("farms")
-        .select("id,farm_name,country,lat,lon,created_at")
-        .order("created_at", { ascending: false });
-
-      if (error){
-        farmsHint.textContent = "Could not load farms (RLS/policy issue).";
-        setSelectedFarm(null);
-        return;
-      }
-
-      if (!data || data.length === 0){
-        farmsHint.textContent = 'No farms yet. Click "Add Farm".';
-        setSelectedFarm(null);
-        return;
-      }
-
-      farmsHint.textContent = "";
-
-      // select saved farm or first farm
-      const savedId = localStorage.getItem("selectedFarmId");
-      const defaultFarm = savedId ? data.find(x => String(x.id) === String(savedId)) : data[0];
-      if (defaultFarm) setSelectedFarm(defaultFarm);
-
-      farmsList.innerHTML = data.map(f => {
-        const where = [f.country, (f.lat!=null && f.lon!=null ? `${f.lat}, ${f.lon}` : "")].filter(Boolean).join(" • ");
-        const isSel = selectedFarm && String(selectedFarm.id) === String(f.id);
-        return `
-          <div class="farmRow ${isSel ? "selected" : ""}" data-id="${f.id}">
-            <div>
-              <div class="farmName">${escapeHtml(f.farm_name || "Farm")}</div>
-              <div class="farmMeta">${escapeHtml(where || "Location not set")}</div>
-              <div class="farmMeta">Farm ID: ${f.id}</div>
-            </div>
-            <div class="farmMeta">${new Date(f.created_at).toLocaleString()}</div>
-          </div>
-        `;
-      }).join("");
-
-      // IMPORTANT: click handlers for selection
-      farmsList.querySelectorAll(".farmRow").forEach(el => {
-        el.addEventListener("click", () => {
-          const id = el.getAttribute("data-id");
-          const farm = data.find(x => String(x.id) === String(id));
-          setSelectedFarm(farm);
-
-          farmsList.querySelectorAll(".farmRow").forEach(r => r.classList.remove("selected"));
-          el.classList.add("selected");
-        });
-      });
-    }
-
-    await loadFarms();
-
-    // Save farm (include owner_id for RLS)
-    btnSave.addEventListener("click", async () => {
-      errBox.classList.remove("show");
-      errBox.textContent = "";
-
-      const farm_name = (farmNameEl.value || "").trim();
-      const country = (countryEl.value || "").trim() || null;
-
-      const latRaw = (latEl.value || "").trim();
-      const lonRaw = (lonEl.value || "").trim();
-      const lat = latRaw === "" ? null : Number(latRaw);
-      const lon = lonRaw === "" ? null : Number(lonRaw);
-
-      if (!farm_name) return showError("Farm name is required.");
-      if (latRaw !== "" && Number.isNaN(lat)) return showError("Latitude must be a number.");
-      if (lonRaw !== "" && Number.isNaN(lon)) return showError("Longitude must be a number.");
-      if (!userId) return showError("User session missing. Please logout/login again.");
-
-      setSaving(true);
-
-      const { error } = await supabase
-        .from("farms")
-        .insert([{
-          owner_id: userId,
-          farm_name,
-          country,
-          lat,
-          lon
-        }]);
-
-      setSaving(false);
-
-      if (error){
-        showError(`Save failed: ${error.message}`);
-        return;
-      }
-
-      farmNameEl.value = "";
-      countryEl.value = "";
-      latEl.value = "";
-      lonEl.value = "";
-
-      showModal(false);
-      await loadFarms();
-      statusMsg.textContent = "Farm saved ✅ Now click a farm row to select it.";
+    btnAddFarmTop.addEventListener("click", showModal);
+    btnAddFarmInline.addEventListener("click", showModal);
+    btnCloseModal.addEventListener("click", closeModal);
+    btnCancel.addEventListener("click", closeModal);
+    modalBackdrop.addEventListener("click", (e) => {
+      if (e.target === modalBackdrop) closeModal();
     });
 
-    // Notifications (optional)
-    const { data: notifs, error: nerr } = await supabase
-      .from("notifications")
-      .select("created_at,title,msg,severity")
-      .order("created_at", { ascending: false })
-      .limit(5);
+    btnSaveFarm.addEventListener("click", addFarm);
 
-    if (nerr) {
-      notifBox.textContent = "No alerts yet (notifications table not set).";
-    } else if (!notifs || notifs.length === 0) {
-      notifBox.textContent = "No alerts yet.";
-    } else {
-      notifBox.innerHTML = notifs.map(n =>
-        `<div style="margin-top:8px;">
-          <div style="color:rgba(232,238,252,0.85);font-weight:700;">${escapeHtml(n.title || n.severity || "Alert")}</div>
-          <div style="color:rgba(232,238,252,0.75);">${escapeHtml(n.msg || "")}</div>
-          <div style="color:rgba(232,238,252,0.55);font-size:12px;">${new Date(n.created_at).toLocaleString()}</div>
-        </div>`
-      ).join("");
-    }
+    // Load farms on start
+    await loadFarms();
   </script>
 </body>
 </html>
