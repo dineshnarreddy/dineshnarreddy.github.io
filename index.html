@@ -34,6 +34,17 @@
       </a>
 
       <a href="contact.html" class="button button-small">Contact</a>
+
+      <!-- ✅ AUTH BUTTONS (AUTO SHOW/HIDE) -->
+      <span class="nav-auth" id="navAuth" style="display: inline-flex; gap: 10px; align-items: center;">
+        <a id="navSignIn" href="login.html" class="button button-small button-secondary">Sign in</a>
+
+        <a id="navDashboard" href="dashboard.html" class="button button-small" style="display:none;">Dashboard</a>
+
+        <button id="navSignOut" class="button button-small button-tertiary" type="button" style="display:none;">
+          Sign out
+        </button>
+      </span>
     </nav>
   </div>
 </header>
@@ -468,6 +479,60 @@
     </div>
   </div>
 </footer>
+
+<!-- ✅ SUPABASE AUTH TOGGLE (no editing needed) -->
+<script type="module">
+  // If your client file path is different, tell me — I will resend full code.
+  import { supabase } from "./js/supabaseClient.js";
+
+  const signIn = document.getElementById("navSignIn");
+  const dash = document.getElementById("navDashboard");
+  const signOut = document.getElementById("navSignOut");
+
+  function setUI(isAuthed) {
+    if (isAuthed) {
+      if (signIn) signIn.style.display = "none";
+      if (dash) dash.style.display = "inline-flex";
+      if (signOut) signOut.style.display = "inline-flex";
+    } else {
+      if (signIn) signIn.style.display = "inline-flex";
+      if (dash) dash.style.display = "none";
+      if (signOut) signOut.style.display = "none";
+    }
+  }
+
+  async function init() {
+    try {
+      const { data, error } = await supabase.auth.getSession();
+      if (error) throw error;
+      const authed = !!data?.session?.user;
+      setUI(authed);
+    } catch (e) {
+      // If Supabase fails, keep Sign in visible (safe default)
+      setUI(false);
+      console.error("Auth init error:", e);
+    }
+  }
+
+  if (signOut) {
+    signOut.addEventListener("click", async () => {
+      try {
+        await supabase.auth.signOut();
+        setUI(false);
+        // Optional: go to home
+        window.location.href = "index.html";
+      } catch (e) {
+        console.error("Sign out error:", e);
+      }
+    });
+  }
+
+  supabase.auth.onAuthStateChange((_event, session) => {
+    setUI(!!session?.user);
+  });
+
+  init();
+</script>
 
 </body>
 </html>
