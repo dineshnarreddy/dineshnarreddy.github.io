@@ -38,6 +38,7 @@
       background: linear-gradient(135deg, rgba(59,130,246,0.9), rgba(16,185,129,0.9)); }
     h1{ margin:0; font-size:18px; }
     .user{ color:var(--muted); font-size:13px; margin-top:2px; }
+
     .btn{
       padding:10px 12px; border-radius:12px;
       border:1px solid rgba(255,255,255,0.16);
@@ -46,6 +47,8 @@
       cursor:pointer; font-weight:600;
     }
     .btn.primary{ background: rgba(255,255,255,0.92); color:#0b1025; border:0; }
+    .btn.danger{ border-color: rgba(239,68,68,0.35); background: rgba(239,68,68,0.12); }
+
     main{ padding:18px 20px 40px; max-width:1100px; margin:0 auto; }
 
     .grid{ display:grid; grid-template-columns:1fr; gap:14px; margin-top:14px; }
@@ -72,24 +75,6 @@
     .value{ font-size:18px; font-weight:700; margin-top:6px; }
     .msg{ margin-top:12px; color:var(--muted); font-size:13px; }
 
-    .farm-box{
-      margin-top: 14px;
-      padding: 12px;
-      border-radius: 14px;
-      border: 1px solid rgba(255,255,255,0.10);
-      background: rgba(0,0,0,0.18);
-    }
-    .farm-title{
-      font-weight: 800;
-      margin: 0 0 4px;
-      color: rgba(232,238,252,0.92);
-    }
-    .farm-meta{
-      margin: 0;
-      font-size: 13px;
-      color: var(--muted);
-    }
-
     .pill{
       display:inline-flex;
       align-items:center;
@@ -104,6 +89,107 @@
     .dot{ width:10px; height:10px; border-radius: 50%; background: var(--info); }
     .dot.ok{ background: var(--ok); }
     .dot.warn{ background: var(--warn); }
+
+    .farm-box{
+      margin-top: 14px;
+      padding: 12px;
+      border-radius: 14px;
+      border: 1px solid rgba(255,255,255,0.10);
+      background: rgba(0,0,0,0.18);
+    }
+    .farm-row{
+      margin-top:10px;
+      padding-top:10px;
+      border-top:1px solid rgba(255,255,255,0.08);
+      display:flex;
+      justify-content:space-between;
+      gap:12px;
+      flex-wrap:wrap;
+    }
+    .farm-name{ font-weight:800; color: rgba(232,238,252,0.92); }
+    .farm-meta{ color: rgba(232,238,252,0.7); font-size: 13px; margin-top: 4px; }
+
+    /* Modal */
+    .modal-backdrop{
+      position: fixed; inset: 0;
+      background: rgba(0,0,0,0.55);
+      display:none;
+      align-items:center;
+      justify-content:center;
+      padding: 18px;
+      z-index: 50;
+    }
+    .modal-backdrop.show{ display:flex; }
+    .modal{
+      width: 100%;
+      max-width: 540px;
+      border-radius: 18px;
+      border: 1px solid rgba(255,255,255,0.12);
+      background: rgba(15, 23, 42, 0.92);
+      box-shadow: 0 24px 80px rgba(0,0,0,0.55);
+      padding: 16px;
+      backdrop-filter: blur(12px);
+    }
+    .modal-head{
+      display:flex; align-items:flex-start; justify-content:space-between; gap:12px;
+      margin-bottom: 10px;
+    }
+    .modal-title{ margin:0; font-size: 16px; font-weight: 800; }
+    .close-x{
+      border: 0;
+      background: rgba(255,255,255,0.10);
+      color: var(--text);
+      width: 36px;
+      height: 36px;
+      border-radius: 12px;
+      cursor:pointer;
+      font-size: 18px;
+      line-height: 36px;
+    }
+    .form-grid{
+      display:grid;
+      grid-template-columns: 1fr;
+      gap: 10px;
+      margin-top: 10px;
+    }
+    @media (min-width: 640px){
+      .form-grid.two{ grid-template-columns: 1fr 1fr; }
+    }
+    label{ display:block; font-size: 12px; color: var(--muted); margin: 2px 0 6px; }
+    input{
+      width: 100%;
+      box-sizing: border-box;
+      border-radius: 12px;
+      border: 1px solid rgba(255,255,255,0.14);
+      background: rgba(0,0,0,0.18);
+      color: var(--text);
+      padding: 12px;
+      outline: none;
+    }
+    .modal-actions{
+      display:flex;
+      gap: 10px;
+      margin-top: 12px;
+      flex-wrap: wrap;
+      justify-content:flex-end;
+    }
+    .hint{
+      font-size: 12px;
+      color: rgba(232,238,252,0.62);
+      margin-top: 8px;
+      line-height: 1.45;
+    }
+    .error{
+      display:none;
+      margin-top: 10px;
+      padding: 10px 12px;
+      border-radius: 12px;
+      background: rgba(239,68,68,0.12);
+      border: 1px solid rgba(239,68,68,0.25);
+      color: rgba(255,255,255,0.92);
+      font-size: 13px;
+    }
+    .error.show{ display:block; }
   </style>
 </head>
 
@@ -117,8 +203,9 @@
       </div>
     </div>
     <div style="display:flex;gap:10px;flex-wrap:wrap;">
-      <!-- ✅ Use relative link for GitHub Pages -->
+      <!-- ✅ GitHub Pages safe -->
       <button class="btn" id="btnWebsite">Website</button>
+      <button class="btn" id="btnAddFarm">Add Farm</button>
       <button class="btn primary" id="btnLogout">Logout</button>
     </div>
   </header>
@@ -127,24 +214,28 @@
     <div class="grid">
       <div class="card">
         <h2>Farm Overview</h2>
-        <p>This will show your farms from Supabase (public.farms) and later connect to real sensor + AI outputs.</p>
+        <p>This shows farms stored in Supabase (public.farms). Next step later: charts + AI outputs.</p>
 
         <div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:12px;">
-          <span class="pill"><span class="dot ok"></span> System test: PASS (framework)</span>
+          <span class="pill"><span class="dot ok"></span> Framework test: PASS</span>
           <span class="pill"><span class="dot warn"></span> Real-time data: pending</span>
           <span class="pill"><span class="dot"></span> WhatsApp delivery: pending</span>
         </div>
 
         <div class="kpis">
-          <div class="kpi"><div class="label">Irrigation status</div><div class="value" id="kpiIrr">—</div></div>
-          <div class="kpi"><div class="label">Fertilizer status</div><div class="value" id="kpiFert">—</div></div>
-          <div class="kpi"><div class="label">Pest risk</div><div class="value" id="kpiPest">—</div></div>
+          <div class="kpi"><div class="label">Irrigation status</div><div class="value" id="kpiIrr">Prototype</div></div>
+          <div class="kpi"><div class="label">Fertilizer status</div><div class="value" id="kpiFert">Prototype</div></div>
+          <div class="kpi"><div class="label">Pest risk</div><div class="value" id="kpiPest">Prototype</div></div>
           <div class="kpi"><div class="label">Last update</div><div class="value" id="kpiLast">—</div></div>
         </div>
 
-        <div class="farm-box" id="farmBox">
-          <p class="farm-title">Your farms</p>
-          <p class="farm-meta" id="farmMeta">Loading farms...</p>
+        <div class="farm-box">
+          <div style="display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap;align-items:center;">
+            <div style="font-weight:800;">Your farms</div>
+            <button class="btn" id="btnAddFarmInline">+ Add</button>
+          </div>
+          <div class="msg" id="farmMeta">Loading farms...</div>
+          <div id="farmList"></div>
         </div>
 
         <div class="msg" id="statusMsg"></div>
@@ -152,11 +243,60 @@
 
       <div class="card">
         <h2>Notifications</h2>
-        <p>Later we will load alerts from a notifications table. For now it’s optional.</p>
+        <p>Later we’ll create a notifications table and show last alerts here.</p>
         <div class="msg" id="notifBox">No alerts loaded yet.</div>
       </div>
     </div>
   </main>
+
+  <!-- Modal: Add Farm -->
+  <div class="modal-backdrop" id="modalBackdrop" aria-hidden="true">
+    <div class="modal" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
+      <div class="modal-head">
+        <div>
+          <h3 class="modal-title" id="modalTitle">Add a farm</h3>
+          <div class="hint">This creates a row in <b>public.farms</b>. Only you can see your farms (RLS).</div>
+        </div>
+        <button class="close-x" id="btnCloseModal" title="Close">×</button>
+      </div>
+
+      <div class="form-grid">
+        <div>
+          <label>Farm name *</label>
+          <input id="farmName" type="text" placeholder="e.g., Kadiri_demo" />
+        </div>
+      </div>
+
+      <div class="form-grid two">
+        <div>
+          <label>Country</label>
+          <input id="country" type="text" placeholder="e.g., India" />
+        </div>
+        <div>
+          <label>Latitude</label>
+          <input id="lat" type="number" step="any" placeholder="e.g., 14.208045" />
+        </div>
+      </div>
+
+      <div class="form-grid two">
+        <div>
+          <label>Longitude</label>
+          <input id="lon" type="number" step="any" placeholder="e.g., 78.290156" />
+        </div>
+        <div>
+          <label>(Optional) Notes</label>
+          <input id="notes" type="text" placeholder="e.g., Orchard zone A" />
+        </div>
+      </div>
+
+      <div id="errBox" class="error"></div>
+
+      <div class="modal-actions">
+        <button class="btn" id="btnCancel">Cancel</button>
+        <button class="btn primary" id="btnSaveFarm">Save farm</button>
+      </div>
+    </div>
+  </div>
 
   <script type="module">
     let supabase;
@@ -164,7 +304,7 @@
       ({ supabase } = await import("./js/supabaseClient.js"));
     } catch (e) {
       document.getElementById("statusMsg").textContent =
-        "ERROR: supabaseClient.js not found. Confirm this file exists: /js/supabaseClient.js";
+        "ERROR: cannot load ./js/supabaseClient.js. Confirm the file path is EXACT: js/supabaseClient.js";
       throw e;
     }
 
@@ -173,29 +313,67 @@
     const btnLogout = document.getElementById("btnLogout");
     const btnWebsite = document.getElementById("btnWebsite");
     const notifBox = document.getElementById("notifBox");
-    const farmMeta = document.getElementById("farmMeta");
 
-    // ✅ GitHub Pages safe links
+    const farmMeta = document.getElementById("farmMeta");
+    const farmList = document.getElementById("farmList");
+
+    const btnAddFarm = document.getElementById("btnAddFarm");
+    const btnAddFarmInline = document.getElementById("btnAddFarmInline");
+    const modalBackdrop = document.getElementById("modalBackdrop");
+    const btnCloseModal = document.getElementById("btnCloseModal");
+    const btnCancel = document.getElementById("btnCancel");
+    const btnSaveFarm = document.getElementById("btnSaveFarm");
+    const errBox = document.getElementById("errBox");
+
+    const farmNameEl = document.getElementById("farmName");
+    const countryEl = document.getElementById("country");
+    const latEl = document.getElementById("lat");
+    const lonEl = document.getElementById("lon");
+
+    function showError(msg){
+      errBox.textContent = msg || "";
+      errBox.classList.toggle("show", !!msg);
+    }
+
+    function openModal(){
+      showError("");
+      farmNameEl.value = "";
+      countryEl.value = "";
+      latEl.value = "";
+      lonEl.value = "";
+      modalBackdrop.classList.add("show");
+      modalBackdrop.setAttribute("aria-hidden","false");
+      setTimeout(() => farmNameEl.focus(), 50);
+    }
+
+    function closeModal(){
+      modalBackdrop.classList.remove("show");
+      modalBackdrop.setAttribute("aria-hidden","true");
+    }
+
+    btnAddFarm.addEventListener("click", openModal);
+    btnAddFarmInline.addEventListener("click", openModal);
+    btnCloseModal.addEventListener("click", closeModal);
+    btnCancel.addEventListener("click", closeModal);
+    modalBackdrop.addEventListener("click", (e) => {
+      if (e.target === modalBackdrop) closeModal();
+    });
+
+    // ✅ GitHub Pages safe
     btnWebsite.addEventListener("click", () => window.location.href = "index.html");
 
     // Session check
     const { data: { session } } = await supabase.auth.getSession();
     if (!session) {
-      // ✅ GitHub Pages safe redirect
-      window.location.href = "login.html";
+      window.location.href = "login.html"; // ✅ relative
     }
 
     const email = session.user?.email || "Unknown";
     userLine.textContent = `Signed in as: ${email}`;
-
-    // Dummy KPI values (until you connect real tables)
-    document.getElementById("kpiIrr").textContent = "Connected";
-    document.getElementById("kpiFert").textContent = "Connected";
-    document.getElementById("kpiPest").textContent = "Prototype";
     document.getElementById("kpiLast").textContent = new Date().toLocaleString();
 
     statusMsg.textContent =
-      "Dashboard loaded ✅ Next step: show farms list (public.farms) and then link to Mango/Greenhouse data tables.";
+      "Dashboard loaded ✅ Now you can add farms. Next step later: show charts + AI outputs per farm.";
 
     // Logout
     btnLogout.addEventListener("click", async () => {
@@ -203,33 +381,99 @@
       window.location.href = "login.html";
     });
 
-    // ✅ Load farms (this WILL work with your farms table + RLS policy)
-    const { data: farms, error: farmsErr } = await supabase
-      .from("farms")
-      .select("id,farm_name,country,lat,lon,created_at")
-      .order("created_at", { ascending: false });
+    async function loadFarms(){
+      farmMeta.textContent = "Loading farms...";
+      farmList.innerHTML = "";
 
-    if (farmsErr) {
-      farmMeta.textContent =
-        "Farms not loading yet. Either table not created, RLS policy missing, or you are not logged in properly.";
-    } else if (!farms || farms.length === 0) {
-      farmMeta.textContent =
-        "No farms added yet. Next step: we will add a simple 'Add Farm' form here.";
-    } else {
-      farmMeta.innerHTML = farms.map(f => {
-        const loc = (f.lat != null && f.lon != null) ? `${f.lat.toFixed(4)}, ${f.lon.toFixed(4)}` : "Not set";
+      const { data: farms, error } = await supabase
+        .from("farms")
+        .select("id,farm_name,country,lat,lon,created_at")
+        .order("created_at", { ascending: false });
+
+      if (error) {
+        farmMeta.textContent =
+          "Farms not loading yet. Check: table created, RLS policy, and you are logged in.";
+        return;
+      }
+
+      if (!farms || farms.length === 0) {
+        farmMeta.textContent = "No farms yet. Click “Add Farm”.";
+        return;
+      }
+
+      farmMeta.textContent = `${farms.length} farm(s) found.`;
+
+      farmList.innerHTML = farms.map(f => {
+        const loc = (f.lat != null && f.lon != null)
+          ? `${Number(f.lat).toFixed(4)}, ${Number(f.lon).toFixed(4)}`
+          : "Not set";
         return `
-          <div style="margin-top:10px;padding-top:10px;border-top:1px solid rgba(255,255,255,0.08);">
-            <div style="font-weight:800;color:rgba(232,238,252,0.92);">${f.farm_name}</div>
-            <div style="color:rgba(232,238,252,0.7);font-size:13px;">
-              Country: ${f.country || "—"} • Location: ${loc}
+          <div class="farm-row">
+            <div>
+              <div class="farm-name">${f.farm_name}</div>
+              <div class="farm-meta">
+                Country: ${f.country || "—"} • Location: ${loc}
+              </div>
+            </div>
+            <div style="display:flex;gap:8px;flex-wrap:wrap;">
+              <button class="btn" data-open="${f.id}">Open</button>
             </div>
           </div>
         `;
       }).join("");
+
+      // For now “Open” just shows a message
+      farmList.querySelectorAll("button[data-open]").forEach(btn => {
+        btn.addEventListener("click", () => {
+          const id = btn.getAttribute("data-open");
+          statusMsg.textContent = `Selected farm id=${id}. Next step: show charts + recommendations for this farm.`;
+        });
+      });
     }
 
-    // OPTIONAL: notifications (only if you create the table later)
+    // Save farm
+    btnSaveFarm.addEventListener("click", async () => {
+      showError("");
+
+      const farm_name = (farmNameEl.value || "").trim();
+      const country = (countryEl.value || "").trim() || null;
+
+      const latRaw = (latEl.value || "").trim();
+      const lonRaw = (lonEl.value || "").trim();
+
+      const lat = latRaw === "" ? null : Number(latRaw);
+      const lon = lonRaw === "" ? null : Number(lonRaw);
+
+      if (!farm_name) return showError("Farm name is required.");
+      if (latRaw !== "" && Number.isNaN(lat)) return showError("Latitude must be a number.");
+      if (lonRaw !== "" && Number.isNaN(lon)) return showError("Longitude must be a number.");
+      if (lat != null && (lat < -90 || lat > 90)) return showError("Latitude must be between -90 and 90.");
+      if (lon != null && (lon < -180 || lon > 180)) return showError("Longitude must be between -180 and 180.");
+
+      btnSaveFarm.disabled = true;
+      btnSaveFarm.textContent = "Saving...";
+
+      const { error } = await supabase
+        .from("farms")
+        .insert([{ farm_name, country, lat, lon }]);
+
+      btnSaveFarm.disabled = false;
+      btnSaveFarm.textContent = "Save farm";
+
+      if (error) {
+        showError(error.message || "Insert failed. Check RLS policy for farms.");
+        return;
+      }
+
+      closeModal();
+      statusMsg.textContent = `Farm "${farm_name}" added ✅`;
+      await loadFarms();
+    });
+
+    // Load farms on page load
+    await loadFarms();
+
+    // OPTIONAL: notifications (will show message until you create table)
     const { data: notifs, error: notifErr } = await supabase
       .from("notifications")
       .select("created_at,title,msg,severity")
