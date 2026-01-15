@@ -4,7 +4,6 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
   <title>AgriEdgeAI – Login</title>
-
   <style>
     :root {
       --bg: #070b18;
@@ -12,15 +11,10 @@
       --card-border: rgba(255,255,255,0.12);
       --text: #e8eefc;
       --muted: rgba(232,238,252,0.7);
-      --danger: #ff6b6b;
-      --ok: #4cd964;
     }
     body{
-      margin:0;
-      min-height:100vh;
-      display:flex;
-      align-items:center;
-      justify-content:center;
+      margin:0; min-height:100vh;
+      display:flex; align-items:center; justify-content:center;
       background: radial-gradient(1200px 800px at 70% 20%, rgba(59,130,246,0.25), transparent 60%),
                   radial-gradient(900px 600px at 20% 90%, rgba(16,185,129,0.20), transparent 55%),
                   var(--bg);
@@ -28,25 +22,9 @@
       color: var(--text);
       padding: 24px;
     }
-    .wrap{
-      width:100%;
-      max-width: 520px;
-    }
-    .brand{
-      display:flex;
-      align-items:center;
-      gap:12px;
-      margin-bottom: 14px;
-    }
-    .logo{
-      width:40px;height:40px;border-radius:12px;
-      background: linear-gradient(135deg, rgba(59,130,246,0.9), rgba(16,185,129,0.9));
-      box-shadow: 0 8px 30px rgba(0,0,0,0.35);
-    }
-    h1{ margin:0; font-size: 32px; letter-spacing:0.2px; }
-    p{ margin: 6px 0 0; color: var(--muted); }
+    .wrap{ width:100%; max-width:520px; }
     .card{
-      margin-top: 18px;
+      margin-top: 14px;
       background: var(--card);
       border: 1px solid var(--card-border);
       border-radius: 18px;
@@ -54,110 +32,48 @@
       box-shadow: 0 16px 50px rgba(0,0,0,0.45);
       backdrop-filter: blur(10px);
     }
-    label{
-      display:block;
-      font-size: 14px;
-      color: var(--muted);
-      margin: 12px 0 6px;
-    }
+    label{ display:block; font-size:14px; color:var(--muted); margin:12px 0 6px; }
     input{
-      width:100%;
-      padding: 12px 12px;
-      border-radius: 12px;
-      border: 1px solid rgba(255,255,255,0.18);
+      width:100%; padding:12px; border-radius:12px;
+      border:1px solid rgba(255,255,255,0.18);
       background: rgba(0,0,0,0.18);
-      color: var(--text);
-      outline:none;
-      box-sizing:border-box;
+      color: var(--text); outline:none; box-sizing:border-box;
     }
-    input:focus{
-      border-color: rgba(59,130,246,0.8);
-      box-shadow: 0 0 0 3px rgba(59,130,246,0.15);
-    }
-    .row{
-      display:flex;
-      gap:12px;
-      margin-top: 14px;
-      flex-wrap: wrap;
-    }
+    .row{ display:flex; gap:12px; margin-top:14px; flex-wrap:wrap; }
     button{
-      flex:1;
-      min-width: 160px;
-      padding: 12px 14px;
-      border: 0;
-      border-radius: 12px;
-      cursor:pointer;
-      font-weight: 600;
-      background: rgba(255,255,255,0.92);
-      color: #0b1025;
+      flex:1; min-width:160px; padding:12px 14px;
+      border:0; border-radius:12px;
+      cursor:pointer; font-weight:600;
+      background: rgba(255,255,255,0.92); color:#0b1025;
     }
     button.secondary{
       background: rgba(255,255,255,0.12);
       color: var(--text);
       border: 1px solid rgba(255,255,255,0.18);
     }
-    button:disabled{
-      opacity: 0.6;
-      cursor:not-allowed;
-    }
+    button:disabled{ opacity:0.6; cursor:not-allowed; }
     .msg{
-      margin-top: 14px;
-      font-size: 14px;
-      line-height: 1.35;
-      padding: 10px 12px;
-      border-radius: 12px;
-      border: 1px solid rgba(255,255,255,0.14);
+      margin-top:14px; font-size:14px;
+      padding:10px 12px; border-radius:12px;
+      border:1px solid rgba(255,255,255,0.14);
       display:none;
     }
-    .msg.error{
-      display:block;
-      border-color: rgba(255,107,107,0.35);
-      background: rgba(255,107,107,0.10);
-      color: #ffd7d7;
-    }
-    .msg.ok{
-      display:block;
-      border-color: rgba(76,217,100,0.35);
-      background: rgba(76,217,100,0.10);
-      color: #d9ffe1;
-    }
-    .hint{
-      margin-top: 12px;
-      color: var(--muted);
-      font-size: 13px;
-    }
-    .small-links{
-      margin-top: 10px;
-      display:flex;
-      justify-content: space-between;
-      gap: 10px;
-      flex-wrap: wrap;
-      font-size: 13px;
-      color: var(--muted);
-    }
-    .small-links a{
-      color: rgba(232,238,252,0.9);
-      text-decoration: none;
-      border-bottom: 1px dotted rgba(232,238,252,0.4);
-    }
+    .msg.show{ display:block; }
+    .hint{ margin-top:12px; color:var(--muted); font-size:13px; }
+    a{ color: rgba(232,238,252,0.9); text-decoration:none; border-bottom:1px dotted rgba(232,238,252,0.4); }
   </style>
 </head>
 
 <body>
   <div class="wrap">
-    <div class="brand">
-      <div class="logo"></div>
-      <div>
-        <h1>Login</h1>
-        <p>Sign in to view your farm dashboard.</p>
-      </div>
-    </div>
+    <h1 style="margin:0;font-size:32px;">Login</h1>
+    <div style="color:rgba(232,238,252,0.7);margin-top:6px;">Sign in to view your farm dashboard.</div>
 
     <div class="card">
-      <label for="email">Email</label>
+      <label>Email</label>
       <input id="email" type="email" placeholder="you@example.com" autocomplete="email" />
 
-      <label for="password">Password</label>
+      <label>Password</label>
       <input id="password" type="password" placeholder="••••••••" autocomplete="current-password" />
 
       <div class="row">
@@ -168,10 +84,10 @@
       <div id="msg" class="msg"></div>
 
       <div class="hint">
-        If email confirmation is ON in Supabase, you must confirm your email before login works.
+        If email confirmation is ON, confirm your email first (check inbox) before login.
       </div>
 
-      <div class="small-links">
+      <div style="margin-top:10px;display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap;color:rgba(232,238,252,0.7);font-size:13px;">
         <a href="/">Back to website</a>
         <a href="/dashboard.html">Go to dashboard</a>
       </div>
@@ -187,97 +103,60 @@
     const btnLogin  = document.getElementById("btnLogin");
     const btnSignup = document.getElementById("btnSignup");
 
-    function setMsg(text, type) {
-      msgEl.className = "msg " + (type || "");
+    const DASHBOARD_URL = window.location.origin + "/dashboard.html";
+
+    function showMsg(text) {
       msgEl.textContent = text || "";
-      msgEl.style.display = text ? "block" : "none";
+      msgEl.classList.toggle("show", !!text);
     }
 
-    function setLoading(isLoading) {
-      btnLogin.disabled = isLoading;
-      btnSignup.disabled = isLoading;
-      btnLogin.textContent = isLoading ? "Signing in..." : "Sign in";
-      btnSignup.textContent = isLoading ? "Please wait..." : "Create account";
+    function setLoading(on) {
+      btnLogin.disabled = on;
+      btnSignup.disabled = on;
+      btnLogin.textContent = on ? "Signing in..." : "Sign in";
+      btnSignup.textContent = on ? "Please wait..." : "Create account";
     }
 
-    // If user already logged in, send to dashboard
+    // If already logged in -> dashboard
     const { data: { session } } = await supabase.auth.getSession();
-    if (session) {
-      window.location.href = "/dashboard.html";
-    }
+    if (session) window.location.href = "/dashboard.html";
 
     btnLogin.addEventListener("click", async () => {
-      setMsg("", "");
+      showMsg("");
       const email = (emailEl.value || "").trim();
       const password = passEl.value || "";
+      if (!email || !password) return showMsg("Please enter email and password.");
 
-      if (!email || !password) {
-        setMsg("Please enter both email and password.", "error");
-        return;
-      }
+      setLoading(true);
+      const { data, error } = await supabase.auth.signInWithPassword({ email, password });
+      setLoading(false);
 
-      try {
-        setLoading(true);
-        const { data, error } = await supabase.auth.signInWithPassword({ email, password });
-        if (error) {
-          setMsg(error.message, "error");
-          return;
-        }
-        if (data?.session) {
-          setMsg("Login success. Redirecting...", "ok");
-          window.location.href = "/dashboard.html";
-        } else {
-          setMsg("Login done, but no session found. Please try again.", "error");
-        }
-      } catch (e) {
-        setMsg(String(e?.message || e), "error");
-      } finally {
-        setLoading(false);
-      }
+      if (error) return showMsg(error.message);
+      if (!data?.session) return showMsg("Login done, but session not found. Try again.");
+      window.location.href = "/dashboard.html";
     });
 
     btnSignup.addEventListener("click", async () => {
-      setMsg("", "");
+      showMsg("");
       const email = (emailEl.value || "").trim();
       const password = passEl.value || "";
+      if (!email || !password) return showMsg("Please enter email and password.");
+      if (password.length < 6) return showMsg("Password must be at least 6 characters.");
 
-      if (!email || !password) {
-        setMsg("Please enter both email and password.", "error");
-        return;
-      }
-      if (password.length < 6) {
-        setMsg("Password must be at least 6 characters.", "error");
-        return;
-      }
+      setLoading(true);
+      const { data, error } = await supabase.auth.signUp({
+        email,
+        password,
+        options: { emailRedirectTo: DASHBOARD_URL }
+      });
+      setLoading(false);
 
-      try {
-        setLoading(true);
+      if (error) return showMsg(error.message);
 
-        // redirectTo must match your allowed Redirect URLs in Supabase Auth settings
-        const redirectTo = window.location.origin + "/dashboard.html";
-
-        const { data, error } = await supabase.auth.signUp({
-          email,
-          password,
-          options: { emailRedirectTo: redirectTo }
-        });
-
-        if (error) {
-          setMsg(error.message, "error");
-          return;
-        }
-
-        // If confirm email is ON, user must confirm email first
-        if (!data?.session) {
-          setMsg("Account created. Please check your email and confirm, then login.", "ok");
-        } else {
-          setMsg("Account created & logged in. Redirecting...", "ok");
-          window.location.href = "/dashboard.html";
-        }
-      } catch (e) {
-        setMsg(String(e?.message || e), "error");
-      } finally {
-        setLoading(false);
+      if (!data?.session) {
+        showMsg("Account created. Please confirm your email, then login.");
+      } else {
+        window.location.href = "/dashboard.html";
       }
     });
   </script>
