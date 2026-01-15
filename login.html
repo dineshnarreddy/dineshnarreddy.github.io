@@ -1,1 +1,71 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>AgriEdgeAI – Login</title>
+  <link rel="stylesheet" href="styles.css" />
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+</head>
+<body>
+  <div class="container" style="max-width:520px;margin:60px auto;">
+    <h1>Login</h1>
+    <p style="opacity:.8">Sign in to view your farm dashboard.</p>
+
+    <div class="card" style="padding:18px;">
+      <label>Email</label>
+      <input id="email" type="email" placeholder="you@email.com" style="width:100%;padding:10px;margin:8px 0 14px;" />
+
+      <label>Password</label>
+      <input id="password" type="password" placeholder="••••••••" style="width:100%;padding:10px;margin:8px 0 14px;" />
+
+      <button id="btnLogin" style="width:100%;padding:12px;">Sign in</button>
+      <button id="btnSignup" style="width:100%;padding:12px;margin-top:10px;">Create account</button>
+
+      <p id="msg" style="margin-top:12px;opacity:.85"></p>
+    </div>
+  </div>
+
+  <script>
+    // TODO: paste from Supabase -> Project Settings -> API
+    const SUPABASE_URL = "PASTE_SUPABASE_URL";
+    const SUPABASE_ANON_KEY = "PASTE_SUPABASE_ANON_KEY";
+
+    const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+    const emailEl = document.getElementById("email");
+    const passEl = document.getElementById("password");
+    const msgEl = document.getElementById("msg");
+
+    function setMsg(t) { msgEl.textContent = t; }
+
+    document.getElementById("btnLogin").addEventListener("click", async () => {
+      setMsg("Signing in...");
+      const { data, error } = await supabase.auth.signInWithPassword({
+        email: emailEl.value.trim(),
+        password: passEl.value
+      });
+      if (error) return setMsg("Login failed: " + error.message);
+      window.location.href = "/dashboard.html";
+    });
+
+    document.getElementById("btnSignup").addEventListener("click", async () => {
+      setMsg("Creating account...");
+      const { data, error } = await supabase.auth.signUp({
+        email: emailEl.value.trim(),
+        password: passEl.value,
+        options: { emailRedirectTo: "https://agriedgeai.me/dashboard.html" }
+      });
+      if (error) return setMsg("Signup failed: " + error.message);
+      setMsg("Account created. Please check your email to confirm, then login.");
+    });
+
+    // If already logged in, go straight to dashboard
+    (async () => {
+      const { data } = await supabase.auth.getSession();
+      if (data.session) window.location.href = "/dashboard.html";
+    })();
+  </script>
+</body>
+</html>
 
