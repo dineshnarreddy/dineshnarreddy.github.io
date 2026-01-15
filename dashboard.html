@@ -4,6 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
   <title>AgriEdgeAI – Dashboard</title>
+
   <style>
     :root{
       --bg:#070b18;
@@ -77,8 +78,12 @@
     .dot.info{ background: var(--info); }
 
     .kpis{ display:grid; grid-template-columns:repeat(2,1fr); gap:10px; margin-top:12px; }
-    .kpi{ background: rgba(0,0,0,0.18); border:1px solid rgba(255,255,255,0.10);
-      border-radius:14px; padding:12px; }
+    .kpi{
+      background: rgba(0,0,0,0.18);
+      border:1px solid rgba(255,255,255,0.10);
+      border-radius:14px;
+      padding:12px;
+    }
     .label{ color:var(--muted); font-size:12px; }
     .value{ font-size:18px; font-weight:700; margin-top:6px; }
     .msg{ margin-top:12px; color:var(--muted); font-size:13px; }
@@ -127,6 +132,7 @@
       border-bottom: 1px solid rgba(255,255,255,0.08);
     }
     .modalHead h3{ margin:0; font-size:18px; }
+    .help{ color: var(--muted); font-size:13px; margin-top:4px; }
     .xbtn{
       width:38px; height:38px; border-radius:12px;
       border:1px solid rgba(255,255,255,0.14);
@@ -137,7 +143,6 @@
       line-height: 0;
     }
     .modalBody{ padding: 14px 16px 16px; }
-    .help{ color: var(--muted); font-size:13px; margin-top:4px; }
     .formGrid{
       display:grid;
       grid-template-columns: 1fr;
@@ -198,7 +203,7 @@
     <div class="grid">
       <div class="card">
         <h2>Farm Overview</h2>
-        <p>This shows farms stored in Supabase (<strong>public.farms</strong>). Next: click a farm and show AI tiles per farm.</p>
+        <p>This shows farms stored in Supabase (<strong>public.farms</strong>). Click a farm to select it.</p>
 
         <div class="chips">
           <div class="chip"><span class="dot ok"></span> Framework test: PASS</div>
@@ -319,7 +324,7 @@
     const latEl = document.getElementById("lat");
     const lonEl = document.getElementById("lon");
 
-    let selectedFarm = null; // {id,farm_name,country,lat,lon}
+    let selectedFarm = null;
 
     function escapeHtml(str){
       return String(str ?? "")
@@ -364,10 +369,10 @@
 
       const where = [farm.country, (farm.lat!=null && farm.lon!=null ? `${farm.lat}, ${farm.lon}` : "")].filter(Boolean).join(" • ");
       selectedFarmLine.innerHTML =
-        `<strong>${escapeHtml(farm.farm_name)}</strong> <span style="color:rgba(232,238,252,0.6)"> (Farm ID: ${farm.id})</span><br/>
+        `<strong>${escapeHtml(farm.farm_name)}</strong>
+         <span style="color:rgba(232,238,252,0.6)"> (Farm ID: ${farm.id})</span><br/>
          <span style="color:rgba(232,238,252,0.7)">${escapeHtml(where || "Location not set")}</span>`;
 
-      // For now: demo values per selected farm (next step we will connect to AI tables)
       kpiIrr.textContent = "Prototype";
       kpiFert.textContent = "Prototype";
       kpiPest.textContent = "Prototype";
@@ -383,7 +388,7 @@
     btnCancel.addEventListener("click", () => showModal(false));
     overlay.addEventListener("click", (e) => { if (e.target === overlay) showModal(false); });
 
-    // 1) Auth check
+    // Auth check
     const { data: { session } } = await supabase.auth.getSession();
     if (!session) window.location.href = "/login.html";
 
@@ -397,9 +402,8 @@
       window.location.href = "/login.html";
     });
 
-    statusMsg.textContent = "Step 3 ✅ Click a farm row to select it. Next: connect AI outputs per farm.";
+    statusMsg.textContent = "Step 3 ✅ Click a farm to select it. Selected farm will show above.";
 
-    // 2) Load farms and render clickable rows
     async function loadFarms(){
       farmsHint.textContent = "Loading farms...";
       farmsList.innerHTML = "";
@@ -410,7 +414,7 @@
         .order("created_at", { ascending: false });
 
       if (error){
-        farmsHint.textContent = "Could not load farms yet (RLS/policy not ready).";
+        farmsHint.textContent = "Could not load farms (RLS/policy issue).";
         setSelectedFarm(null);
         return;
       }
@@ -423,6 +427,7 @@
 
       farmsHint.textContent = "";
 
+      // select saved farm or first farm
       const savedId = localStorage.getItem("selectedFarmId");
       const defaultFarm = savedId ? data.find(x => String(x.id) === String(savedId)) : data[0];
       if (defaultFarm) setSelectedFarm(defaultFarm);
@@ -442,13 +447,13 @@
         `;
       }).join("");
 
-      // click handlers
+      // IMPORTANT: click handlers for selection
       farmsList.querySelectorAll(".farmRow").forEach(el => {
         el.addEventListener("click", () => {
           const id = el.getAttribute("data-id");
           const farm = data.find(x => String(x.id) === String(id));
           setSelectedFarm(farm);
-          // re-render selection highlight
+
           farmsList.querySelectorAll(".farmRow").forEach(r => r.classList.remove("selected"));
           el.classList.add("selected");
         });
@@ -457,7 +462,7 @@
 
     await loadFarms();
 
-    // 3) Save farm ✅ include owner_id (RLS)
+    // Save farm (include owner_id for RLS)
     btnSave.addEventListener("click", async () => {
       errBox.classList.remove("show");
       errBox.textContent = "";
@@ -473,7 +478,7 @@
       if (!farm_name) return showError("Farm name is required.");
       if (latRaw !== "" && Number.isNaN(lat)) return showError("Latitude must be a number.");
       if (lonRaw !== "" && Number.isNaN(lon)) return showError("Longitude must be a number.");
-      if (!userId) return showError("User session missing. Please logout and login again.");
+      if (!userId) return showError("User session missing. Please logout/login again.");
 
       setSaving(true);
 
@@ -501,10 +506,10 @@
 
       showModal(false);
       await loadFarms();
-      statusMsg.textContent = "Farm saved ✅ Now click the farm to see selected farm tiles. Next: AI outputs per farm.";
+      statusMsg.textContent = "Farm saved ✅ Now click a farm row to select it.";
     });
 
-    // Notifications optional
+    // Notifications (optional)
     const { data: notifs, error: nerr } = await supabase
       .from("notifications")
       .select("created_at,title,msg,severity")
