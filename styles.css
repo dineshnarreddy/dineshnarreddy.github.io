@@ -98,6 +98,13 @@ img { max-width: 100%; display: block; }
   border: 1px solid rgba(59, 130, 246, 0.4);
 }
 
+/* ✅ NEW: AUTH BUTTONS WRAPPER (Sign in / Dashboard / Sign out) */
+.nav-auth {
+  display: inline-flex;
+  gap: 10px;
+  align-items: center;
+}
+
 /* ===== Buttons ===== */
 .button {
   display: inline-flex;
@@ -780,6 +787,9 @@ img { max-width: 100%; display: block; }
 
   .nav-inner { flex-wrap: wrap; }
   .nav-links { flex-wrap: wrap; justify-content: flex-end; }
+
+  /* ✅ NEW: keep auth buttons from breaking layout */
+  .nav-auth { flex-wrap: wrap; }
 }
 
 @media (max-width: 640px) {
