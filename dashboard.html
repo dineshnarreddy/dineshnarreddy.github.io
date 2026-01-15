@@ -1,1 +1,58 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>AgriEdgeAI – Dashboard</title>
+  <link rel="stylesheet" href="styles.css" />
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+</head>
+<body>
+  <div class="container" style="max-width:1100px;margin:40px auto;">
+    <div style="display:flex;justify-content:space-between;align-items:center;gap:12px;">
+      <h1 style="margin:0;">Dashboard</h1>
+      <div style="display:flex;gap:10px;align-items:center;">
+        <span id="userEmail" style="opacity:.85"></span>
+        <button id="btnLogout">Logout</button>
+      </div>
+    </div>
+
+    <div class="card" style="margin-top:18px;padding:18px;">
+      <h2 style="margin-top:0;">Status</h2>
+      <ul>
+        <li>Mango pipeline: framework PASS ✅</li>
+        <li>Greenhouse P-G4A: framework PASS ✅</li>
+        <li>Live greenhouse data: pending ⏳</li>
+      </ul>
+      <p style="opacity:.8;margin-bottom:0">
+        Next: we’ll connect real tables (farms, readings, recommendations) and draw charts.
+      </p>
+    </div>
+  </div>
+
+  <script>
+    const SUPABASE_URL = "PASTE_SUPABASE_URL";
+    const SUPABASE_ANON_KEY = "PASTE_SUPABASE_ANON_KEY";
+    const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+    const emailEl = document.getElementById("userEmail");
+
+    async function requireAuth() {
+      const { data } = await supabase.auth.getSession();
+      if (!data.session) {
+        window.location.href = "/login.html";
+        return;
+      }
+      emailEl.textContent = data.session.user.email;
+    }
+
+    document.getElementById("btnLogout").addEventListener("click", async () => {
+      await supabase.auth.signOut();
+      window.location.href = "/login.html";
+    });
+
+    requireAuth();
+  </script>
+</body>
+</html>
 
