@@ -18,9 +18,10 @@
     }
     body{
       margin:0;
-      background: radial-gradient(1200px 800px at 70% 20%, rgba(59,130,246,0.25), transparent 60%),
-                  radial-gradient(900px 600px at 20% 90%, rgba(16,185,129,0.20), transparent 55%),
-                  var(--bg);
+      background:
+        radial-gradient(1200px 800px at 70% 20%, rgba(59,130,246,0.25), transparent 60%),
+        radial-gradient(900px 600px at 20% 90%, rgba(16,185,129,0.20), transparent 55%),
+        var(--bg);
       font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
       color: var(--text);
       min-height:100vh;
@@ -32,14 +33,13 @@
       border-bottom: 1px solid rgba(255,255,255,0.08);
       padding:16px 20px;
       display:flex; align-items:center; justify-content:space-between; gap:12px;
-      z-index: 10;
+      z-index:10;
     }
     .left{ display:flex; align-items:center; gap:10px; }
     .logo{ width:34px;height:34px;border-radius:12px;
       background: linear-gradient(135deg, rgba(59,130,246,0.9), rgba(16,185,129,0.9)); }
     h1{ margin:0; font-size:18px; }
     .user{ color:var(--muted); font-size:13px; margin-top:2px; }
-
     .btn{
       padding:10px 12px; border-radius:12px;
       border:1px solid rgba(255,255,255,0.16);
@@ -48,13 +48,9 @@
       cursor:pointer; font-weight:600;
     }
     .btn.primary{ background: rgba(255,255,255,0.92); color:#0b1025; border:0; }
-    .btn.small{ padding:8px 10px; border-radius:10px; font-size:13px; }
-    .btn.danger{ background: rgba(255,255,255,0.08); border:1px solid rgba(255,120,120,0.25); }
-
     main{ padding:18px 20px 40px; max-width:1100px; margin:0 auto; }
     .grid{ display:grid; grid-template-columns:1fr; gap:14px; margin-top:14px; }
     @media (min-width:980px){ .grid{ grid-template-columns:1.2fr 0.8fr; } }
-
     .card{
       background: var(--panel);
       border: 1px solid var(--panel-border);
@@ -65,14 +61,15 @@
     .card h2{ margin:0 0 6px; font-size:16px; }
     .card p{ margin:0; color:var(--muted); font-size:13px; line-height:1.45; }
 
-    .chips{ display:flex; gap:10px; flex-wrap:wrap; margin-top:12px; }
+    .chips{ display:flex; gap:10px; flex-wrap:wrap; margin-top:10px; }
     .chip{
-      display:inline-flex; align-items:center; gap:10px;
-      padding:8px 10px; border-radius:999px;
+      display:inline-flex; align-items:center; gap:8px;
+      padding:8px 10px;
+      border-radius:999px;
+      border:1px solid rgba(255,255,255,0.12);
       background: rgba(0,0,0,0.18);
-      border:1px solid rgba(255,255,255,0.10);
-      color: rgba(232,238,252,0.9);
       font-size:13px;
+      color: rgba(232,238,252,0.85);
     }
     .dot{ width:10px; height:10px; border-radius:999px; }
     .dot.ok{ background: var(--ok); }
@@ -83,99 +80,96 @@
     .kpi{ background: rgba(0,0,0,0.18); border:1px solid rgba(255,255,255,0.10);
       border-radius:14px; padding:12px; }
     .label{ color:var(--muted); font-size:12px; }
-    .value{ font-size:18px; font-weight:800; margin-top:6px; }
+    .value{ font-size:18px; font-weight:700; margin-top:6px; }
 
     .msg{ margin-top:12px; color:var(--muted); font-size:13px; }
 
-    .farm-head{
-      margin-top: 14px;
-      display:flex;
-      align-items:center;
-      justify-content:space-between;
-      gap: 10px;
-    }
-    .farm-list{
-      margin-top: 10px;
-      display:grid;
-      gap: 10px;
-    }
-    .farm-row{
-      display:flex;
-      justify-content:space-between;
-      gap: 10px;
-      flex-wrap: wrap;
-      padding: 12px;
-      border-radius: 14px;
-      background: rgba(0,0,0,0.18);
+    /* Farms list */
+    .farmRow{
+      display:flex; align-items:flex-start; justify-content:space-between; gap:10px;
+      padding:10px 12px;
+      border-radius:14px;
       border:1px solid rgba(255,255,255,0.10);
+      background: rgba(0,0,0,0.16);
+      margin-top:10px;
     }
-    .farm-title{ font-weight:800; }
-    .farm-meta{ color: var(--muted); font-size: 13px; margin-top: 4px; }
-    .farm-actions{ display:flex; gap:8px; align-items:center; }
+    .farmName{ font-weight:800; }
+    .farmMeta{ color: var(--muted); font-size:12px; margin-top:2px; }
 
-    .modal-backdrop{
-      position: fixed;
-      inset: 0;
+    /* Modal */
+    .overlay{
+      position:fixed; inset:0;
       background: rgba(0,0,0,0.55);
       display:none;
-      align-items:center;
-      justify-content:center;
+      align-items:center; justify-content:center;
       padding: 18px;
       z-index: 50;
     }
-    .modal-backdrop.show{ display:flex; }
+    .overlay.show{ display:flex; }
     .modal{
-      width: 100%;
-      max-width: 560px;
-      background: rgba(8, 14, 30, 0.96);
-      border: 1px solid rgba(255,255,255,0.12);
+      width:100%;
+      max-width:720px;
+      background: rgba(10,14,30,0.88);
+      border: 1px solid rgba(255,255,255,0.10);
       border-radius: 18px;
-      box-shadow: 0 20px 70px rgba(0,0,0,0.55);
-      padding: 16px;
+      box-shadow: 0 30px 80px rgba(0,0,0,0.55);
+      backdrop-filter: blur(10px);
+      overflow:hidden;
     }
-    .modal h3{ margin: 0 0 6px; }
-    .modal .sub{ margin:0 0 12px; color: var(--muted); font-size: 13px; }
-    .form-grid{
-      display:grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 10px;
+    .modalHead{
+      display:flex; align-items:center; justify-content:space-between; gap:12px;
+      padding: 16px 16px 12px;
+      border-bottom: 1px solid rgba(255,255,255,0.08);
     }
-    @media (max-width: 640px){
-      .form-grid{ grid-template-columns: 1fr; }
-    }
-    label{ display:block; font-size: 13px; color: var(--muted); margin: 10px 0 6px; }
-    input{
-      width: 100%;
-      box-sizing: border-box;
-      padding: 12px;
-      border-radius: 12px;
-      border: 1px solid rgba(255,255,255,0.18);
-      background: rgba(0,0,0,0.22);
+    .modalHead h3{ margin:0; font-size:18px; }
+    .xbtn{
+      width:38px; height:38px; border-radius:12px;
+      border:1px solid rgba(255,255,255,0.14);
+      background: rgba(255,255,255,0.10);
       color: var(--text);
-      outline: none;
+      cursor:pointer;
+      font-size:18px;
+      line-height: 0;
     }
-    .modal-actions{
-      display:flex;
-      gap: 10px;
-      justify-content:flex-end;
-      flex-wrap: wrap;
+    .modalBody{ padding: 14px 16px 16px; }
+    .help{ color: var(--muted); font-size:13px; margin-top:4px; }
+    .formGrid{
+      display:grid;
+      grid-template-columns: 1fr;
+      gap: 12px;
       margin-top: 14px;
     }
-    .note{
-      margin-top: 10px;
-      color: rgba(232,238,252,0.65);
-      font-size: 12px;
+    @media (min-width:720px){
+      .formGrid{ grid-template-columns: 1fr 1fr; }
+      .span2{ grid-column: 1 / -1; }
     }
-    .modal-msg{
-      margin-top: 12px;
+    .field label{ display:block; font-size:13px; color: var(--muted); margin-bottom:6px; }
+    .field input{
+      width:100%;
+      padding: 12px;
+      border-radius: 12px;
+      border: 1px solid rgba(255,255,255,0.16);
+      background: rgba(0,0,0,0.18);
+      color: var(--text);
+      outline:none;
+      box-sizing:border-box;
+    }
+    .modalFoot{
+      display:flex; justify-content:flex-end; gap:10px; flex-wrap:wrap;
+      padding: 12px 16px 16px;
+      border-top: 1px solid rgba(255,255,255,0.08);
+    }
+    .errorBox{
+      margin-top: 10px;
       padding: 10px 12px;
       border-radius: 12px;
       border: 1px solid rgba(255,255,255,0.12);
-      background: rgba(0,0,0,0.25);
-      color: rgba(232,238,252,0.85);
+      background: rgba(251, 113, 133, 0.15);
+      color: rgba(255,255,255,0.90);
       display:none;
+      font-size: 13px;
     }
-    .modal-msg.show{ display:block; }
+    .errorBox.show{ display:block; }
   </style>
 </head>
 
@@ -189,7 +183,7 @@
       </div>
     </div>
     <div style="display:flex;gap:10px;flex-wrap:wrap;">
-      <button class="btn" onclick="window.location.href='/'">Website</button>
+      <button class="btn" id="btnWebsite">Website</button>
       <button class="btn" id="btnAddFarmTop">Add Farm</button>
       <button class="btn primary" id="btnLogout">Logout</button>
     </div>
@@ -199,7 +193,7 @@
     <div class="grid">
       <div class="card">
         <h2>Farm Overview</h2>
-        <p>This shows farms stored in Supabase (public.farms). Next step later: charts + AI outputs.</p>
+        <p>This shows farms stored in Supabase (<strong>public.farms</strong>). Next step later: charts + AI outputs.</p>
 
         <div class="chips">
           <div class="chip"><span class="dot ok"></span> Framework test: PASS</div>
@@ -208,19 +202,19 @@
         </div>
 
         <div class="kpis">
-          <div class="kpi"><div class="label">Irrigation status</div><div class="value">Prototype</div></div>
-          <div class="kpi"><div class="label">Fertilizer status</div><div class="value">Prototype</div></div>
-          <div class="kpi"><div class="label">Pest risk</div><div class="value">Prototype</div></div>
+          <div class="kpi"><div class="label">Irrigation status</div><div class="value" id="kpiIrr">Prototype</div></div>
+          <div class="kpi"><div class="label">Fertilizer status</div><div class="value" id="kpiFert">Prototype</div></div>
+          <div class="kpi"><div class="label">Pest risk</div><div class="value" id="kpiPest">Prototype</div></div>
           <div class="kpi"><div class="label">Last update</div><div class="value" id="kpiLast">—</div></div>
         </div>
 
-        <div class="farm-head">
-          <h2 style="margin: 0;">Your farms</h2>
-          <button class="btn small" id="btnAddFarmInline">+ Add</button>
-        </div>
-
-        <div class="farm-list" id="farmList">
-          <div class="msg">Loading farms...</div>
+        <div class="card" style="margin-top:14px;background:rgba(0,0,0,0.12);">
+          <div style="display:flex;align-items:center;justify-content:space-between;gap:10px;">
+            <h2 style="margin:0;">Your farms</h2>
+            <button class="btn" id="btnAddFarmSmall">+ Add</button>
+          </div>
+          <div class="msg" id="farmsHint">Loading farms...</div>
+          <div id="farmsList"></div>
         </div>
 
         <div class="msg" id="statusMsg"></div>
@@ -234,41 +228,56 @@
     </div>
   </main>
 
-  <div class="modal-backdrop" id="modalBackdrop">
+  <!-- Add Farm Modal -->
+  <div class="overlay" id="overlay">
     <div class="modal">
-      <h3>Add a farm</h3>
-      <p class="sub">This creates a row in <b>public.farms</b>. Only you can see your farms (RLS).</p>
-
-      <label>Farm name *</label>
-      <input id="farmName" placeholder="e.g., Kadiri Demo" />
-
-      <div class="form-grid">
+      <div class="modalHead">
         <div>
-          <label>Country</label>
-          <input id="farmCountry" placeholder="e.g., India / UK" />
+          <h3>Add a farm</h3>
+          <div class="help">This creates a row in <strong>public.farms</strong>. Only you can see your farms (RLS).</div>
         </div>
-        <div>
-          <label>Latitude</label>
-          <input id="farmLat" type="number" step="any" placeholder="e.g., 14.1112" />
-        </div>
-        <div>
-          <label>Longitude</label>
-          <input id="farmLon" type="number" step="any" placeholder="e.g., 78.1595" />
-        </div>
-        <div>
-          <label>(Optional) Notes</label>
-          <input id="farmNotes" placeholder="e.g., Orchard zone A" disabled />
-        </div>
+        <button class="xbtn" id="btnClose" title="Close">×</button>
       </div>
 
-      <div class="note">Tip: Lat/Lon can be empty for now.</div>
+      <div class="modalBody">
+        <div class="formGrid">
+          <div class="field span2">
+            <label>Farm name *</label>
+            <input id="farmName" placeholder="e.g., Kadiri Demo" />
+          </div>
 
-      <div class="modal-actions">
+          <div class="field">
+            <label>Country</label>
+            <input id="country" placeholder="e.g., India / UK" />
+          </div>
+
+          <div class="field">
+            <label>Latitude</label>
+            <input id="lat" placeholder="e.g., 14.208045" />
+          </div>
+
+          <div class="field">
+            <label>Longitude</label>
+            <input id="lon" placeholder="e.g., 78.290156" />
+          </div>
+
+          <div class="field">
+            <label>(Optional) Notes</label>
+            <input id="notes" placeholder="e.g., Mango, PRE_FLUSH" />
+          </div>
+        </div>
+
+        <div class="help" style="margin-top:10px;">
+          Tip: Lat/Lon can be empty for now. We’ll use it later for weather + recommendations.
+        </div>
+
+        <div class="errorBox" id="errBox"></div>
+      </div>
+
+      <div class="modalFoot">
         <button class="btn" id="btnCancel">Cancel</button>
-        <button class="btn primary" id="btnSaveFarm">Save farm</button>
+        <button class="btn primary" id="btnSave">Save farm</button>
       </div>
-
-      <div class="modal-msg" id="modalMsg"></div>
     </div>
   </div>
 
@@ -278,150 +287,195 @@
     const userLine = document.getElementById("userLine");
     const statusMsg = document.getElementById("statusMsg");
     const btnLogout = document.getElementById("btnLogout");
+    const notifBox = document.getElementById("notifBox");
+    const btnWebsite = document.getElementById("btnWebsite");
+
+    const farmsHint = document.getElementById("farmsHint");
+    const farmsList = document.getElementById("farmsList");
+
     const kpiLast = document.getElementById("kpiLast");
-    const farmList = document.getElementById("farmList");
 
+    // Modal elements
+    const overlay = document.getElementById("overlay");
     const btnAddFarmTop = document.getElementById("btnAddFarmTop");
-    const btnAddFarmInline = document.getElementById("btnAddFarmInline");
-
-    const modalBackdrop = document.getElementById("modalBackdrop");
+    const btnAddFarmSmall = document.getElementById("btnAddFarmSmall");
+    const btnClose = document.getElementById("btnClose");
     const btnCancel = document.getElementById("btnCancel");
-    const btnSaveFarm = document.getElementById("btnSaveFarm");
-    const modalMsg = document.getElementById("modalMsg");
+    const btnSave = document.getElementById("btnSave");
+    const errBox = document.getElementById("errBox");
 
-    const farmName = document.getElementById("farmName");
-    const farmCountry = document.getElementById("farmCountry");
-    const farmLat = document.getElementById("farmLat");
-    const farmLon = document.getElementById("farmLon");
+    const farmNameEl = document.getElementById("farmName");
+    const countryEl = document.getElementById("country");
+    const latEl = document.getElementById("lat");
+    const lonEl = document.getElementById("lon");
+    const notesEl = document.getElementById("notes");
 
-    function setStatus(text){ statusMsg.textContent = text || ""; }
-    function showModalMsg(text){
-      modalMsg.textContent = text || "";
-      modalMsg.classList.toggle("show", !!text);
+    function showModal(on){
+      errBox.classList.remove("show");
+      errBox.textContent = "";
+      overlay.classList.toggle("show", !!on);
+      if (on) setTimeout(() => farmNameEl.focus(), 50);
     }
 
-    function openModal(){
-      showModalMsg("");
-      farmName.value = "";
-      farmCountry.value = "";
-      farmLat.value = "";
-      farmLon.value = "";
-      modalBackdrop.classList.add("show");
-      setTimeout(() => farmName.focus(), 50);
-    }
-    function closeModal(){
-      modalBackdrop.classList.remove("show");
+    function showError(msg){
+      errBox.textContent = msg || "Something went wrong.";
+      errBox.classList.add("show");
     }
 
-    btnAddFarmTop.addEventListener("click", openModal);
-    btnAddFarmInline.addEventListener("click", openModal);
-    btnCancel.addEventListener("click", closeModal);
-    modalBackdrop.addEventListener("click", (e) => {
-      if (e.target === modalBackdrop) closeModal();
-    });
+    function setSaving(on){
+      btnSave.disabled = on;
+      btnCancel.disabled = on;
+      btnClose.disabled = on;
+      btnSave.textContent = on ? "Saving..." : "Save farm";
+    }
 
-    // Auth check
+    btnWebsite.addEventListener("click", () => window.location.href = "/");
+    btnAddFarmTop.addEventListener("click", () => showModal(true));
+    btnAddFarmSmall.addEventListener("click", () => showModal(true));
+    btnClose.addEventListener("click", () => showModal(false));
+    btnCancel.addEventListener("click", () => showModal(false));
+    overlay.addEventListener("click", (e) => { if (e.target === overlay) showModal(false); });
+
+    // 1) Auth check
     const { data: { session } } = await supabase.auth.getSession();
     if (!session) window.location.href = "/login.html";
 
+    const userId = session.user?.id;
     const email = session.user?.email || "Unknown";
     userLine.textContent = `Signed in as: ${email}`;
-    kpiLast.textContent = new Date().toLocaleString();
 
+    // KPIs
+    kpiLast.textContent = new Date().toLocaleString();
+    statusMsg.textContent = "Dashboard loaded ✅ Now you can add farms. Next: charts + AI outputs per farm.";
+
+    // Logout
     btnLogout.addEventListener("click", async () => {
       await supabase.auth.signOut();
       window.location.href = "/login.html";
     });
 
+    // 2) Load farms (RLS will only show user's farms if policy is correct)
     async function loadFarms(){
-      farmList.innerHTML = `<div class="msg">Loading farms...</div>`;
+      farmsHint.textContent = "Loading farms...";
+      farmsList.innerHTML = "";
 
       const { data, error } = await supabase
         .from("farms")
         .select("id,farm_name,country,lat,lon,created_at")
         .order("created_at", { ascending: false });
 
-      if (error) {
-        farmList.innerHTML = `<div class="msg">Farms not loading yet. (RLS/policy?)</div>`;
-        setStatus("If this fails: confirm farms RLS policy allows SELECT for owner_id.");
+      if (error){
+        farmsHint.textContent = "Could not load farms yet (RLS/policy not ready).";
         return;
       }
 
-      if (!data || data.length === 0) {
-        farmList.innerHTML = `<div class="msg">No farms yet. Click “Add Farm”.</div>`;
-        setStatus("Dashboard loaded ✅ Now you can add farms.");
+      if (!data || data.length === 0){
+        farmsHint.textContent = 'No farms yet. Click "Add Farm".';
         return;
       }
 
-      farmList.innerHTML = data.map(f => `
-        <div class="farm-row">
-          <div>
-            <div class="farm-title">${escapeHtml(f.farm_name || "Unnamed farm")}</div>
-            <div class="farm-meta">
-              ${escapeHtml(f.country || "—")} •
-              Lat: ${f.lat ?? "—"} • Lon: ${f.lon ?? "—"}
+      farmsHint.textContent = "";
+      farmsList.innerHTML = data.map(f => {
+        const where = [f.country, (f.lat!=null && f.lon!=null ? `${f.lat}, ${f.lon}` : "")].filter(Boolean).join(" • ");
+        return `
+          <div class="farmRow">
+            <div>
+              <div class="farmName">${escapeHtml(f.farm_name || "Farm")}</div>
+              <div class="farmMeta">${escapeHtml(where || "Location not set")}</div>
+              <div class="farmMeta">Farm ID: ${f.id}</div>
             </div>
-            <div class="farm-meta">Created: ${new Date(f.created_at).toLocaleString()}</div>
+            <div class="farmMeta">${new Date(f.created_at).toLocaleString()}</div>
           </div>
-          <div class="farm-actions">
-            <button class="btn small danger" data-del="${f.id}">Delete</button>
-          </div>
-        </div>
-      `).join("");
-
-      farmList.querySelectorAll("button[data-del]").forEach(btn => {
-        btn.addEventListener("click", async () => {
-          const id = btn.getAttribute("data-del");
-          if (!confirm("Delete this farm?")) return;
-
-          const { error: delErr } = await supabase.from("farms").delete().eq("id", id);
-          if (delErr) alert("Delete failed: " + delErr.message);
-          else await loadFarms();
-        });
-      });
-
-      setStatus("Farms loaded ✅");
+        `;
+      }).join("");
     }
 
-    btnSaveFarm.addEventListener("click", async () => {
-      showModalMsg("");
-
-      const name = (farmName.value || "").trim();
-      const country = (farmCountry.value || "").trim() || null;
-      const lat = farmLat.value === "" ? null : Number(farmLat.value);
-      const lon = farmLon.value === "" ? null : Number(farmLon.value);
-
-      if (!name) return showModalMsg("Please enter Farm name.");
-
-      btnSaveFarm.disabled = true;
-      btnSaveFarm.textContent = "Saving...";
-
-      // ✅ IMPORTANT FIX: include owner_id
-      const owner_id = session.user.id;
-
-      const { error } = await supabase
-        .from("farms")
-        .insert([{ owner_id, farm_name: name, country, lat, lon }]);
-
-      btnSaveFarm.disabled = false;
-      btnSaveFarm.textContent = "Save farm";
-
-      if (error) {
-        showModalMsg("Save failed: " + error.message);
-        return;
-      }
-
-      closeModal();
-      await loadFarms();
-    });
-
+    // Helper to avoid broken HTML
     function escapeHtml(str){
-      return String(str).replace(/[&<>"']/g, s => ({
-        "&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;","'":"&#039;"
-      }[s]));
+      return String(str ?? "")
+        .replaceAll("&","&amp;")
+        .replaceAll("<","&lt;")
+        .replaceAll(">","&gt;")
+        .replaceAll('"',"&quot;")
+        .replaceAll("'","&#039;");
     }
 
     await loadFarms();
+
+    // 3) Save farm  ✅ IMPORTANT: include owner_id so RLS passes
+    btnSave.addEventListener("click", async () => {
+      errBox.classList.remove("show");
+      errBox.textContent = "";
+
+      const farm_name = (farmNameEl.value || "").trim();
+      const country = (countryEl.value || "").trim() || null;
+
+      // lat/lon optional
+      const latRaw = (latEl.value || "").trim();
+      const lonRaw = (lonEl.value || "").trim();
+      const lat = latRaw === "" ? null : Number(latRaw);
+      const lon = lonRaw === "" ? null : Number(lonRaw);
+
+      // notes not in your table -> ignored safely (kept for future)
+      const notes = (notesEl.value || "").trim();
+
+      if (!farm_name) return showError("Farm name is required.");
+      if (latRaw !== "" && Number.isNaN(lat)) return showError("Latitude must be a number.");
+      if (lonRaw !== "" && Number.isNaN(lon)) return showError("Longitude must be a number.");
+      if (!userId) return showError("User session missing. Please logout and login again.");
+
+      setSaving(true);
+
+      // Insert with owner_id => fixes your RLS error
+      const { error } = await supabase
+        .from("farms")
+        .insert([{
+          owner_id: userId,
+          farm_name,
+          country,
+          lat,
+          lon
+        }]);
+
+      setSaving(false);
+
+      if (error){
+        showError(`Save failed: ${error.message}`);
+        return;
+      }
+
+      // Clear + refresh
+      farmNameEl.value = "";
+      countryEl.value = "";
+      latEl.value = "";
+      lonEl.value = "";
+      notesEl.value = "";
+
+      showModal(false);
+      await loadFarms();
+      statusMsg.textContent = "Farm saved ✅ Next: we will connect this farm to AI outputs + charts.";
+    });
+
+    // (Optional) notifications (your table may not exist yet)
+    const { data: notifs, error: nerr } = await supabase
+      .from("notifications")
+      .select("created_at,title,msg,severity")
+      .order("created_at", { ascending: false })
+      .limit(5);
+
+    if (nerr) {
+      notifBox.textContent = "No alerts yet (notifications table not set).";
+    } else if (!notifs || notifs.length === 0) {
+      notifBox.textContent = "No alerts yet.";
+    } else {
+      notifBox.innerHTML = notifs.map(n =>
+        `<div style="margin-top:8px;">
+          <div style="color:rgba(232,238,252,0.85);font-weight:700;">${escapeHtml(n.title || n.severity || "Alert")}</div>
+          <div style="color:rgba(232,238,252,0.75);">${escapeHtml(n.msg || "")}</div>
+          <div style="color:rgba(232,238,252,0.55);font-size:12px;">${new Date(n.created_at).toLocaleString()}</div>
+        </div>`
+      ).join("");
+    }
   </script>
 </body>
 </html>
