@@ -11,6 +11,7 @@
       --panel-border:rgba(255,255,255,0.10);
       --text:#e8eefc;
       --muted:rgba(232,238,252,0.7);
+
       --ok: rgba(16,185,129,0.95);
       --warn: rgba(251,191,36,0.95);
       --info: rgba(59,130,246,0.95);
@@ -31,7 +32,7 @@
       border-bottom: 1px solid rgba(255,255,255,0.08);
       padding:16px 20px;
       display:flex; align-items:center; justify-content:space-between; gap:12px;
-      z-index: 5;
+      z-index: 10;
     }
     .left{ display:flex; align-items:center; gap:10px; }
     .logo{ width:34px;height:34px;border-radius:12px;
@@ -47,10 +48,10 @@
       cursor:pointer; font-weight:600;
     }
     .btn.primary{ background: rgba(255,255,255,0.92); color:#0b1025; border:0; }
-    .btn.danger{ border-color: rgba(239,68,68,0.35); background: rgba(239,68,68,0.12); }
+    .btn.small{ padding:8px 10px; border-radius:10px; font-size:13px; }
+    .btn.danger{ background: rgba(255,255,255,0.08); border:1px solid rgba(255,120,120,0.25); }
 
     main{ padding:18px 20px 40px; max-width:1100px; margin:0 auto; }
-
     .grid{ display:grid; grid-template-columns:1fr; gap:14px; margin-top:14px; }
     @media (min-width:980px){ .grid{ grid-template-columns:1.2fr 0.8fr; } }
 
@@ -64,54 +65,59 @@
     .card h2{ margin:0 0 6px; font-size:16px; }
     .card p{ margin:0; color:var(--muted); font-size:13px; line-height:1.45; }
 
-    .kpis{ display:grid; grid-template-columns:repeat(2,1fr); gap:10px; margin-top:12px; }
-    .kpi{
+    .chips{ display:flex; gap:10px; flex-wrap:wrap; margin-top:12px; }
+    .chip{
+      display:inline-flex; align-items:center; gap:10px;
+      padding:8px 10px; border-radius:999px;
       background: rgba(0,0,0,0.18);
       border:1px solid rgba(255,255,255,0.10);
-      border-radius:14px;
-      padding:12px;
+      color: rgba(232,238,252,0.9);
+      font-size:13px;
     }
-    .label{ color:var(--muted); font-size:12px; }
-    .value{ font-size:18px; font-weight:700; margin-top:6px; }
-    .msg{ margin-top:12px; color:var(--muted); font-size:13px; }
-
-    .pill{
-      display:inline-flex;
-      align-items:center;
-      gap:8px;
-      padding: 8px 10px;
-      border-radius: 999px;
-      border: 1px solid rgba(255,255,255,0.12);
-      background: rgba(255,255,255,0.06);
-      font-size: 13px;
-      color: rgba(232,238,252,0.86);
-    }
-    .dot{ width:10px; height:10px; border-radius: 50%; background: var(--info); }
+    .dot{ width:10px; height:10px; border-radius:999px; }
     .dot.ok{ background: var(--ok); }
     .dot.warn{ background: var(--warn); }
+    .dot.info{ background: var(--info); }
 
-    .farm-box{
+    .kpis{ display:grid; grid-template-columns:repeat(2,1fr); gap:10px; margin-top:12px; }
+    .kpi{ background: rgba(0,0,0,0.18); border:1px solid rgba(255,255,255,0.10);
+      border-radius:14px; padding:12px; }
+    .label{ color:var(--muted); font-size:12px; }
+    .value{ font-size:18px; font-weight:800; margin-top:6px; }
+
+    .msg{ margin-top:12px; color:var(--muted); font-size:13px; }
+
+    /* Farms list */
+    .farm-head{
       margin-top: 14px;
-      padding: 12px;
-      border-radius: 14px;
-      border: 1px solid rgba(255,255,255,0.10);
-      background: rgba(0,0,0,0.18);
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap: 10px;
+    }
+    .farm-list{
+      margin-top: 10px;
+      display:grid;
+      gap: 10px;
     }
     .farm-row{
-      margin-top:10px;
-      padding-top:10px;
-      border-top:1px solid rgba(255,255,255,0.08);
       display:flex;
       justify-content:space-between;
-      gap:12px;
-      flex-wrap:wrap;
+      gap: 10px;
+      flex-wrap: wrap;
+      padding: 12px;
+      border-radius: 14px;
+      background: rgba(0,0,0,0.18);
+      border:1px solid rgba(255,255,255,0.10);
     }
-    .farm-name{ font-weight:800; color: rgba(232,238,252,0.92); }
-    .farm-meta{ color: rgba(232,238,252,0.7); font-size: 13px; margin-top: 4px; }
+    .farm-title{ font-weight:800; }
+    .farm-meta{ color: var(--muted); font-size: 13px; margin-top: 4px; }
+    .farm-actions{ display:flex; gap:8px; align-items:center; }
 
     /* Modal */
     .modal-backdrop{
-      position: fixed; inset: 0;
+      position: fixed;
+      inset: 0;
       background: rgba(0,0,0,0.55);
       display:none;
       align-items:center;
@@ -122,74 +128,46 @@
     .modal-backdrop.show{ display:flex; }
     .modal{
       width: 100%;
-      max-width: 540px;
-      border-radius: 18px;
+      max-width: 560px;
+      background: rgba(8, 14, 30, 0.96);
       border: 1px solid rgba(255,255,255,0.12);
-      background: rgba(15, 23, 42, 0.92);
-      box-shadow: 0 24px 80px rgba(0,0,0,0.55);
+      border-radius: 18px;
+      box-shadow: 0 20px 70px rgba(0,0,0,0.55);
       padding: 16px;
-      backdrop-filter: blur(12px);
     }
-    .modal-head{
-      display:flex; align-items:flex-start; justify-content:space-between; gap:12px;
-      margin-bottom: 10px;
-    }
-    .modal-title{ margin:0; font-size: 16px; font-weight: 800; }
-    .close-x{
-      border: 0;
-      background: rgba(255,255,255,0.10);
-      color: var(--text);
-      width: 36px;
-      height: 36px;
-      border-radius: 12px;
-      cursor:pointer;
-      font-size: 18px;
-      line-height: 36px;
-    }
+    .modal h3{ margin: 0 0 6px; }
+    .modal .sub{ margin:0 0 12px; color: var(--muted); font-size: 13px; }
     .form-grid{
       display:grid;
-      grid-template-columns: 1fr;
+      grid-template-columns: 1fr 1fr;
       gap: 10px;
-      margin-top: 10px;
     }
-    @media (min-width: 640px){
-      .form-grid.two{ grid-template-columns: 1fr 1fr; }
+    @media (max-width: 640px){
+      .form-grid{ grid-template-columns: 1fr; }
     }
-    label{ display:block; font-size: 12px; color: var(--muted); margin: 2px 0 6px; }
+    label{ display:block; font-size: 13px; color: var(--muted); margin: 10px 0 6px; }
     input{
       width: 100%;
       box-sizing: border-box;
-      border-radius: 12px;
-      border: 1px solid rgba(255,255,255,0.14);
-      background: rgba(0,0,0,0.18);
-      color: var(--text);
       padding: 12px;
+      border-radius: 12px;
+      border: 1px solid rgba(255,255,255,0.18);
+      background: rgba(0,0,0,0.22);
+      color: var(--text);
       outline: none;
     }
     .modal-actions{
       display:flex;
       gap: 10px;
-      margin-top: 12px;
-      flex-wrap: wrap;
       justify-content:flex-end;
+      flex-wrap: wrap;
+      margin-top: 14px;
     }
-    .hint{
-      font-size: 12px;
-      color: rgba(232,238,252,0.62);
-      margin-top: 8px;
-      line-height: 1.45;
-    }
-    .error{
-      display:none;
+    .note{
       margin-top: 10px;
-      padding: 10px 12px;
-      border-radius: 12px;
-      background: rgba(239,68,68,0.12);
-      border: 1px solid rgba(239,68,68,0.25);
-      color: rgba(255,255,255,0.92);
-      font-size: 13px;
+      color: rgba(232,238,252,0.65);
+      font-size: 12px;
     }
-    .error.show{ display:block; }
   </style>
 </head>
 
@@ -203,9 +181,8 @@
       </div>
     </div>
     <div style="display:flex;gap:10px;flex-wrap:wrap;">
-      <!-- ✅ GitHub Pages safe -->
-      <button class="btn" id="btnWebsite">Website</button>
-      <button class="btn" id="btnAddFarm">Add Farm</button>
+      <button class="btn" onclick="window.location.href='/'">Website</button>
+      <button class="btn" id="btnAddFarmTop">Add Farm</button>
       <button class="btn primary" id="btnLogout">Logout</button>
     </div>
   </header>
@@ -216,10 +193,10 @@
         <h2>Farm Overview</h2>
         <p>This shows farms stored in Supabase (public.farms). Next step later: charts + AI outputs.</p>
 
-        <div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:12px;">
-          <span class="pill"><span class="dot ok"></span> Framework test: PASS</span>
-          <span class="pill"><span class="dot warn"></span> Real-time data: pending</span>
-          <span class="pill"><span class="dot"></span> WhatsApp delivery: pending</span>
+        <div class="chips">
+          <div class="chip"><span class="dot ok"></span> Framework test: PASS</div>
+          <div class="chip"><span class="dot warn"></span> Real-time data: pending</div>
+          <div class="chip"><span class="dot info"></span> WhatsApp delivery: pending</div>
         </div>
 
         <div class="kpis">
@@ -229,13 +206,13 @@
           <div class="kpi"><div class="label">Last update</div><div class="value" id="kpiLast">—</div></div>
         </div>
 
-        <div class="farm-box">
-          <div style="display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap;align-items:center;">
-            <div style="font-weight:800;">Your farms</div>
-            <button class="btn" id="btnAddFarmInline">+ Add</button>
-          </div>
-          <div class="msg" id="farmMeta">Loading farms...</div>
-          <div id="farmList"></div>
+        <div class="farm-head">
+          <h2 style="margin: 0;">Your farms</h2>
+          <button class="btn small" id="btnAddFarmInline">+ Add</button>
+        </div>
+
+        <div class="farm-list" id="farmList">
+          <div class="msg">Loading farms...</div>
         </div>
 
         <div class="msg" id="statusMsg"></div>
@@ -244,255 +221,205 @@
       <div class="card">
         <h2>Notifications</h2>
         <p>Later we’ll create a notifications table and show last alerts here.</p>
-        <div class="msg" id="notifBox">No alerts loaded yet.</div>
+        <div class="msg" id="notifBox">No alerts yet.</div>
       </div>
     </div>
   </main>
 
-  <!-- Modal: Add Farm -->
-  <div class="modal-backdrop" id="modalBackdrop" aria-hidden="true">
-    <div class="modal" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
-      <div class="modal-head">
-        <div>
-          <h3 class="modal-title" id="modalTitle">Add a farm</h3>
-          <div class="hint">This creates a row in <b>public.farms</b>. Only you can see your farms (RLS).</div>
-        </div>
-        <button class="close-x" id="btnCloseModal" title="Close">×</button>
-      </div>
+  <!-- Add Farm Modal -->
+  <div class="modal-backdrop" id="modalBackdrop">
+    <div class="modal">
+      <h3>Add a farm</h3>
+      <p class="sub">This will save in <b>public.farms</b> for your user.</p>
+
+      <label>Farm name</label>
+      <input id="farmName" placeholder="e.g., Kadiri Orchard Demo" />
 
       <div class="form-grid">
         <div>
-          <label>Farm name *</label>
-          <input id="farmName" type="text" placeholder="e.g., Kadiri_demo" />
-        </div>
-      </div>
-
-      <div class="form-grid two">
-        <div>
           <label>Country</label>
-          <input id="country" type="text" placeholder="e.g., India" />
+          <input id="farmCountry" placeholder="e.g., India / UK" />
         </div>
         <div>
           <label>Latitude</label>
-          <input id="lat" type="number" step="any" placeholder="e.g., 14.208045" />
+          <input id="farmLat" type="number" step="any" placeholder="e.g., 14.1112" />
         </div>
-      </div>
-
-      <div class="form-grid two">
         <div>
           <label>Longitude</label>
-          <input id="lon" type="number" step="any" placeholder="e.g., 78.290156" />
+          <input id="farmLon" type="number" step="any" placeholder="e.g., 78.1595" />
         </div>
         <div>
           <label>(Optional) Notes</label>
-          <input id="notes" type="text" placeholder="e.g., Orchard zone A" />
+          <input id="farmNotes" placeholder="e.g., Mango, PRE_FLUSH" disabled />
         </div>
       </div>
 
-      <div id="errBox" class="error"></div>
+      <div class="note">Tip: Lat/Lon can be empty for now. We’ll use it later for weather + recommendations.</div>
 
       <div class="modal-actions">
         <button class="btn" id="btnCancel">Cancel</button>
         <button class="btn primary" id="btnSaveFarm">Save farm</button>
       </div>
+
+      <div class="msg" id="modalMsg"></div>
     </div>
   </div>
 
   <script type="module">
-    let supabase;
-    try {
-      ({ supabase } = await import("./js/supabaseClient.js"));
-    } catch (e) {
-      document.getElementById("statusMsg").textContent =
-        "ERROR: cannot load ./js/supabaseClient.js. Confirm the file path is EXACT: js/supabaseClient.js";
-      throw e;
-    }
+    import { supabase } from "./js/supabaseClient.js";
 
     const userLine = document.getElementById("userLine");
     const statusMsg = document.getElementById("statusMsg");
     const btnLogout = document.getElementById("btnLogout");
-    const btnWebsite = document.getElementById("btnWebsite");
-    const notifBox = document.getElementById("notifBox");
+    const kpiLast = document.getElementById("kpiLast");
 
-    const farmMeta = document.getElementById("farmMeta");
     const farmList = document.getElementById("farmList");
 
-    const btnAddFarm = document.getElementById("btnAddFarm");
+    const btnAddFarmTop = document.getElementById("btnAddFarmTop");
     const btnAddFarmInline = document.getElementById("btnAddFarmInline");
+
     const modalBackdrop = document.getElementById("modalBackdrop");
-    const btnCloseModal = document.getElementById("btnCloseModal");
     const btnCancel = document.getElementById("btnCancel");
     const btnSaveFarm = document.getElementById("btnSaveFarm");
-    const errBox = document.getElementById("errBox");
+    const modalMsg = document.getElementById("modalMsg");
 
-    const farmNameEl = document.getElementById("farmName");
-    const countryEl = document.getElementById("country");
-    const latEl = document.getElementById("lat");
-    const lonEl = document.getElementById("lon");
+    const farmName = document.getElementById("farmName");
+    const farmCountry = document.getElementById("farmCountry");
+    const farmLat = document.getElementById("farmLat");
+    const farmLon = document.getElementById("farmLon");
 
-    function showError(msg){
-      errBox.textContent = msg || "";
-      errBox.classList.toggle("show", !!msg);
+    function setStatus(text){ statusMsg.textContent = text || ""; }
+    function showModalMsg(text){
+      modalMsg.textContent = text || "";
     }
 
     function openModal(){
-      showError("");
-      farmNameEl.value = "";
-      countryEl.value = "";
-      latEl.value = "";
-      lonEl.value = "";
+      showModalMsg("");
+      farmName.value = "";
+      farmCountry.value = "";
+      farmLat.value = "";
+      farmLon.value = "";
       modalBackdrop.classList.add("show");
-      modalBackdrop.setAttribute("aria-hidden","false");
-      setTimeout(() => farmNameEl.focus(), 50);
+      setTimeout(() => farmName.focus(), 50);
     }
-
     function closeModal(){
       modalBackdrop.classList.remove("show");
-      modalBackdrop.setAttribute("aria-hidden","true");
     }
 
-    btnAddFarm.addEventListener("click", openModal);
+    btnAddFarmTop.addEventListener("click", openModal);
     btnAddFarmInline.addEventListener("click", openModal);
-    btnCloseModal.addEventListener("click", closeModal);
     btnCancel.addEventListener("click", closeModal);
     modalBackdrop.addEventListener("click", (e) => {
       if (e.target === modalBackdrop) closeModal();
     });
 
-    // ✅ GitHub Pages safe
-    btnWebsite.addEventListener("click", () => window.location.href = "index.html");
-
-    // Session check
+    // Auth check
     const { data: { session } } = await supabase.auth.getSession();
-    if (!session) {
-      window.location.href = "login.html"; // ✅ relative
-    }
+    if (!session) window.location.href = "/login.html";
 
     const email = session.user?.email || "Unknown";
     userLine.textContent = `Signed in as: ${email}`;
-    document.getElementById("kpiLast").textContent = new Date().toLocaleString();
+    kpiLast.textContent = new Date().toLocaleString();
 
-    statusMsg.textContent =
-      "Dashboard loaded ✅ Now you can add farms. Next step later: show charts + AI outputs per farm.";
-
-    // Logout
     btnLogout.addEventListener("click", async () => {
       await supabase.auth.signOut();
-      window.location.href = "login.html";
+      window.location.href = "/login.html";
     });
 
     async function loadFarms(){
-      farmMeta.textContent = "Loading farms...";
-      farmList.innerHTML = "";
+      farmList.innerHTML = `<div class="msg">Loading farms...</div>`;
 
-      const { data: farms, error } = await supabase
+      const { data, error } = await supabase
         .from("farms")
         .select("id,farm_name,country,lat,lon,created_at")
         .order("created_at", { ascending: false });
 
       if (error) {
-        farmMeta.textContent =
-          "Farms not loading yet. Check: table created, RLS policy, and you are logged in.";
+        farmList.innerHTML = `<div class="msg">Farms not loading yet. (RLS/policy?)</div>`;
+        setStatus("If this fails: confirm farms RLS policy allows SELECT for owner_id.");
         return;
       }
 
-      if (!farms || farms.length === 0) {
-        farmMeta.textContent = "No farms yet. Click “Add Farm”.";
+      if (!data || data.length === 0) {
+        farmList.innerHTML = `<div class="msg">No farms yet. Click “Add Farm”.</div>`;
+        setStatus("Dashboard loaded ✅ Now you can add farms. Next step later: show charts + AI outputs per farm.");
         return;
       }
 
-      farmMeta.textContent = `${farms.length} farm(s) found.`;
-
-      farmList.innerHTML = farms.map(f => {
-        const loc = (f.lat != null && f.lon != null)
-          ? `${Number(f.lat).toFixed(4)}, ${Number(f.lon).toFixed(4)}`
-          : "Not set";
-        return `
-          <div class="farm-row">
-            <div>
-              <div class="farm-name">${f.farm_name}</div>
-              <div class="farm-meta">
-                Country: ${f.country || "—"} • Location: ${loc}
-              </div>
+      farmList.innerHTML = data.map(f => `
+        <div class="farm-row">
+          <div>
+            <div class="farm-title">${escapeHtml(f.farm_name || "Unnamed farm")}</div>
+            <div class="farm-meta">
+              ${escapeHtml(f.country || "—")} •
+              Lat: ${f.lat ?? "—"} • Lon: ${f.lon ?? "—"}
             </div>
-            <div style="display:flex;gap:8px;flex-wrap:wrap;">
-              <button class="btn" data-open="${f.id}">Open</button>
-            </div>
+            <div class="farm-meta">Created: ${new Date(f.created_at).toLocaleString()}</div>
           </div>
-        `;
-      }).join("");
+          <div class="farm-actions">
+            <button class="btn small danger" data-del="${f.id}">Delete</button>
+          </div>
+        </div>
+      `).join("");
 
-      // For now “Open” just shows a message
-      farmList.querySelectorAll("button[data-open]").forEach(btn => {
-        btn.addEventListener("click", () => {
-          const id = btn.getAttribute("data-open");
-          statusMsg.textContent = `Selected farm id=${id}. Next step: show charts + recommendations for this farm.`;
+      // bind delete buttons
+      farmList.querySelectorAll("button[data-del]").forEach(btn => {
+        btn.addEventListener("click", async () => {
+          const id = btn.getAttribute("data-del");
+          if (!confirm("Delete this farm?")) return;
+
+          const { error: delErr } = await supabase.from("farms").delete().eq("id", id);
+          if (delErr) {
+            alert("Delete failed: " + delErr.message);
+          } else {
+            await loadFarms();
+          }
         });
       });
+
+      setStatus("Farms loaded ✅ Next step later: connect Mango/Greenhouse data tables per farm.");
     }
 
-    // Save farm
     btnSaveFarm.addEventListener("click", async () => {
-      showError("");
+      showModalMsg("");
 
-      const farm_name = (farmNameEl.value || "").trim();
-      const country = (countryEl.value || "").trim() || null;
+      const name = (farmName.value || "").trim();
+      const country = (farmCountry.value || "").trim() || null;
 
-      const latRaw = (latEl.value || "").trim();
-      const lonRaw = (lonEl.value || "").trim();
+      // lat/lon can be empty
+      const lat = farmLat.value === "" ? null : Number(farmLat.value);
+      const lon = farmLon.value === "" ? null : Number(farmLon.value);
 
-      const lat = latRaw === "" ? null : Number(latRaw);
-      const lon = lonRaw === "" ? null : Number(lonRaw);
-
-      if (!farm_name) return showError("Farm name is required.");
-      if (latRaw !== "" && Number.isNaN(lat)) return showError("Latitude must be a number.");
-      if (lonRaw !== "" && Number.isNaN(lon)) return showError("Longitude must be a number.");
-      if (lat != null && (lat < -90 || lat > 90)) return showError("Latitude must be between -90 and 90.");
-      if (lon != null && (lon < -180 || lon > 180)) return showError("Longitude must be between -180 and 180.");
+      if (!name) return showModalMsg("Please enter Farm name.");
 
       btnSaveFarm.disabled = true;
       btnSaveFarm.textContent = "Saving...";
 
-      const { error } = await supabase
+      const { data, error } = await supabase
         .from("farms")
-        .insert([{ farm_name, country, lat, lon }]);
+        .insert([{ farm_name: name, country, lat, lon }]) // owner_id enforced by RLS policy check + default insert uses auth.uid() check
+        .select();
 
       btnSaveFarm.disabled = false;
       btnSaveFarm.textContent = "Save farm";
 
       if (error) {
-        showError(error.message || "Insert failed. Check RLS policy for farms.");
+        showModalMsg("Save failed: " + error.message);
         return;
       }
 
       closeModal();
-      statusMsg.textContent = `Farm "${farm_name}" added ✅`;
       await loadFarms();
     });
 
-    // Load farms on page load
-    await loadFarms();
-
-    // OPTIONAL: notifications (will show message until you create table)
-    const { data: notifs, error: notifErr } = await supabase
-      .from("notifications")
-      .select("created_at,title,msg,severity")
-      .order("created_at", { ascending: false })
-      .limit(5);
-
-    if (notifErr) {
-      notifBox.textContent = "Notifications not ready yet (table/policy not created).";
-    } else if (!notifs || notifs.length === 0) {
-      notifBox.textContent = "No alerts yet.";
-    } else {
-      notifBox.innerHTML = notifs.map(n =>
-        `<div style="margin-top:8px;">
-          <div style="color:rgba(232,238,252,0.85);font-weight:700;">${n.title || n.severity || "Alert"}</div>
-          <div style="color:rgba(232,238,252,0.75);">${n.msg || ""}</div>
-          <div style="color:rgba(232,238,252,0.55);font-size:12px;">${new Date(n.created_at).toLocaleString()}</div>
-        </div>`
-      ).join("");
+    // simple HTML escape
+    function escapeHtml(str){
+      return String(str).replace(/[&<>"']/g, s => ({
+        "&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;","'":"&#039;"
+      }[s]));
     }
+
+    await loadFarms();
   </script>
 </body>
 </html>
