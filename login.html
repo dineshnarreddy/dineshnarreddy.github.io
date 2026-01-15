@@ -88,14 +88,23 @@
       </div>
 
       <div style="margin-top:10px;display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap;color:rgba(232,238,252,0.7);font-size:13px;">
-        <a href="/">Back to website</a>
-        <a href="/dashboard.html">Go to dashboard</a>
+        <a href="index.html">Back to website</a>
+        <a href="dashboard.html">Go to dashboard</a>
       </div>
     </div>
   </div>
 
   <script type="module">
-    import { supabase } from "./js/supabaseClient.js";
+    let supabase;
+    try {
+      ({ supabase } = await import("./js/supabaseClient.js"));
+    } catch (e) {
+      const msgEl = document.getElementById("msg");
+      msgEl.textContent =
+        "supabaseClient.js not found. Please confirm this file exists: /js/supabaseClient.js and GitHub Pages is publishing that folder.";
+      msgEl.classList.add("show");
+      throw e;
+    }
 
     const emailEl = document.getElementById("email");
     const passEl  = document.getElementById("password");
@@ -103,7 +112,8 @@
     const btnLogin  = document.getElementById("btnLogin");
     const btnSignup = document.getElementById("btnSignup");
 
-    const DASHBOARD_URL = window.location.origin + "/dashboard.html";
+    // ✅ Works in GitHub Pages even if repo is in a subfolder
+    const DASHBOARD_URL = new URL("dashboard.html", window.location.href).href;
 
     function showMsg(text) {
       msgEl.textContent = text || "";
@@ -119,7 +129,7 @@
 
     // If already logged in -> dashboard
     const { data: { session } } = await supabase.auth.getSession();
-    if (session) window.location.href = "/dashboard.html";
+    if (session) window.location.href = "dashboard.html";
 
     btnLogin.addEventListener("click", async () => {
       showMsg("");
@@ -133,7 +143,7 @@
 
       if (error) return showMsg(error.message);
       if (!data?.session) return showMsg("Login done, but session not found. Try again.");
-      window.location.href = "/dashboard.html";
+      window.location.href = "dashboard.html";
     });
 
     btnSignup.addEventListener("click", async () => {
@@ -156,7 +166,7 @@
       if (!data?.session) {
         showMsg("Account created. Please confirm your email, then login.");
       } else {
-        window.location.href = "/dashboard.html";
+        window.location.href = "dashboard.html";
       }
     });
   </script>
