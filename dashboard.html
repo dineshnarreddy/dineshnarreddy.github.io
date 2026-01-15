@@ -1,58 +1,214 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="utf-8" />
+  <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
   <title>AgriEdgeAI – Dashboard</title>
-  <link rel="stylesheet" href="styles.css" />
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-</head>
-<body>
-  <div class="container" style="max-width:1100px;margin:40px auto;">
-    <div style="display:flex;justify-content:space-between;align-items:center;gap:12px;">
-      <h1 style="margin:0;">Dashboard</h1>
-      <div style="display:flex;gap:10px;align-items:center;">
-        <span id="userEmail" style="opacity:.85"></span>
-        <button id="btnLogout">Logout</button>
-      </div>
-    </div>
 
-    <div class="card" style="margin-top:18px;padding:18px;">
-      <h2 style="margin-top:0;">Status</h2>
-      <ul>
-        <li>Mango pipeline: framework PASS ✅</li>
-        <li>Greenhouse P-G4A: framework PASS ✅</li>
-        <li>Live greenhouse data: pending ⏳</li>
-      </ul>
-      <p style="opacity:.8;margin-bottom:0">
-        Next: we’ll connect real tables (farms, readings, recommendations) and draw charts.
-      </p>
-    </div>
-  </div>
-
-  <script>
-    const SUPABASE_URL = "PASTE_SUPABASE_URL";
-    const SUPABASE_ANON_KEY = "PASTE_SUPABASE_ANON_KEY";
-    const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
-
-    const emailEl = document.getElementById("userEmail");
-
-    async function requireAuth() {
-      const { data } = await supabase.auth.getSession();
-      if (!data.session) {
-        window.location.href = "/login.html";
-        return;
-      }
-      emailEl.textContent = data.session.user.email;
+  <style>
+    :root{
+      --bg: #070b18;
+      --panel: rgba(255,255,255,0.06);
+      --panel-border: rgba(255,255,255,0.10);
+      --text: #e8eefc;
+      --muted: rgba(232,238,252,0.7);
+    }
+    body{
+      margin:0;
+      background: radial-gradient(1200px 800px at 70% 20%, rgba(59,130,246,0.25), transparent 60%),
+                  radial-gradient(900px 600px at 20% 90%, rgba(16,185,129,0.20), transparent 55%),
+                  var(--bg);
+      font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+      color: var(--text);
+      min-height: 100vh;
+    }
+    header{
+      position: sticky;
+      top:0;
+      backdrop-filter: blur(10px);
+      background: rgba(0,0,0,0.25);
+      border-bottom: 1px solid rgba(255,255,255,0.08);
+      padding: 16px 20px;
+      display:flex;
+      align-items:center;
+      justify-content: space-between;
+      gap: 12px;
+    }
+    .left{
+      display:flex;
+      align-items:center;
+      gap: 10px;
+    }
+    .logo{
+      width:34px;height:34px;border-radius:12px;
+      background: linear-gradient(135deg, rgba(59,130,246,0.9), rgba(16,185,129,0.9));
+    }
+    h1{
+      margin:0;
+      font-size: 18px;
+      letter-spacing: 0.2px;
+    }
+    .user{
+      color: var(--muted);
+      font-size: 13px;
+      margin-top: 2px;
+    }
+    .right{
+      display:flex;
+      align-items:center;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+    .btn{
+      padding: 10px 12px;
+      border-radius: 12px;
+      border: 1px solid rgba(255,255,255,0.16);
+      background: rgba(255,255,255,0.10);
+      color: var(--text);
+      cursor:pointer;
+      font-weight: 600;
+    }
+    .btn.primary{
+      background: rgba(255,255,255,0.92);
+      color: #0b1025;
+      border: 0;
     }
 
-    document.getElementById("btnLogout").addEventListener("click", async () => {
+    main{
+      padding: 18px 20px 40px;
+      max-width: 1100px;
+      margin: 0 auto;
+    }
+
+    .grid{
+      display:grid;
+      grid-template-columns: 1fr;
+      gap: 14px;
+      margin-top: 14px;
+    }
+    @media (min-width: 980px){
+      .grid{
+        grid-template-columns: 1.2fr 0.8fr;
+      }
+    }
+    .card{
+      background: var(--panel);
+      border: 1px solid var(--panel-border);
+      border-radius: 18px;
+      padding: 16px;
+      box-shadow: 0 16px 50px rgba(0,0,0,0.35);
+    }
+    .card h2{
+      margin: 0 0 6px;
+      font-size: 16px;
+    }
+    .card p{
+      margin: 0;
+      color: var(--muted);
+      font-size: 13px;
+      line-height: 1.45;
+    }
+    .kpis{
+      display:grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 10px;
+      margin-top: 12px;
+    }
+    .kpi{
+      background: rgba(0,0,0,0.18);
+      border: 1px solid rgba(255,255,255,0.10);
+      border-radius: 14px;
+      padding: 12px;
+    }
+    .kpi .label{
+      color: var(--muted);
+      font-size: 12px;
+    }
+    .kpi .value{
+      font-size: 18px;
+      font-weight: 700;
+      margin-top: 6px;
+    }
+    .msg{
+      margin-top: 12px;
+      color: var(--muted);
+      font-size: 13px;
+    }
+  </style>
+</head>
+
+<body>
+  <header>
+    <div class="left">
+      <div class="logo"></div>
+      <div>
+        <h1>AgriEdgeAI – Customer Dashboard</h1>
+        <div class="user" id="userLine">Loading user...</div>
+      </div>
+    </div>
+    <div class="right">
+      <button class="btn" onclick="window.location.href='/'">Website</button>
+      <button class="btn primary" id="btnLogout">Logout</button>
+    </div>
+  </header>
+
+  <main>
+    <div class="grid">
+      <div class="card">
+        <h2>Farm Overview</h2>
+        <p>This is a Priva-style layout base. Next we will connect real farm rows and show charts.</p>
+
+        <div class="kpis">
+          <div class="kpi">
+            <div class="label">Irrigation status</div>
+            <div class="value">—</div>
+          </div>
+          <div class="kpi">
+            <div class="label">Fertilizer status</div>
+            <div class="value">—</div>
+          </div>
+          <div class="kpi">
+            <div class="label">Pest risk</div>
+            <div class="value">—</div>
+          </div>
+          <div class="kpi">
+            <div class="label">Last update</div>
+            <div class="value">—</div>
+          </div>
+        </div>
+
+        <div class="msg" id="statusMsg"></div>
+      </div>
+
+      <div class="card">
+        <h2>Notifications</h2>
+        <p>Later we’ll load WhatsApp/outbox-like alerts from Supabase tables per user.</p>
+        <div class="msg">No alerts loaded yet.</div>
+      </div>
+    </div>
+  </main>
+
+  <script type="module">
+    import { supabase } from "./js/supabaseClient.js";
+
+    const userLine = document.getElementById("userLine");
+    const statusMsg = document.getElementById("statusMsg");
+    const btnLogout = document.getElementById("btnLogout");
+
+    // Require login
+    const { data: { session } } = await supabase.auth.getSession();
+    if (!session) {
+      window.location.href = "/login.html";
+    } else {
+      const email = session.user?.email || "Unknown";
+      userLine.textContent = `Signed in as: ${email}`;
+      statusMsg.textContent = "Dashboard loaded. Next step: connect farm tables + charts.";
+    }
+
+    btnLogout.addEventListener("click", async () => {
       await supabase.auth.signOut();
       window.location.href = "/login.html";
     });
-
-    requireAuth();
   </script>
 </body>
 </html>
-
