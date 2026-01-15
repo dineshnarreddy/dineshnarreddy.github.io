@@ -1,71 +1,285 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="utf-8" />
+  <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
   <title>AgriEdgeAI – Login</title>
-  <link rel="stylesheet" href="styles.css" />
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+  <style>
+    :root {
+      --bg: #070b18;
+      --card: rgba(255,255,255,0.08);
+      --card-border: rgba(255,255,255,0.12);
+      --text: #e8eefc;
+      --muted: rgba(232,238,252,0.7);
+      --danger: #ff6b6b;
+      --ok: #4cd964;
+    }
+    body{
+      margin:0;
+      min-height:100vh;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      background: radial-gradient(1200px 800px at 70% 20%, rgba(59,130,246,0.25), transparent 60%),
+                  radial-gradient(900px 600px at 20% 90%, rgba(16,185,129,0.20), transparent 55%),
+                  var(--bg);
+      font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+      color: var(--text);
+      padding: 24px;
+    }
+    .wrap{
+      width:100%;
+      max-width: 520px;
+    }
+    .brand{
+      display:flex;
+      align-items:center;
+      gap:12px;
+      margin-bottom: 14px;
+    }
+    .logo{
+      width:40px;height:40px;border-radius:12px;
+      background: linear-gradient(135deg, rgba(59,130,246,0.9), rgba(16,185,129,0.9));
+      box-shadow: 0 8px 30px rgba(0,0,0,0.35);
+    }
+    h1{ margin:0; font-size: 32px; letter-spacing:0.2px; }
+    p{ margin: 6px 0 0; color: var(--muted); }
+    .card{
+      margin-top: 18px;
+      background: var(--card);
+      border: 1px solid var(--card-border);
+      border-radius: 18px;
+      padding: 22px;
+      box-shadow: 0 16px 50px rgba(0,0,0,0.45);
+      backdrop-filter: blur(10px);
+    }
+    label{
+      display:block;
+      font-size: 14px;
+      color: var(--muted);
+      margin: 12px 0 6px;
+    }
+    input{
+      width:100%;
+      padding: 12px 12px;
+      border-radius: 12px;
+      border: 1px solid rgba(255,255,255,0.18);
+      background: rgba(0,0,0,0.18);
+      color: var(--text);
+      outline:none;
+      box-sizing:border-box;
+    }
+    input:focus{
+      border-color: rgba(59,130,246,0.8);
+      box-shadow: 0 0 0 3px rgba(59,130,246,0.15);
+    }
+    .row{
+      display:flex;
+      gap:12px;
+      margin-top: 14px;
+      flex-wrap: wrap;
+    }
+    button{
+      flex:1;
+      min-width: 160px;
+      padding: 12px 14px;
+      border: 0;
+      border-radius: 12px;
+      cursor:pointer;
+      font-weight: 600;
+      background: rgba(255,255,255,0.92);
+      color: #0b1025;
+    }
+    button.secondary{
+      background: rgba(255,255,255,0.12);
+      color: var(--text);
+      border: 1px solid rgba(255,255,255,0.18);
+    }
+    button:disabled{
+      opacity: 0.6;
+      cursor:not-allowed;
+    }
+    .msg{
+      margin-top: 14px;
+      font-size: 14px;
+      line-height: 1.35;
+      padding: 10px 12px;
+      border-radius: 12px;
+      border: 1px solid rgba(255,255,255,0.14);
+      display:none;
+    }
+    .msg.error{
+      display:block;
+      border-color: rgba(255,107,107,0.35);
+      background: rgba(255,107,107,0.10);
+      color: #ffd7d7;
+    }
+    .msg.ok{
+      display:block;
+      border-color: rgba(76,217,100,0.35);
+      background: rgba(76,217,100,0.10);
+      color: #d9ffe1;
+    }
+    .hint{
+      margin-top: 12px;
+      color: var(--muted);
+      font-size: 13px;
+    }
+    .small-links{
+      margin-top: 10px;
+      display:flex;
+      justify-content: space-between;
+      gap: 10px;
+      flex-wrap: wrap;
+      font-size: 13px;
+      color: var(--muted);
+    }
+    .small-links a{
+      color: rgba(232,238,252,0.9);
+      text-decoration: none;
+      border-bottom: 1px dotted rgba(232,238,252,0.4);
+    }
+  </style>
 </head>
+
 <body>
-  <div class="container" style="max-width:520px;margin:60px auto;">
-    <h1>Login</h1>
-    <p style="opacity:.8">Sign in to view your farm dashboard.</p>
+  <div class="wrap">
+    <div class="brand">
+      <div class="logo"></div>
+      <div>
+        <h1>Login</h1>
+        <p>Sign in to view your farm dashboard.</p>
+      </div>
+    </div>
 
-    <div class="card" style="padding:18px;">
-      <label>Email</label>
-      <input id="email" type="email" placeholder="you@email.com" style="width:100%;padding:10px;margin:8px 0 14px;" />
+    <div class="card">
+      <label for="email">Email</label>
+      <input id="email" type="email" placeholder="you@example.com" autocomplete="email" />
 
-      <label>Password</label>
-      <input id="password" type="password" placeholder="••••••••" style="width:100%;padding:10px;margin:8px 0 14px;" />
+      <label for="password">Password</label>
+      <input id="password" type="password" placeholder="••••••••" autocomplete="current-password" />
 
-      <button id="btnLogin" style="width:100%;padding:12px;">Sign in</button>
-      <button id="btnSignup" style="width:100%;padding:12px;margin-top:10px;">Create account</button>
+      <div class="row">
+        <button id="btnLogin" type="button">Sign in</button>
+        <button id="btnSignup" type="button" class="secondary">Create account</button>
+      </div>
 
-      <p id="msg" style="margin-top:12px;opacity:.85"></p>
+      <div id="msg" class="msg"></div>
+
+      <div class="hint">
+        If email confirmation is ON in Supabase, you must confirm your email before login works.
+      </div>
+
+      <div class="small-links">
+        <a href="/">Back to website</a>
+        <a href="/dashboard.html">Go to dashboard</a>
+      </div>
     </div>
   </div>
 
-  <script>
-    // TODO: paste from Supabase -> Project Settings -> API
-    const SUPABASE_URL = "PASTE_SUPABASE_URL";
-    const SUPABASE_ANON_KEY = "PASTE_SUPABASE_ANON_KEY";
-
-    const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+  <script type="module">
+    import { supabase } from "./js/supabaseClient.js";
 
     const emailEl = document.getElementById("email");
-    const passEl = document.getElementById("password");
-    const msgEl = document.getElementById("msg");
+    const passEl  = document.getElementById("password");
+    const msgEl   = document.getElementById("msg");
+    const btnLogin  = document.getElementById("btnLogin");
+    const btnSignup = document.getElementById("btnSignup");
 
-    function setMsg(t) { msgEl.textContent = t; }
+    function setMsg(text, type) {
+      msgEl.className = "msg " + (type || "");
+      msgEl.textContent = text || "";
+      msgEl.style.display = text ? "block" : "none";
+    }
 
-    document.getElementById("btnLogin").addEventListener("click", async () => {
-      setMsg("Signing in...");
-      const { data, error } = await supabase.auth.signInWithPassword({
-        email: emailEl.value.trim(),
-        password: passEl.value
-      });
-      if (error) return setMsg("Login failed: " + error.message);
+    function setLoading(isLoading) {
+      btnLogin.disabled = isLoading;
+      btnSignup.disabled = isLoading;
+      btnLogin.textContent = isLoading ? "Signing in..." : "Sign in";
+      btnSignup.textContent = isLoading ? "Please wait..." : "Create account";
+    }
+
+    // If user already logged in, send to dashboard
+    const { data: { session } } = await supabase.auth.getSession();
+    if (session) {
       window.location.href = "/dashboard.html";
+    }
+
+    btnLogin.addEventListener("click", async () => {
+      setMsg("", "");
+      const email = (emailEl.value || "").trim();
+      const password = passEl.value || "";
+
+      if (!email || !password) {
+        setMsg("Please enter both email and password.", "error");
+        return;
+      }
+
+      try {
+        setLoading(true);
+        const { data, error } = await supabase.auth.signInWithPassword({ email, password });
+        if (error) {
+          setMsg(error.message, "error");
+          return;
+        }
+        if (data?.session) {
+          setMsg("Login success. Redirecting...", "ok");
+          window.location.href = "/dashboard.html";
+        } else {
+          setMsg("Login done, but no session found. Please try again.", "error");
+        }
+      } catch (e) {
+        setMsg(String(e?.message || e), "error");
+      } finally {
+        setLoading(false);
+      }
     });
 
-    document.getElementById("btnSignup").addEventListener("click", async () => {
-      setMsg("Creating account...");
-      const { data, error } = await supabase.auth.signUp({
-        email: emailEl.value.trim(),
-        password: passEl.value,
-        options: { emailRedirectTo: "https://agriedgeai.me/dashboard.html" }
-      });
-      if (error) return setMsg("Signup failed: " + error.message);
-      setMsg("Account created. Please check your email to confirm, then login.");
-    });
+    btnSignup.addEventListener("click", async () => {
+      setMsg("", "");
+      const email = (emailEl.value || "").trim();
+      const password = passEl.value || "";
 
-    // If already logged in, go straight to dashboard
-    (async () => {
-      const { data } = await supabase.auth.getSession();
-      if (data.session) window.location.href = "/dashboard.html";
-    })();
+      if (!email || !password) {
+        setMsg("Please enter both email and password.", "error");
+        return;
+      }
+      if (password.length < 6) {
+        setMsg("Password must be at least 6 characters.", "error");
+        return;
+      }
+
+      try {
+        setLoading(true);
+
+        // redirectTo must match your allowed Redirect URLs in Supabase Auth settings
+        const redirectTo = window.location.origin + "/dashboard.html";
+
+        const { data, error } = await supabase.auth.signUp({
+          email,
+          password,
+          options: { emailRedirectTo: redirectTo }
+        });
+
+        if (error) {
+          setMsg(error.message, "error");
+          return;
+        }
+
+        // If confirm email is ON, user must confirm email first
+        if (!data?.session) {
+          setMsg("Account created. Please check your email and confirm, then login.", "ok");
+        } else {
+          setMsg("Account created & logged in. Redirecting...", "ok");
+          window.location.href = "/dashboard.html";
+        }
+      } catch (e) {
+        setMsg(String(e?.message || e), "error");
+      } finally {
+        setLoading(false);
+      }
+    });
   </script>
 </body>
 </html>
-
