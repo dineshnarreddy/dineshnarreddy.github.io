@@ -11,6 +11,9 @@
       --panel-border:rgba(255,255,255,0.10);
       --text:#e8eefc;
       --muted:rgba(232,238,252,0.7);
+      --ok: rgba(16,185,129,0.95);
+      --warn: rgba(251,191,36,0.95);
+      --info: rgba(59,130,246,0.95);
     }
     body{
       margin:0;
@@ -28,6 +31,7 @@
       border-bottom: 1px solid rgba(255,255,255,0.08);
       padding:16px 20px;
       display:flex; align-items:center; justify-content:space-between; gap:12px;
+      z-index: 5;
     }
     .left{ display:flex; align-items:center; gap:10px; }
     .logo{ width:34px;height:34px;border-radius:12px;
@@ -43,8 +47,10 @@
     }
     .btn.primary{ background: rgba(255,255,255,0.92); color:#0b1025; border:0; }
     main{ padding:18px 20px 40px; max-width:1100px; margin:0 auto; }
+
     .grid{ display:grid; grid-template-columns:1fr; gap:14px; margin-top:14px; }
     @media (min-width:980px){ .grid{ grid-template-columns:1.2fr 0.8fr; } }
+
     .card{
       background: var(--panel);
       border: 1px solid var(--panel-border);
@@ -54,12 +60,50 @@
     }
     .card h2{ margin:0 0 6px; font-size:16px; }
     .card p{ margin:0; color:var(--muted); font-size:13px; line-height:1.45; }
+
     .kpis{ display:grid; grid-template-columns:repeat(2,1fr); gap:10px; margin-top:12px; }
-    .kpi{ background: rgba(0,0,0,0.18); border:1px solid rgba(255,255,255,0.10);
-      border-radius:14px; padding:12px; }
+    .kpi{
+      background: rgba(0,0,0,0.18);
+      border:1px solid rgba(255,255,255,0.10);
+      border-radius:14px;
+      padding:12px;
+    }
     .label{ color:var(--muted); font-size:12px; }
     .value{ font-size:18px; font-weight:700; margin-top:6px; }
     .msg{ margin-top:12px; color:var(--muted); font-size:13px; }
+
+    .farm-box{
+      margin-top: 14px;
+      padding: 12px;
+      border-radius: 14px;
+      border: 1px solid rgba(255,255,255,0.10);
+      background: rgba(0,0,0,0.18);
+    }
+    .farm-title{
+      font-weight: 800;
+      margin: 0 0 4px;
+      color: rgba(232,238,252,0.92);
+    }
+    .farm-meta{
+      margin: 0;
+      font-size: 13px;
+      color: var(--muted);
+    }
+
+    .pill{
+      display:inline-flex;
+      align-items:center;
+      gap:8px;
+      padding: 8px 10px;
+      border-radius: 999px;
+      border: 1px solid rgba(255,255,255,0.12);
+      background: rgba(255,255,255,0.06);
+      font-size: 13px;
+      color: rgba(232,238,252,0.86);
+    }
+    .dot{ width:10px; height:10px; border-radius: 50%; background: var(--info); }
+    .dot.ok{ background: var(--ok); }
+    .dot.warn{ background: var(--warn); }
   </style>
 </head>
 
@@ -73,7 +117,8 @@
       </div>
     </div>
     <div style="display:flex;gap:10px;flex-wrap:wrap;">
-      <button class="btn" onclick="window.location.href='/'">Website</button>
+      <!-- ✅ Use relative link for GitHub Pages -->
+      <button class="btn" id="btnWebsite">Website</button>
       <button class="btn primary" id="btnLogout">Logout</button>
     </div>
   </header>
@@ -82,7 +127,13 @@
     <div class="grid">
       <div class="card">
         <h2>Farm Overview</h2>
-        <p>Next step: connect real farm rows and show charts.</p>
+        <p>This will show your farms from Supabase (public.farms) and later connect to real sensor + AI outputs.</p>
+
+        <div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:12px;">
+          <span class="pill"><span class="dot ok"></span> System test: PASS (framework)</span>
+          <span class="pill"><span class="dot warn"></span> Real-time data: pending</span>
+          <span class="pill"><span class="dot"></span> WhatsApp delivery: pending</span>
+        </div>
 
         <div class="kpis">
           <div class="kpi"><div class="label">Irrigation status</div><div class="value" id="kpiIrr">—</div></div>
@@ -91,55 +142,109 @@
           <div class="kpi"><div class="label">Last update</div><div class="value" id="kpiLast">—</div></div>
         </div>
 
+        <div class="farm-box" id="farmBox">
+          <p class="farm-title">Your farms</p>
+          <p class="farm-meta" id="farmMeta">Loading farms...</p>
+        </div>
+
         <div class="msg" id="statusMsg"></div>
       </div>
 
       <div class="card">
         <h2>Notifications</h2>
-        <p>We’ll load alerts from Supabase notifications table per user.</p>
+        <p>Later we will load alerts from a notifications table. For now it’s optional.</p>
         <div class="msg" id="notifBox">No alerts loaded yet.</div>
       </div>
     </div>
   </main>
 
   <script type="module">
-    import { supabase } from "./js/supabaseClient.js";
+    let supabase;
+    try {
+      ({ supabase } = await import("./js/supabaseClient.js"));
+    } catch (e) {
+      document.getElementById("statusMsg").textContent =
+        "ERROR: supabaseClient.js not found. Confirm this file exists: /js/supabaseClient.js";
+      throw e;
+    }
 
     const userLine = document.getElementById("userLine");
     const statusMsg = document.getElementById("statusMsg");
     const btnLogout = document.getElementById("btnLogout");
+    const btnWebsite = document.getElementById("btnWebsite");
     const notifBox = document.getElementById("notifBox");
+    const farmMeta = document.getElementById("farmMeta");
 
+    // ✅ GitHub Pages safe links
+    btnWebsite.addEventListener("click", () => window.location.href = "index.html");
+
+    // Session check
     const { data: { session } } = await supabase.auth.getSession();
     if (!session) {
-      window.location.href = "/login.html";
+      // ✅ GitHub Pages safe redirect
+      window.location.href = "login.html";
     }
 
     const email = session.user?.email || "Unknown";
     userLine.textContent = `Signed in as: ${email}`;
-    statusMsg.textContent = "Dashboard loaded. Next step: show your farm data from Supabase tables.";
 
+    // Dummy KPI values (until you connect real tables)
+    document.getElementById("kpiIrr").textContent = "Connected";
+    document.getElementById("kpiFert").textContent = "Connected";
+    document.getElementById("kpiPest").textContent = "Prototype";
+    document.getElementById("kpiLast").textContent = new Date().toLocaleString();
+
+    statusMsg.textContent =
+      "Dashboard loaded ✅ Next step: show farms list (public.farms) and then link to Mango/Greenhouse data tables.";
+
+    // Logout
     btnLogout.addEventListener("click", async () => {
       await supabase.auth.signOut();
-      window.location.href = "/login.html";
+      window.location.href = "login.html";
     });
 
-    // OPTIONAL: load last 5 notifications
-    const { data: notifs, error } = await supabase
+    // ✅ Load farms (this WILL work with your farms table + RLS policy)
+    const { data: farms, error: farmsErr } = await supabase
+      .from("farms")
+      .select("id,farm_name,country,lat,lon,created_at")
+      .order("created_at", { ascending: false });
+
+    if (farmsErr) {
+      farmMeta.textContent =
+        "Farms not loading yet. Either table not created, RLS policy missing, or you are not logged in properly.";
+    } else if (!farms || farms.length === 0) {
+      farmMeta.textContent =
+        "No farms added yet. Next step: we will add a simple 'Add Farm' form here.";
+    } else {
+      farmMeta.innerHTML = farms.map(f => {
+        const loc = (f.lat != null && f.lon != null) ? `${f.lat.toFixed(4)}, ${f.lon.toFixed(4)}` : "Not set";
+        return `
+          <div style="margin-top:10px;padding-top:10px;border-top:1px solid rgba(255,255,255,0.08);">
+            <div style="font-weight:800;color:rgba(232,238,252,0.92);">${f.farm_name}</div>
+            <div style="color:rgba(232,238,252,0.7);font-size:13px;">
+              Country: ${f.country || "—"} • Location: ${loc}
+            </div>
+          </div>
+        `;
+      }).join("");
+    }
+
+    // OPTIONAL: notifications (only if you create the table later)
+    const { data: notifs, error: notifErr } = await supabase
       .from("notifications")
       .select("created_at,title,msg,severity")
       .order("created_at", { ascending: false })
       .limit(5);
 
-    if (error) {
-      notifBox.textContent = "Notifications not loading yet (table/policy not ready).";
+    if (notifErr) {
+      notifBox.textContent = "Notifications not ready yet (table/policy not created).";
     } else if (!notifs || notifs.length === 0) {
       notifBox.textContent = "No alerts yet.";
     } else {
       notifBox.innerHTML = notifs.map(n =>
         `<div style="margin-top:8px;">
           <div style="color:rgba(232,238,252,0.85);font-weight:700;">${n.title || n.severity || "Alert"}</div>
-          <div style="color:rgba(232,238,252,0.75);">${n.msg}</div>
+          <div style="color:rgba(232,238,252,0.75);">${n.msg || ""}</div>
           <div style="color:rgba(232,238,252,0.55);font-size:12px;">${new Date(n.created_at).toLocaleString()}</div>
         </div>`
       ).join("");
