@@ -4,14 +4,13 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
   <title>AgriEdgeAI – Dashboard</title>
-
   <style>
     :root{
-      --bg: #070b18;
-      --panel: rgba(255,255,255,0.06);
-      --panel-border: rgba(255,255,255,0.10);
-      --text: #e8eefc;
-      --muted: rgba(232,238,252,0.7);
+      --bg:#070b18;
+      --panel:rgba(255,255,255,0.06);
+      --panel-border:rgba(255,255,255,0.10);
+      --text:#e8eefc;
+      --muted:rgba(232,238,252,0.7);
     }
     body{
       margin:0;
@@ -20,120 +19,47 @@
                   var(--bg);
       font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
       color: var(--text);
-      min-height: 100vh;
+      min-height:100vh;
     }
     header{
-      position: sticky;
-      top:0;
+      position:sticky; top:0;
       backdrop-filter: blur(10px);
       background: rgba(0,0,0,0.25);
       border-bottom: 1px solid rgba(255,255,255,0.08);
-      padding: 16px 20px;
-      display:flex;
-      align-items:center;
-      justify-content: space-between;
-      gap: 12px;
+      padding:16px 20px;
+      display:flex; align-items:center; justify-content:space-between; gap:12px;
     }
-    .left{
-      display:flex;
-      align-items:center;
-      gap: 10px;
-    }
-    .logo{
-      width:34px;height:34px;border-radius:12px;
-      background: linear-gradient(135deg, rgba(59,130,246,0.9), rgba(16,185,129,0.9));
-    }
-    h1{
-      margin:0;
-      font-size: 18px;
-      letter-spacing: 0.2px;
-    }
-    .user{
-      color: var(--muted);
-      font-size: 13px;
-      margin-top: 2px;
-    }
-    .right{
-      display:flex;
-      align-items:center;
-      gap: 10px;
-      flex-wrap: wrap;
-    }
+    .left{ display:flex; align-items:center; gap:10px; }
+    .logo{ width:34px;height:34px;border-radius:12px;
+      background: linear-gradient(135deg, rgba(59,130,246,0.9), rgba(16,185,129,0.9)); }
+    h1{ margin:0; font-size:18px; }
+    .user{ color:var(--muted); font-size:13px; margin-top:2px; }
     .btn{
-      padding: 10px 12px;
-      border-radius: 12px;
-      border: 1px solid rgba(255,255,255,0.16);
+      padding:10px 12px; border-radius:12px;
+      border:1px solid rgba(255,255,255,0.16);
       background: rgba(255,255,255,0.10);
       color: var(--text);
-      cursor:pointer;
-      font-weight: 600;
+      cursor:pointer; font-weight:600;
     }
-    .btn.primary{
-      background: rgba(255,255,255,0.92);
-      color: #0b1025;
-      border: 0;
-    }
-
-    main{
-      padding: 18px 20px 40px;
-      max-width: 1100px;
-      margin: 0 auto;
-    }
-
-    .grid{
-      display:grid;
-      grid-template-columns: 1fr;
-      gap: 14px;
-      margin-top: 14px;
-    }
-    @media (min-width: 980px){
-      .grid{
-        grid-template-columns: 1.2fr 0.8fr;
-      }
-    }
+    .btn.primary{ background: rgba(255,255,255,0.92); color:#0b1025; border:0; }
+    main{ padding:18px 20px 40px; max-width:1100px; margin:0 auto; }
+    .grid{ display:grid; grid-template-columns:1fr; gap:14px; margin-top:14px; }
+    @media (min-width:980px){ .grid{ grid-template-columns:1.2fr 0.8fr; } }
     .card{
       background: var(--panel);
       border: 1px solid var(--panel-border);
-      border-radius: 18px;
-      padding: 16px;
+      border-radius:18px;
+      padding:16px;
       box-shadow: 0 16px 50px rgba(0,0,0,0.35);
     }
-    .card h2{
-      margin: 0 0 6px;
-      font-size: 16px;
-    }
-    .card p{
-      margin: 0;
-      color: var(--muted);
-      font-size: 13px;
-      line-height: 1.45;
-    }
-    .kpis{
-      display:grid;
-      grid-template-columns: repeat(2, 1fr);
-      gap: 10px;
-      margin-top: 12px;
-    }
-    .kpi{
-      background: rgba(0,0,0,0.18);
-      border: 1px solid rgba(255,255,255,0.10);
-      border-radius: 14px;
-      padding: 12px;
-    }
-    .kpi .label{
-      color: var(--muted);
-      font-size: 12px;
-    }
-    .kpi .value{
-      font-size: 18px;
-      font-weight: 700;
-      margin-top: 6px;
-    }
-    .msg{
-      margin-top: 12px;
-      color: var(--muted);
-      font-size: 13px;
-    }
+    .card h2{ margin:0 0 6px; font-size:16px; }
+    .card p{ margin:0; color:var(--muted); font-size:13px; line-height:1.45; }
+    .kpis{ display:grid; grid-template-columns:repeat(2,1fr); gap:10px; margin-top:12px; }
+    .kpi{ background: rgba(0,0,0,0.18); border:1px solid rgba(255,255,255,0.10);
+      border-radius:14px; padding:12px; }
+    .label{ color:var(--muted); font-size:12px; }
+    .value{ font-size:18px; font-weight:700; margin-top:6px; }
+    .msg{ margin-top:12px; color:var(--muted); font-size:13px; }
   </style>
 </head>
 
@@ -146,7 +72,7 @@
         <div class="user" id="userLine">Loading user...</div>
       </div>
     </div>
-    <div class="right">
+    <div style="display:flex;gap:10px;flex-wrap:wrap;">
       <button class="btn" onclick="window.location.href='/'">Website</button>
       <button class="btn primary" id="btnLogout">Logout</button>
     </div>
@@ -156,25 +82,13 @@
     <div class="grid">
       <div class="card">
         <h2>Farm Overview</h2>
-        <p>This is a Priva-style layout base. Next we will connect real farm rows and show charts.</p>
+        <p>Next step: connect real farm rows and show charts.</p>
 
         <div class="kpis">
-          <div class="kpi">
-            <div class="label">Irrigation status</div>
-            <div class="value">—</div>
-          </div>
-          <div class="kpi">
-            <div class="label">Fertilizer status</div>
-            <div class="value">—</div>
-          </div>
-          <div class="kpi">
-            <div class="label">Pest risk</div>
-            <div class="value">—</div>
-          </div>
-          <div class="kpi">
-            <div class="label">Last update</div>
-            <div class="value">—</div>
-          </div>
+          <div class="kpi"><div class="label">Irrigation status</div><div class="value" id="kpiIrr">—</div></div>
+          <div class="kpi"><div class="label">Fertilizer status</div><div class="value" id="kpiFert">—</div></div>
+          <div class="kpi"><div class="label">Pest risk</div><div class="value" id="kpiPest">—</div></div>
+          <div class="kpi"><div class="label">Last update</div><div class="value" id="kpiLast">—</div></div>
         </div>
 
         <div class="msg" id="statusMsg"></div>
@@ -182,8 +96,8 @@
 
       <div class="card">
         <h2>Notifications</h2>
-        <p>Later we’ll load WhatsApp/outbox-like alerts from Supabase tables per user.</p>
-        <div class="msg">No alerts loaded yet.</div>
+        <p>We’ll load alerts from Supabase notifications table per user.</p>
+        <div class="msg" id="notifBox">No alerts loaded yet.</div>
       </div>
     </div>
   </main>
@@ -194,21 +108,42 @@
     const userLine = document.getElementById("userLine");
     const statusMsg = document.getElementById("statusMsg");
     const btnLogout = document.getElementById("btnLogout");
+    const notifBox = document.getElementById("notifBox");
 
-    // Require login
     const { data: { session } } = await supabase.auth.getSession();
     if (!session) {
       window.location.href = "/login.html";
-    } else {
-      const email = session.user?.email || "Unknown";
-      userLine.textContent = `Signed in as: ${email}`;
-      statusMsg.textContent = "Dashboard loaded. Next step: connect farm tables + charts.";
     }
+
+    const email = session.user?.email || "Unknown";
+    userLine.textContent = `Signed in as: ${email}`;
+    statusMsg.textContent = "Dashboard loaded. Next step: show your farm data from Supabase tables.";
 
     btnLogout.addEventListener("click", async () => {
       await supabase.auth.signOut();
       window.location.href = "/login.html";
     });
+
+    // OPTIONAL: load last 5 notifications
+    const { data: notifs, error } = await supabase
+      .from("notifications")
+      .select("created_at,title,msg,severity")
+      .order("created_at", { ascending: false })
+      .limit(5);
+
+    if (error) {
+      notifBox.textContent = "Notifications not loading yet (table/policy not ready).";
+    } else if (!notifs || notifs.length === 0) {
+      notifBox.textContent = "No alerts yet.";
+    } else {
+      notifBox.innerHTML = notifs.map(n =>
+        `<div style="margin-top:8px;">
+          <div style="color:rgba(232,238,252,0.85);font-weight:700;">${n.title || n.severity || "Alert"}</div>
+          <div style="color:rgba(232,238,252,0.75);">${n.msg}</div>
+          <div style="color:rgba(232,238,252,0.55);font-size:12px;">${new Date(n.created_at).toLocaleString()}</div>
+        </div>`
+      ).join("");
+    }
   </script>
 </body>
 </html>
