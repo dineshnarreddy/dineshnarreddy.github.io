@@ -49,9 +49,10 @@
       cursor:pointer; font-weight:600;
     }
     .btn.primary{ background: rgba(255,255,255,0.92); color:#0b1025; border:0; }
-    main{ padding:18px 20px 40px; max-width:1100px; margin:0 auto; }
+    .btn.danger{ border-color: rgba(239,68,68,0.35); }
+    main{ padding:18px 20px 40px; max-width:1200px; margin:0 auto; }
     .grid{ display:grid; grid-template-columns:1fr; gap:14px; margin-top:14px; }
-    @media (min-width:980px){ .grid{ grid-template-columns:1.2fr 0.8fr; } }
+    @media (min-width:1100px){ .grid{ grid-template-columns:1.25fr 0.75fr; } }
     .card{
       background: var(--panel);
       border: 1px solid var(--panel-border);
@@ -81,7 +82,7 @@
 
     .msg{ margin-top:12px; color:var(--muted); font-size:13px; }
 
-    .row-between{ display:flex; align-items:center; justify-content:space-between; gap:10px; }
+    .row-between{ display:flex; align-items:center; justify-content:space-between; gap:10px; flex-wrap:wrap; }
 
     .selected-box{
       margin-top: 12px;
@@ -126,6 +127,23 @@
     .sev.ok .dot{ background: var(--ok); }
     .sev.warn .dot{ background: var(--warn); }
     .sev.critical .dot{ background: var(--critical); }
+
+    .chart-wrap{
+      margin-top: 12px;
+      border-radius: 14px;
+      border: 1px solid rgba(255,255,255,0.10);
+      background: rgba(0,0,0,0.18);
+      padding: 12px;
+    }
+    canvas{ width:100%; height:220px; display:block; }
+    .legend{
+      display:flex; gap:14px; flex-wrap:wrap; margin-top:10px;
+      color: rgba(232,238,252,0.75); font-size: 13px;
+    }
+    .lg{ display:flex; align-items:center; gap:8px; }
+    .sw{ width:14px; height:14px; border-radius: 4px; display:inline-block; background: var(--info); }
+    .sw.a{ background: rgba(59,130,246,0.95); }
+    .sw.b{ background: rgba(16,185,129,0.95); }
 
     /* Modal */
     .modal-backdrop{
@@ -218,15 +236,17 @@
     <div style="display:flex;gap:10px;flex-wrap:wrap;">
       <button class="btn" id="btnWebsite">Website</button>
       <button class="btn" id="btnAddFarmTop">Add Farm</button>
+      <button class="btn danger" id="btnDemo">Create Demo Data</button>
       <button class="btn primary" id="btnLogout">Logout</button>
     </div>
   </header>
 
   <main>
     <div class="grid">
+      <!-- LEFT COLUMN -->
       <div class="card">
         <h2>Farm Overview</h2>
-        <p>This shows farms stored in Supabase (<b>public.farms</b>). Next: click a farm and show AI tiles per farm.</p>
+        <p>This shows farms stored in Supabase (<b>public.farms</b>). Step 5: charts + AI outputs per selected farm.</p>
 
         <div class="chips">
           <span class="chip"><span class="dot" style="background:var(--ok)"></span>Framework test: PASS</span>
@@ -234,7 +254,7 @@
           <span class="chip"><span class="dot" style="background:var(--info)"></span>WhatsApp delivery: pending</span>
         </div>
 
-        <div class="selected-box" id="selectedBox">
+        <div class="selected-box">
           <p class="selected-title">Selected farm</p>
           <p class="selected-sub" id="selectedText">None selected yet. Click a farm below.</p>
         </div>
@@ -244,6 +264,26 @@
           <div class="kpi"><div class="label">Fertilizer status</div><div class="value" id="kpiFert">—</div></div>
           <div class="kpi"><div class="label">Pest risk</div><div class="value" id="kpiPest">—</div></div>
           <div class="kpi"><div class="label">Last update</div><div class="value" id="kpiLast">—</div></div>
+        </div>
+
+        <!-- CHARTS -->
+        <div class="chart-wrap">
+          <div class="row-between">
+            <div>
+              <div style="font-weight:800;">Telemetry (last 24 points)</div>
+              <div style="color:var(--muted);font-size:13px;margin-top:4px;">Soil moisture + Temperature per selected farm.</div>
+            </div>
+            <button class="btn" id="btnRefresh">Refresh</button>
+          </div>
+
+          <canvas id="chart"></canvas>
+
+          <div class="legend">
+            <div class="lg"><span class="sw a"></span> Soil Moisture</div>
+            <div class="lg"><span class="sw b"></span> Temp (°C)</div>
+          </div>
+
+          <div class="msg" id="chartMsg">Select a farm to load chart.</div>
         </div>
 
         <div class="row-between" style="margin-top:14px;">
@@ -258,9 +298,16 @@
         <div class="msg" id="statusMsg"></div>
       </div>
 
+      <!-- RIGHT COLUMN -->
       <div class="card">
+        <h2>AI Outputs (per selected farm)</h2>
+        <p>Reads from <b>public.ai_outputs</b> and updates when you select a farm.</p>
+        <div id="aiBox" class="msg">Select a farm to load AI outputs.</div>
+
+        <div style="height:12px;"></div>
+
         <h2>Notifications</h2>
-        <p>Shows the last alerts for the selected farm (<b>public.notifications</b>).</p>
+        <p>Reads from <b>public.notifications</b> per selected farm.</p>
         <div id="notifBox" class="msg">Select a farm to load alerts.</div>
       </div>
     </div>
@@ -282,23 +329,19 @@
           <label>Farm name *</label>
           <input id="farmName" placeholder="Kadiri Demo" />
         </div>
-
         <div>
           <label>Country</label>
           <input id="country" placeholder="India" />
         </div>
-
         <div>
           <label>Latitude</label>
           <input id="lat" placeholder="14.208045" />
         </div>
-
         <div>
           <label>Longitude</label>
           <input id="lon" placeholder="78.290156" />
         </div>
-
-        <div>
+        <div class="span-2">
           <label>(Optional) Notes</label>
           <input id="notes" placeholder="e.g., Mango, PRE_FLUSH" />
         </div>
@@ -330,6 +373,12 @@
     const kpiLast = document.getElementById("kpiLast");
 
     const notifBox = document.getElementById("notifBox");
+    const aiBox = document.getElementById("aiBox");
+
+    // Chart
+    const canvas = document.getElementById("chart");
+    const chartMsg = document.getElementById("chartMsg");
+    const btnRefresh = document.getElementById("btnRefresh");
 
     // Modal elements
     const modalBackdrop = document.getElementById("modalBackdrop");
@@ -346,23 +395,20 @@
     const lonEl = document.getElementById("lon");
     const notesEl = document.getElementById("notes");
 
-    let selectedFarmId = null;
+    const btnDemo = document.getElementById("btnDemo");
 
+    let selectedFarmId = null;
+    let selectedFarmObj = null;
+
+    // ===== Helpers =====
     function showModal() {
       errBox.classList.remove("show");
       errBox.textContent = "";
       modalBackdrop.classList.add("show");
       farmNameEl.focus();
     }
-
-    function closeModal() {
-      modalBackdrop.classList.remove("show");
-    }
-
-    function showError(msg) {
-      errBox.textContent = msg;
-      errBox.classList.add("show");
-    }
+    function closeModal() { modalBackdrop.classList.remove("show"); }
+    function showError(msg) { errBox.textContent = msg; errBox.classList.add("show"); }
 
     function setKPIsEmpty() {
       kpiIrr.textContent = "—";
@@ -376,12 +422,22 @@
       try { return new Date(ts).toLocaleString(); } catch { return ts; }
     }
 
+    function escapeHtml(s) {
+      return String(s ?? "")
+        .replaceAll("&","&amp;")
+        .replaceAll("<","&lt;")
+        .replaceAll(">","&gt;")
+        .replaceAll('"',"&quot;")
+        .replaceAll("'","&#039;");
+    }
+
     async function ensureAuthOrRedirect() {
       const { data: { session } } = await supabase.auth.getSession();
       if (!session) window.location.href = "/login.html";
       return session;
     }
 
+    // ===== Farms =====
     async function loadFarms() {
       farmListEl.innerHTML = `<div class="msg">Loading farms...</div>`;
 
@@ -391,7 +447,7 @@
         .order("created_at", { ascending: false });
 
       if (error) {
-        farmListEl.innerHTML = `<div class="msg">Farms not loading yet: ${error.message}</div>`;
+        farmListEl.innerHTML = `<div class="msg">Farms not loading yet: ${escapeHtml(error.message)}</div>`;
         return [];
       }
 
@@ -415,7 +471,6 @@
         </div>
       `).join("");
 
-      // click handlers
       farmListEl.querySelectorAll(".farm-item").forEach(item => {
         item.addEventListener("click", () => {
           const id = Number(item.getAttribute("data-id"));
@@ -423,7 +478,6 @@
         });
       });
 
-      // restore last selected
       const saved = localStorage.getItem("selected_farm_id");
       if (saved) {
         const id = Number(saved);
@@ -443,21 +497,26 @@
 
     async function selectFarm(id, farms) {
       selectedFarmId = id;
+      selectedFarmObj = farms.find(f => f.id === id) || null;
+
       localStorage.setItem("selected_farm_id", String(id));
       highlightSelected(id);
 
-      const farm = farms.find(f => f.id === id);
-      if (!farm) return;
+      if (!selectedFarmObj) return;
 
-      selectedText.innerHTML = `<b>${escapeHtml(farm.farm_name || "Untitled")}</b> (Farm ID: ${farm.id})<br>${escapeHtml(farm.country || "—")} • ${farm.lat ?? "—"}, ${farm.lon ?? "—"}`;
+      selectedText.innerHTML =
+        `<b>${escapeHtml(selectedFarmObj.farm_name || "Untitled")}</b> (Farm ID: ${selectedFarmObj.id})<br>` +
+        `${escapeHtml(selectedFarmObj.country || "—")} • ${selectedFarmObj.lat ?? "—"}, ${selectedFarmObj.lon ?? "—"}`;
 
-      // Load status + notifications
       await Promise.all([
         loadFarmStatus(id),
-        loadNotifications(id)
+        loadNotifications(id),
+        loadAIOutputs(id),
+        loadTelemetryAndDraw(id)
       ]);
     }
 
+    // ===== Status (from Step 4) =====
     async function loadFarmStatus(farmId) {
       setKPIsEmpty();
 
@@ -468,15 +527,10 @@
         .maybeSingle();
 
       if (error) {
-        kpiIrr.textContent = "—";
-        kpiFert.textContent = "—";
-        kpiPest.textContent = "—";
-        kpiLast.textContent = "—";
         statusMsg.textContent = `Status not loading yet: ${error.message}`;
         return;
       }
 
-      // If no row exists (older farms created before trigger), create it now
       if (!data) {
         const { error: insErr } = await supabase
           .from("farm_status")
@@ -494,9 +548,10 @@
       kpiPest.textContent = data.pest_status || "Prototype";
       kpiLast.textContent = fmtTime(data.last_update);
 
-      statusMsg.textContent = "Dashboard loaded ✅ Next: connect this farm to AI outputs + charts.";
+      statusMsg.textContent = "Step 5 running ✅ Select a farm to view chart + AI outputs.";
     }
 
+    // ===== Notifications =====
     async function loadNotifications(farmId) {
       notifBox.innerHTML = `<div class="msg">Loading alerts...</div>`;
 
@@ -505,7 +560,7 @@
         .select("created_at,title,msg,severity")
         .eq("farm_id", farmId)
         .order("created_at", { ascending: false })
-        .limit(8);
+        .limit(6);
 
       if (error) {
         notifBox.innerHTML = `<div class="msg">Notifications not loading yet: ${escapeHtml(error.message)}</div>`;
@@ -533,6 +588,155 @@
       }).join("");
     }
 
+    // ===== AI Outputs =====
+    async function loadAIOutputs(farmId) {
+      aiBox.innerHTML = `<div class="msg">Loading AI outputs...</div>`;
+
+      const { data, error } = await supabase
+        .from("ai_outputs")
+        .select("created_at,module,title,message,severity")
+        .eq("farm_id", farmId)
+        .order("created_at", { ascending: false })
+        .limit(6);
+
+      if (error) {
+        aiBox.innerHTML = `<div class="msg">AI outputs not loading yet: ${escapeHtml(error.message)}</div>`;
+        return;
+      }
+
+      if (!data || data.length === 0) {
+        aiBox.innerHTML = `<div class="msg">No AI outputs yet for this farm. (Use “Create Demo Data” to test.)</div>`;
+        return;
+      }
+
+      aiBox.innerHTML = data.map(n => {
+        const sev = (n.severity || "info").toLowerCase();
+        const cls = ["ok","warn","info","critical"].includes(sev) ? sev : "info";
+        const title = n.title || `${(n.module || "module").toUpperCase()} update`;
+        return `
+          <div class="notif">
+            <div class="sev ${cls}">
+              <span class="dot"></span>
+              <p class="notif-title">${escapeHtml(title)}</p>
+            </div>
+            <p class="notif-msg">${escapeHtml(n.message || "")}</p>
+            <p class="notif-time">${fmtTime(n.created_at)}</p>
+          </div>
+        `;
+      }).join("");
+    }
+
+    // ===== Telemetry + Chart =====
+    async function loadTelemetryAndDraw(farmId) {
+      chartMsg.textContent = "Loading telemetry...";
+      const ctx = canvas.getContext("2d");
+
+      // Get last 24 points for each metric
+      const [sm, tp] = await Promise.all([
+        supabase.from("telemetry")
+          .select("ts,value")
+          .eq("farm_id", farmId)
+          .eq("metric", "soil_moisture")
+          .order("ts", { ascending: true })
+          .limit(24),
+        supabase.from("telemetry")
+          .select("ts,value")
+          .eq("farm_id", farmId)
+          .eq("metric", "temp_c")
+          .order("ts", { ascending: true })
+          .limit(24)
+      ]);
+
+      if (sm.error || tp.error) {
+        chartMsg.textContent = "Telemetry not loading yet (table/policy or no data).";
+        drawEmptyChart(ctx, "No telemetry");
+        return;
+      }
+
+      const seriesA = (sm.data || []).map(r => r.value);
+      const seriesB = (tp.data || []).map(r => r.value);
+
+      if (seriesA.length === 0 && seriesB.length === 0) {
+        chartMsg.textContent = "No telemetry yet. Click “Create Demo Data” to test chart.";
+        drawEmptyChart(ctx, "No telemetry");
+        return;
+      }
+
+      chartMsg.textContent = `Loaded telemetry for Farm ID ${farmId}.`;
+      drawTwoSeries(ctx, seriesA, seriesB);
+    }
+
+    function drawEmptyChart(ctx, label) {
+      const w = canvas.width = canvas.clientWidth * devicePixelRatio;
+      const h = canvas.height = canvas.clientHeight * devicePixelRatio;
+      ctx.clearRect(0,0,w,h);
+
+      ctx.globalAlpha = 0.9;
+      ctx.strokeStyle = "rgba(255,255,255,0.14)";
+      ctx.lineWidth = 2;
+      ctx.strokeRect(14*devicePixelRatio, 14*devicePixelRatio, w-28*devicePixelRatio, h-28*devicePixelRatio);
+
+      ctx.fillStyle = "rgba(232,238,252,0.65)";
+      ctx.font = `${14*devicePixelRatio}px system-ui, -apple-system, Segoe UI, Arial`;
+      ctx.fillText(label, 28*devicePixelRatio, 44*devicePixelRatio);
+    }
+
+    function norm(arr) {
+      if (!arr || arr.length === 0) return [];
+      const min = Math.min(...arr);
+      const max = Math.max(...arr);
+      if (max === min) return arr.map(_ => 0.5);
+      return arr.map(v => (v - min) / (max - min));
+    }
+
+    function drawTwoSeries(ctx, a, b) {
+      const w = canvas.width = canvas.clientWidth * devicePixelRatio;
+      const h = canvas.height = canvas.clientHeight * devicePixelRatio;
+      ctx.clearRect(0,0,w,h);
+
+      const pad = 18 * devicePixelRatio;
+      const innerW = w - pad*2;
+      const innerH = h - pad*2;
+
+      // grid
+      ctx.strokeStyle = "rgba(255,255,255,0.08)";
+      ctx.lineWidth = 1;
+      for (let i=0;i<5;i++){
+        const y = pad + (innerH * i/4);
+        ctx.beginPath();
+        ctx.moveTo(pad, y);
+        ctx.lineTo(pad+innerW, y);
+        ctx.stroke();
+      }
+
+      const an = norm(a);
+      const bn = norm(b);
+
+      function drawLine(series, color) {
+        if (!series || series.length < 2) return;
+        ctx.strokeStyle = color;
+        ctx.lineWidth = 2.5 * devicePixelRatio;
+        ctx.beginPath();
+        series.forEach((v, i) => {
+          const x = pad + (innerW * (i / (series.length - 1)));
+          const y = pad + innerH - (innerH * v);
+          if (i === 0) ctx.moveTo(x,y);
+          else ctx.lineTo(x,y);
+        });
+        ctx.stroke();
+      }
+
+      drawLine(an, "rgba(59,130,246,0.95)");  // soil moisture
+      drawLine(bn, "rgba(16,185,129,0.95)");  // temp
+
+      // labels
+      ctx.fillStyle = "rgba(232,238,252,0.65)";
+      ctx.font = `${12*devicePixelRatio}px system-ui, -apple-system, Segoe UI, Arial`;
+      ctx.fillText("Soil moisture", pad, pad - 6*devicePixelRatio);
+      ctx.fillText("Temp (°C)", pad + 140*devicePixelRatio, pad - 6*devicePixelRatio);
+    }
+
+    // ===== Add Farm =====
     async function addFarm() {
       errBox.classList.remove("show");
       errBox.textContent = "";
@@ -560,21 +764,67 @@
 
       closeModal();
 
-      // reload farms, select new farm
       const farms = await loadFarms();
-      if (data?.id) {
-        const exists = farms.some(f => f.id === data.id);
-        if (exists) selectFarm(data.id, farms);
+      if (data?.id && farms.some(f => f.id === data.id)) {
+        selectFarm(data.id, farms);
       }
     }
 
-    function escapeHtml(s) {
-      return String(s ?? "")
-        .replaceAll("&","&amp;")
-        .replaceAll("<","&lt;")
-        .replaceAll(">","&gt;")
-        .replaceAll('"',"&quot;")
-        .replaceAll("'","&#039;");
+    // ===== Demo Data =====
+    async function createDemoData() {
+      if (!selectedFarmId) {
+        alert("Please select a farm first.");
+        return;
+      }
+
+      // 24 points
+      const now = Date.now();
+      const rows = [];
+      for (let i=0;i<24;i++){
+        const ts = new Date(now - (23-i)*30*60*1000).toISOString(); // each 30 min
+        const soil = 18 + Math.sin(i/3)*3 + Math.random()*1.2;     // %
+        const temp = 24 + Math.sin(i/4)*2 + Math.random()*0.8;     // C
+        rows.push({ farm_id: selectedFarmId, metric: "soil_moisture", value: Number(soil.toFixed(2)), unit:"%", ts });
+        rows.push({ farm_id: selectedFarmId, metric: "temp_c", value: Number(temp.toFixed(2)), unit:"C", ts });
+      }
+
+      const { error: tErr } = await supabase.from("telemetry").insert(rows);
+      if (tErr) return alert("Telemetry insert failed: " + tErr.message);
+
+      const aiRows = [
+        {
+          farm_id: selectedFarmId,
+          module: "irrigation",
+          title: "Irrigation recommendation",
+          message: "Soil moisture trending down. Consider 40–55 minutes irrigation in evening (prototype).",
+          severity: "info"
+        },
+        {
+          farm_id: selectedFarmId,
+          module: "pest",
+          title: "Pest watch",
+          message: "Humidity rising pattern. Do quick leaf check tomorrow morning.",
+          severity: "warn"
+        }
+      ];
+
+      const { error: aErr } = await supabase.from("ai_outputs").insert(aiRows);
+      if (aErr) return alert("AI outputs insert failed: " + aErr.message);
+
+      // Also update farm_status so KPIs look real
+      await supabase.from("farm_status").update({
+        irrigation_status: "Connected",
+        fertilizer_status: "Prototype",
+        pest_status: "Prototype",
+        last_update: new Date().toISOString()
+      }).eq("farm_id", selectedFarmId);
+
+      alert("Demo data created ✅ Now click Refresh (or re-select farm).");
+      await Promise.all([
+        loadFarmStatus(selectedFarmId),
+        loadAIOutputs(selectedFarmId),
+        loadTelemetryAndDraw(selectedFarmId)
+      ]);
     }
 
     // ========= Init =========
@@ -593,13 +843,21 @@
     btnAddFarmInline.addEventListener("click", showModal);
     btnCloseModal.addEventListener("click", closeModal);
     btnCancel.addEventListener("click", closeModal);
-    modalBackdrop.addEventListener("click", (e) => {
-      if (e.target === modalBackdrop) closeModal();
-    });
-
+    modalBackdrop.addEventListener("click", (e) => { if (e.target === modalBackdrop) closeModal(); });
     btnSaveFarm.addEventListener("click", addFarm);
 
-    // Load farms on start
+    btnDemo.addEventListener("click", createDemoData);
+    btnRefresh.addEventListener("click", async () => {
+      if (!selectedFarmId) return;
+      await Promise.all([
+        loadFarmStatus(selectedFarmId),
+        loadAIOutputs(selectedFarmId),
+        loadNotifications(selectedFarmId),
+        loadTelemetryAndDraw(selectedFarmId)
+      ]);
+    });
+
+    // Start
     await loadFarms();
   </script>
 </body>
