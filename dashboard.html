@@ -53,6 +53,7 @@
     .btn.primary{ background: rgba(255,255,255,0.92); color:#0b1025; border:0; }
     .btn.danger{ border-color: rgba(239,68,68,0.35); }
     .btn.ghost{ background: rgba(0,0,0,0.10); }
+
     main{ padding:18px 20px 40px; max-width:1200px; margin:0 auto; }
     .grid{ display:grid; grid-template-columns:1fr; gap:14px; margin-top:14px; }
     @media (min-width:1100px){ .grid{ grid-template-columns:1.25fr 0.75fr; } }
@@ -373,6 +374,7 @@
     <div style="display:flex;gap:10px;flex-wrap:wrap;">
       <button class="btn" id="btnWebsite" type="button">Website</button>
       <button class="btn" id="btnAddFarmTop" type="button">Add Farm</button>
+      <button class="btn danger" id="btnDeleteFarmTop" type="button" disabled>Delete Selected</button>
       <button class="btn danger" id="btnDemo" type="button">Create Demo Data</button>
       <button class="btn primary" id="btnLogout" type="button">Logout</button>
     </div>
@@ -383,7 +385,7 @@
       <!-- LEFT COLUMN -->
       <div class="card">
         <h2>Farm Overview</h2>
-        <p>This shows farms stored in Supabase (<b>public.farms</b>). Step 5: charts + AI outputs per selected farm.</p>
+        <p>This shows farms stored in Supabase (<b>public.farms</b>). Step 6: weather alerts + delete farm + charts + AI outputs per selected farm.</p>
 
         <div class="chips">
           <span class="chip"><span class="dot" style="background:var(--ok)"></span>Framework test: PASS</span>
@@ -444,7 +446,7 @@
         <div style="height:12px;"></div>
 
         <h2>Notifications</h2>
-        <p>Reads from <b>public.notifications</b> per selected farm.</p>
+        <p>Reads from <b>public.notifications</b> per selected farm. (Also adds auto weather alerts - best effort.)</p>
         <div id="notifBox" class="msg">Select a farm to load alerts.</div>
 
         <div class="weather-mini" id="weatherBox" style="display:none;">
@@ -453,7 +455,7 @@
           <div class="wrow" id="weatherGrid" style="display:none;">
             <div class="wcell"><div class="k">Temperature</div><div class="v" id="wTemp">—</div></div>
             <div class="wcell"><div class="k">Wind</div><div class="v" id="wWind">—</div></div>
-            <div class="wcell"><div class="k">Rain (next hour)</div><div class="v" id="wRain">—</div></div>
+            <div class="wcell"><div class="k">Rain (now)</div><div class="v" id="wRain">—</div></div>
             <div class="wcell"><div class="k">Humidity</div><div class="v" id="wHum">—</div></div>
           </div>
           <div class="hint" style="margin-top:10px;">
@@ -648,6 +650,8 @@
     const btnLogout = document.getElementById("btnLogout");
     const btnWebsite = document.getElementById("btnWebsite");
 
+    const btnDeleteFarmTop = document.getElementById("btnDeleteFarmTop");
+
     const farmListEl = document.getElementById("farmList");
     const selectedText = document.getElementById("selectedText");
 
@@ -720,6 +724,7 @@
     let selectedFarmObj = null;
     let currentStep = 1;
     let addFarmInFlight = false; // prevents duplicate inserts
+    let weatherAlertLock = false; // prevents spam auto inserts
 
     // ===== Helpers =====
     function escapeHtml(s) {
@@ -773,7 +778,8 @@
     }
 
     function isPerennialCrop(crop){
-      return (crop || "").toLowerCase() === "mango" || (crop || "").toLowerCase() === "banana" || (crop || "").toLowerCase() === "sugarcane";
+      const c = (crop || "").toLowerCase();
+      return c === "mango" || c === "banana" || c === "sugarcane";
     }
 
     function syncAgeUI(){
@@ -802,7 +808,6 @@
         p.classList.toggle("active", Number(p.dataset.step) === currentStep);
       });
 
-      // Buttons
       btnBack.disabled = currentStep === 1;
       btnNext.style.display = (currentStep < 5) ? "inline-block" : "none";
       btnSaveFarm.style.display = (currentStep === 5) ? "inline-block" : "none";
@@ -859,7 +864,6 @@
       const pill = e.target.closest(".step-pill");
       if (!pill) return;
       const target = Number(pill.dataset.step);
-      // Only allow jumping forward if current step valid
       if (target > currentStep){
         for (let s = currentStep; s < target; s++){
           if (!validateStep(s)) return;
@@ -887,6 +891,10 @@
       });
     }
 
+    function updateDeleteSelectedButton(){
+      btnDeleteFarmTop.disabled = !selectedFarmId;
+    }
+
     async function loadFarms() {
       farmListEl.innerHTML = `<div class="msg">Loading farms...</div>`;
 
@@ -902,6 +910,9 @@
 
       if (!farms || farms.length === 0) {
         farmListEl.innerHTML = `<div class="msg">No farms yet. Click “Add Farm”.</div>`;
+        selectedFarmId = null;
+        selectedFarmObj = null;
+        updateDeleteSelectedButton();
         return [];
       }
 
@@ -948,18 +959,18 @@
       farmListEl.querySelectorAll(".farm-item").forEach(item => {
         item.addEventListener("click", (evt) => {
           const actionBtn = evt.target.closest("[data-action]");
-          if (actionBtn) return; // handled separately
+          if (actionBtn) return;
           const id = Number(item.getAttribute("data-id"));
           selectFarm(id, farms);
         });
       });
 
-      // delete
+      // delete per card
       farmListEl.querySelectorAll('[data-action="delete"]').forEach(btn => {
         btn.addEventListener("click", async (evt) => {
           evt.stopPropagation();
           const id = Number(btn.getAttribute("data-id"));
-          await deleteFarm(id);
+          await deleteFarm(id, { fromTopButton:false });
         });
       });
 
@@ -968,9 +979,14 @@
       if (saved) {
         const id = Number(saved);
         const exists = farms.some(f => f.id === id);
-        if (exists) selectFarm(id, farms);
+        if (exists) {
+          await selectFarm(id, farms);
+          return farms;
+        }
       }
 
+      // default: select first
+      await selectFarm(farms[0].id, farms);
       return farms;
     }
 
@@ -980,6 +996,7 @@
 
       localStorage.setItem("selected_farm_id", String(id));
       highlightSelected(id);
+      updateDeleteSelectedButton();
 
       if (!selectedFarmObj) return;
 
@@ -1003,13 +1020,40 @@
         loadTelemetryAndDraw(id),
         loadLiveWeatherPreview(selectedFarmObj)
       ]);
+
+      // Step 6: auto weather alert (best-effort) after selection
+      await weatherAutoAlert(selectedFarmObj);
     }
 
-    async function deleteFarm(farmId){
-      const ok = confirm(`Delete Farm ID ${farmId}? This cannot be undone.`);
+    async function deleteFarm(farmId, opts={ fromTopButton:false }){
+      const ok = confirm(`Delete Farm ID ${farmId}? This cannot be undone.\n\nIt will also try to remove telemetry, AI outputs, notifications and farm_status for this farm.`);
       if (!ok) return;
 
-      // If selected, clear selection first
+      // If selected, disable delete button immediately
+      if (selectedFarmId === farmId){
+        btnDeleteFarmTop.disabled = true;
+      }
+
+      // Best effort: delete children first (avoids FK issues if no ON DELETE CASCADE)
+      await Promise.allSettled([
+        supabase.from("telemetry").delete().eq("farm_id", farmId),
+        supabase.from("ai_outputs").delete().eq("farm_id", farmId),
+        supabase.from("notifications").delete().eq("farm_id", farmId),
+        supabase.from("farm_status").delete().eq("farm_id", farmId)
+      ]);
+
+      // Then delete farm
+      const { error } = await supabase.from("farms").delete().eq("id", farmId);
+      if (error){
+        alert(
+          "Delete failed: " + error.message +
+          "\n\nIf this is RLS policy issue, you must add a DELETE policy for farms where owner_id = auth.uid()."
+        );
+        updateDeleteSelectedButton();
+        return;
+      }
+
+      // Clear UI if deleted farm was selected
       if (selectedFarmId === farmId){
         selectedFarmId = null;
         selectedFarmObj = null;
@@ -1024,13 +1068,16 @@
         weatherBox.style.display = "none";
       }
 
-      const { error } = await supabase.from("farms").delete().eq("id", farmId);
-      if (error){
-        alert("Delete failed: " + error.message + "\n\n(If RLS blocks delete, add a delete policy for owner_id = auth.uid().)");
-        return;
-      }
+      // Reload farms and auto-select first if exists
       await loadFarms();
+      statusMsg.textContent = "Farm deleted ✅";
     }
+
+    // top delete selected
+    btnDeleteFarmTop.addEventListener("click", async () => {
+      if (!selectedFarmId) return;
+      await deleteFarm(selectedFarmId, { fromTopButton:true });
+    });
 
     // ===== Status (farm_status) =====
     async function loadFarmStatus(farmId) {
@@ -1064,7 +1111,7 @@
       kpiPest.textContent = data.pest_status || "Prototype";
       kpiLast.textContent = fmtTime(data.last_update);
 
-      statusMsg.textContent = "Step 5 running ✅ Select a farm to view chart + AI outputs.";
+      statusMsg.textContent = "Step 6 running ✅ Weather alerts + Delete Farm + charts + AI outputs.";
     }
 
     // ===== Notifications =====
@@ -1076,7 +1123,7 @@
         .select("created_at,title,msg,severity")
         .eq("farm_id", farmId)
         .order("created_at", { ascending: false })
-        .limit(6);
+        .limit(8);
 
       if (error) {
         notifBox.innerHTML = `<div class="msg">Notifications not loading yet: ${escapeHtml(error.message)}</div>`;
@@ -1113,7 +1160,7 @@
         .select("created_at,module,title,message,severity")
         .eq("farm_id", farmId)
         .order("created_at", { ascending: false })
-        .limit(6);
+        .limit(8);
 
       if (error) {
         aiBox.innerHTML = `<div class="msg">AI outputs not loading yet: ${escapeHtml(error.message)}</div>`;
@@ -1176,6 +1223,65 @@
       }catch(e){
         weatherMsg.textContent = "Weather preview not available right now. (" + (e?.message || "error") + ")";
         weatherGrid.style.display = "none";
+      }
+    }
+
+    // ===== Weather Auto Alert (best effort insert into notifications) =====
+    async function weatherAutoAlert(farm){
+      if (!farm) return;
+
+      // prevent spam: allow once per selection (and also keep 60 min local lock)
+      if (weatherAlertLock) return;
+      weatherAlertLock = true;
+      setTimeout(() => { weatherAlertLock = false; }, 60 * 1000); // 1 min lock
+
+      const lat = farm?.lat;
+      const lon = farm?.lon;
+      if (lat == null || lon == null || Number.isNaN(Number(lat)) || Number.isNaN(Number(lon))) return;
+
+      try{
+        // daily summary (today)
+        const url =
+          `https://api.open-meteo.com/v1/forecast?latitude=${encodeURIComponent(lat)}&longitude=${encodeURIComponent(lon)}` +
+          `&daily=precipitation_probability_max,precipitation_sum,temperature_2m_max,temperature_2m_min` +
+          `&timezone=auto`;
+        const res = await fetch(url);
+        if (!res.ok) return;
+        const j = await res.json();
+        const d = j.daily || {};
+
+        const pprob = Array.isArray(d.precipitation_probability_max) ? d.precipitation_probability_max[0] : null;
+        const psum = Array.isArray(d.precipitation_sum) ? d.precipitation_sum[0] : null;
+        const tmax = Array.isArray(d.temperature_2m_max) ? d.temperature_2m_max[0] : null;
+        const tmin = Array.isArray(d.temperature_2m_min) ? d.temperature_2m_min[0] : null;
+
+        if (pprob == null && psum == null && tmax == null && tmin == null) return;
+
+        let severity = "info";
+        if ((pprob != null && pprob >= 60) || (psum != null && psum >= 5)) severity = "warn";
+        if ((tmax != null && tmax >= 42) || (psum != null && psum >= 50)) severity = "critical";
+
+        const parts = [];
+        if (pprob != null) parts.push(`Rain probability: ${pprob}%`);
+        if (psum != null) parts.push(`Expected rain: ${psum} mm`);
+        if (tmax != null) parts.push(`Max temp: ${tmax}°C`);
+        if (tmin != null) parts.push(`Min temp: ${tmin}°C`);
+        const msg = parts.join(" · ");
+
+        // Insert into DB (best effort; if RLS blocks, it will fail silently)
+        await supabase.from("notifications").insert([{
+          farm_id: farm.id,
+          title: "Weather (auto)",
+          msg,
+          severity
+        }]);
+
+        // Reload notification list (even if insert blocked, list still works)
+        if (selectedFarmId === farm.id){
+          await loadNotifications(farm.id);
+        }
+      }catch(e){
+        // silent
       }
     }
 
@@ -1309,7 +1415,6 @@
       const mode = getRadio("mode") || "OPEN_FIELD";
       const crop = (cropEl.value || "").trim() || null;
 
-      // age fields
       let tree_age_years = null;
       let planting_date = null;
       if (isPerennialCrop((crop || "").toLowerCase())){
@@ -1325,7 +1430,6 @@
 
       const modules = buildModulesJson();
 
-      // Build full payload (we will safely drop 'notes' if the API says notes column missing)
       const payload = {
         farm_name,
         country,
@@ -1341,20 +1445,17 @@
         edge_device
       };
 
-      // include notes only if user typed it
       if (notes) payload.notes = notes;
-
       return payload;
     }
 
     async function addFarm(){
-      if (addFarmInFlight) return; // block double clicks / duplicate submits
+      if (addFarmInFlight) return;
       addFarmInFlight = true;
       btnSaveFarm.disabled = true;
       btnNext.disabled = true;
 
       try{
-        // Validate all steps before saving
         for (let s=1;s<=5;s++){
           if (!validateStep(s)) {
             addFarmInFlight = false;
@@ -1366,14 +1467,12 @@
 
         const payload = buildFarmPayload();
 
-        // First try insert as-is (with notes if present)
         let ins = await supabase
           .from("farms")
           .insert([payload])
           .select("id")
           .single();
 
-        // If schema cache says "notes column not found", retry WITHOUT notes
         if (ins.error && String(ins.error.message || "").includes("Could not find the 'notes' column")){
           const { notes, ...withoutNotes } = payload;
           ins = await supabase
@@ -1395,10 +1494,9 @@
 
         const farms = await loadFarms();
         if (ins.data?.id && farms.some(f => f.id === ins.data.id)) {
-          selectFarm(ins.data.id, farms);
+          await selectFarm(ins.data.id, farms);
         }
       } finally {
-        // ensure we release lock even if something unexpected happens
         addFarmInFlight = false;
         btnSaveFarm.disabled = false;
         btnNext.disabled = false;
@@ -1457,7 +1555,8 @@
         loadFarmStatus(selectedFarmId),
         loadAIOutputs(selectedFarmId),
         loadTelemetryAndDraw(selectedFarmId),
-        loadLiveWeatherPreview(selectedFarmObj)
+        loadLiveWeatherPreview(selectedFarmObj),
+        loadNotifications(selectedFarmId)
       ]);
     }
 
@@ -1491,12 +1590,14 @@
         loadTelemetryAndDraw(selectedFarmId),
         loadLiveWeatherPreview(selectedFarmObj)
       ]);
+      // optional: refresh weather alert too (not every refresh, only if you want)
+      // await weatherAutoAlert(selectedFarmObj);
     });
 
-    // Start
     renderSteps();
     syncAgeUI();
     await loadFarms();
+    updateDeleteSelectedButton();
   </script>
 </body>
 </html>
