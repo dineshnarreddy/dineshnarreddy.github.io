@@ -17,6 +17,7 @@
       --critical: rgba(239,68,68,0.95);
       --selected: rgba(59,130,246,0.14);
       --selected-border: rgba(59,130,246,0.40);
+      --danger: rgba(239,68,68,0.95);
     }
     body{
       margin:0;
@@ -46,10 +47,12 @@
       border:1px solid rgba(255,255,255,0.16);
       background: rgba(255,255,255,0.10);
       color: var(--text);
-      cursor:pointer; font-weight:600;
+      cursor:pointer; font-weight:700;
     }
+    .btn:disabled{ opacity:0.6; cursor:not-allowed; }
     .btn.primary{ background: rgba(255,255,255,0.92); color:#0b1025; border:0; }
     .btn.danger{ border-color: rgba(239,68,68,0.35); }
+    .btn.ghost{ background: rgba(0,0,0,0.10); }
     main{ padding:18px 20px 40px; max-width:1200px; margin:0 auto; }
     .grid{ display:grid; grid-template-columns:1fr; gap:14px; margin-top:14px; }
     @media (min-width:1100px){ .grid{ grid-template-columns:1.25fr 0.75fr; } }
@@ -78,10 +81,9 @@
     .kpi{ background: rgba(0,0,0,0.18); border:1px solid rgba(255,255,255,0.10);
       border-radius:14px; padding:12px; }
     .label{ color:var(--muted); font-size:12px; }
-    .value{ font-size:18px; font-weight:700; margin-top:6px; }
+    .value{ font-size:18px; font-weight:800; margin-top:6px; }
 
     .msg{ margin-top:12px; color:var(--muted); font-size:13px; }
-
     .row-between{ display:flex; align-items:center; justify-content:space-between; gap:10px; flex-wrap:wrap; }
 
     .selected-box{
@@ -91,8 +93,8 @@
       border: 1px solid rgba(255,255,255,0.10);
       background: rgba(0,0,0,0.18);
     }
-    .selected-title{ margin:0 0 6px; font-weight:800; }
-    .selected-sub{ margin:0; color: var(--muted); font-size: 13px; }
+    .selected-title{ margin:0 0 6px; font-weight:900; }
+    .selected-sub{ margin:0; color: var(--muted); font-size: 13px; line-height:1.45; }
 
     .farm-list{ margin-top: 12px; display:grid; gap:10px; }
     .farm-item{
@@ -102,27 +104,57 @@
       padding: 12px;
       cursor: pointer;
       transition: transform 0.12s ease, border-color 0.12s ease, background 0.12s ease;
+      position: relative;
     }
     .farm-item:hover{ transform: translateY(-1px); border-color: rgba(255,255,255,0.18); }
     .farm-item.selected{
       background: var(--selected);
       border-color: var(--selected-border);
     }
-    .farm-name{ margin:0; font-weight:800; font-size: 18px; }
+    .farm-name{ margin:0; font-weight:900; font-size: 18px; letter-spacing:0.2px; }
     .farm-meta{ margin:4px 0 0; color: var(--muted); font-size: 13px; }
     .farm-id{ margin:4px 0 0; color: rgba(232,238,252,0.78); font-size: 13px; }
+    .badges{ display:flex; gap:8px; flex-wrap:wrap; margin-top:10px; }
+    .badge{
+      display:inline-flex; align-items:center;
+      padding:6px 10px;
+      border-radius:999px;
+      border:1px solid rgba(255,255,255,0.12);
+      background: rgba(0,0,0,0.18);
+      color: rgba(232,238,252,0.82);
+      font-size: 12px;
+      font-weight:700;
+    }
 
-    .pillline{
-      margin-top:6px;
-      display:flex; flex-wrap:wrap; gap:8px;
-      color: rgba(232,238,252,0.78);
+    .farm-actions{
+      position:absolute;
+      right: 10px;
+      top: 10px;
+      display:flex;
+      gap:8px;
+      opacity: 0;
+      transform: translateY(-2px);
+      transition: opacity 0.12s ease, transform 0.12s ease;
+      pointer-events: none;
+    }
+    .farm-item:hover .farm-actions{
+      opacity: 1;
+      transform: translateY(0);
+      pointer-events: auto;
+    }
+    .iconbtn{
+      padding:8px 10px;
+      border-radius: 12px;
+      border:1px solid rgba(255,255,255,0.14);
+      background: rgba(0,0,0,0.18);
+      color: rgba(232,238,252,0.9);
+      cursor:pointer;
+      font-weight:900;
       font-size: 12px;
     }
-    .pilltag{
-      padding: 4px 8px;
-      border-radius: 999px;
-      border: 1px solid rgba(255,255,255,0.12);
-      background: rgba(0,0,0,0.18);
+    .iconbtn.danger{
+      border-color: rgba(239,68,68,0.35);
+      color: rgba(255,220,220,0.95);
     }
 
     .notif{
@@ -132,7 +164,7 @@
       border: 1px solid rgba(255,255,255,0.10);
       background: rgba(0,0,0,0.18);
     }
-    .notif-title{ margin:0; font-weight:800; font-size: 14px; }
+    .notif-title{ margin:0; font-weight:900; font-size: 14px; }
     .notif-msg{ margin:4px 0 0; color: rgba(232,238,252,0.8); font-size: 13px; line-height: 1.4; }
     .notif-time{ margin:6px 0 0; color: rgba(232,238,252,0.55); font-size: 12px; }
     .sev{ display:inline-flex; align-items:center; gap:8px; }
@@ -140,6 +172,7 @@
     .sev.ok .dot{ background: var(--ok); }
     .sev.warn .dot{ background: var(--warn); }
     .sev.critical .dot{ background: var(--critical); }
+    .sev.info .dot{ background: var(--info); }
 
     .chart-wrap{
       margin-top: 12px;
@@ -171,7 +204,7 @@
     .modal-backdrop.show{ display:flex; }
     .modal{
       width: 100%;
-      max-width: 760px;
+      max-width: 860px;
       border-radius: 18px;
       border: 1px solid rgba(255,255,255,0.10);
       background: rgba(10,15,30,0.92);
@@ -193,44 +226,46 @@
       border: 1px solid rgba(255,255,255,0.12);
       background: rgba(255,255,255,0.08);
       color: var(--text);
-      cursor:pointer; font-weight:800;
+      cursor:pointer; font-weight:900;
     }
 
-    .stepbar{
-      display:flex; flex-wrap:wrap; gap:8px;
-      margin: 10px 0 12px;
+    .steps{
+      display:flex;
+      gap:8px;
+      flex-wrap:wrap;
+      margin-top: 12px;
       padding: 10px;
       border-radius: 14px;
       border: 1px solid rgba(255,255,255,0.10);
-      background: rgba(0,0,0,0.14);
+      background: rgba(0,0,0,0.18);
     }
-    .stepchip{
-      padding: 8px 10px;
+    .step-pill{
+      padding:8px 10px;
       border-radius: 999px;
       border: 1px solid rgba(255,255,255,0.12);
-      background: rgba(0,0,0,0.18);
-      color: rgba(232,238,252,0.70);
+      background: rgba(0,0,0,0.14);
+      color: rgba(232,238,252,0.78);
       font-size: 12px;
-      font-weight: 800;
+      font-weight:900;
+      cursor:pointer;
       user-select:none;
     }
-    .stepchip.active{
-      background: rgba(255,255,255,0.90);
-      color: #0b1025;
-      border-color: transparent;
+    .step-pill.active{
+      background: rgba(255,255,255,0.92);
+      color:#0b1025;
+      border-color: rgba(255,255,255,0.0);
     }
 
     .form-grid{
       display:grid;
       grid-template-columns: 1fr;
       gap: 10px;
-      margin-top: 8px;
+      margin-top: 12px;
     }
-    @media (min-width: 760px){
+    @media (min-width: 860px){
       .form-grid{ grid-template-columns: 1fr 1fr; }
       .span-2{ grid-column: span 2; }
     }
-
     label{ display:block; font-size: 13px; color: var(--muted); margin-bottom: 6px; }
     input, select{
       width:100%;
@@ -242,29 +277,38 @@
       outline: none;
       box-sizing: border-box;
     }
+    select{ cursor:pointer; }
+    .hint{ margin-top:6px; color: rgba(232,238,252,0.55); font-size: 12px; }
 
-    .radioRow, .checkRow{
-      display:flex; flex-wrap:wrap; gap:10px; margin-top: 6px;
-    }
-    .pill{
-      display:inline-flex; align-items:center; gap:8px;
-      padding: 10px 12px;
-      border-radius: 999px;
-      border: 1px solid rgba(255,255,255,0.12);
+    .radio-row{
+      display:flex; gap:10px; flex-wrap:wrap;
+      padding: 10px;
+      border-radius: 14px;
+      border: 1px solid rgba(255,255,255,0.10);
       background: rgba(0,0,0,0.18);
+    }
+    .radio{
+      display:flex; align-items:center; gap:10px;
+      border: 1px solid rgba(255,255,255,0.12);
+      background: rgba(0,0,0,0.12);
+      border-radius: 14px;
+      padding: 10px 12px;
       cursor:pointer;
       user-select:none;
-      font-size: 13px;
-      color: rgba(232,238,252,0.90);
+      min-width: 150px;
     }
-    .pill input{ width:auto; margin:0; }
-
-    .hint{
-      margin-top: 8px;
-      color: rgba(232,238,252,0.65);
-      font-size: 12px;
-      line-height: 1.35;
+    .radio input{ width:auto; margin:0; }
+    .check-row{ display:flex; gap:10px; flex-wrap:wrap; }
+    .check{
+      display:flex; align-items:center; gap:10px;
+      border: 1px solid rgba(255,255,255,0.12);
+      background: rgba(0,0,0,0.12);
+      border-radius: 14px;
+      padding: 10px 12px;
+      cursor:pointer;
+      user-select:none;
     }
+    .check input{ width:auto; margin:0; }
 
     .modal-actions{
       display:flex;
@@ -272,7 +316,9 @@
       gap: 10px;
       margin-top: 12px;
       flex-wrap: wrap;
+      align-items:center;
     }
+    .modal-actions .right{ display:flex; gap:10px; flex-wrap:wrap; justify-content:flex-end; }
     .err{
       margin-top: 10px;
       padding: 10px 12px;
@@ -282,8 +328,36 @@
       color: rgba(255,220,220,0.95);
       display:none;
       font-size: 13px;
+      line-height:1.35;
     }
     .err.show{ display:block; }
+
+    .weather-mini{
+      margin-top: 12px;
+      padding: 12px;
+      border-radius: 14px;
+      border: 1px solid rgba(255,255,255,0.10);
+      background: rgba(0,0,0,0.18);
+    }
+    .weather-mini h3{
+      margin:0;
+      font-size: 14px;
+      font-weight: 900;
+    }
+    .weather-mini .wrow{
+      margin-top: 10px;
+      display:grid;
+      grid-template-columns: repeat(2, minmax(0,1fr));
+      gap: 10px;
+    }
+    .wcell{
+      border:1px solid rgba(255,255,255,0.10);
+      background: rgba(0,0,0,0.14);
+      border-radius: 14px;
+      padding: 10px 12px;
+    }
+    .wcell .k{ color: rgba(232,238,252,0.55); font-size: 12px; }
+    .wcell .v{ margin-top: 6px; font-weight: 900; font-size: 15px; }
   </style>
 </head>
 
@@ -297,10 +371,10 @@
       </div>
     </div>
     <div style="display:flex;gap:10px;flex-wrap:wrap;">
-      <button class="btn" id="btnWebsite">Website</button>
-      <button class="btn" id="btnAddFarmTop">Add Farm</button>
-      <button class="btn danger" id="btnDemo">Create Demo Data</button>
-      <button class="btn primary" id="btnLogout">Logout</button>
+      <button class="btn" id="btnWebsite" type="button">Website</button>
+      <button class="btn" id="btnAddFarmTop" type="button">Add Farm</button>
+      <button class="btn danger" id="btnDemo" type="button">Create Demo Data</button>
+      <button class="btn primary" id="btnLogout" type="button">Logout</button>
     </div>
   </header>
 
@@ -333,10 +407,10 @@
         <div class="chart-wrap">
           <div class="row-between">
             <div>
-              <div style="font-weight:800;">Telemetry (last 24 points)</div>
+              <div style="font-weight:900;">Telemetry (last 24 points)</div>
               <div style="color:var(--muted);font-size:13px;margin-top:4px;">Soil moisture + Temperature per selected farm.</div>
             </div>
-            <button class="btn" id="btnRefresh">Refresh</button>
+            <button class="btn" id="btnRefresh" type="button">Refresh</button>
           </div>
 
           <canvas id="chart"></canvas>
@@ -351,7 +425,7 @@
 
         <div class="row-between" style="margin-top:14px;">
           <h2 style="margin:0;font-size:16px;">Your farms</h2>
-          <button class="btn" id="btnAddFarmInline">+ Add</button>
+          <button class="btn" id="btnAddFarmInline" type="button">+ Add</button>
         </div>
 
         <div class="farm-list" id="farmList">
@@ -372,150 +446,194 @@
         <h2>Notifications</h2>
         <p>Reads from <b>public.notifications</b> per selected farm.</p>
         <div id="notifBox" class="msg">Select a farm to load alerts.</div>
+
+        <div class="weather-mini" id="weatherBox" style="display:none;">
+          <h3>Live Weather (Open-Meteo) – temporary preview</h3>
+          <div class="msg" id="weatherMsg" style="margin-top:6px;">Loading…</div>
+          <div class="wrow" id="weatherGrid" style="display:none;">
+            <div class="wcell"><div class="k">Temperature</div><div class="v" id="wTemp">—</div></div>
+            <div class="wcell"><div class="k">Wind</div><div class="v" id="wWind">—</div></div>
+            <div class="wcell"><div class="k">Rain (next hour)</div><div class="v" id="wRain">—</div></div>
+            <div class="wcell"><div class="k">Humidity</div><div class="v" id="wHum">—</div></div>
+          </div>
+          <div class="hint" style="margin-top:10px;">
+            Note: this preview uses only farm coordinates. Later we’ll store weather + AI outputs in DB and push WhatsApp alerts.
+          </div>
+        </div>
       </div>
     </div>
   </main>
 
-  <!-- Modal (MULTI-STEP ADD FARM) -->
+  <!-- Modal -->
   <div class="modal-backdrop" id="modalBackdrop">
-    <div class="modal">
+    <div class="modal" role="dialog" aria-modal="true">
       <div class="modal-head">
         <div>
           <h3>Add a farm</h3>
-          <p>We save farm profile: type → crop → age → services → deployment.</p>
+          <p>We save farm profile: <b>type → crop → age → services → deployment</b>. Only you can see your farms (RLS).</p>
         </div>
-        <button class="xbtn" id="btnCloseModal">×</button>
+        <button class="xbtn" id="btnCloseModal" type="button">×</button>
       </div>
 
-      <div class="stepbar">
-        <div class="stepchip active" id="s1">1) Type</div>
-        <div class="stepchip" id="s2">2) Crop</div>
-        <div class="stepchip" id="s3">3) Age</div>
-        <div class="stepchip" id="s4">4) Services</div>
-        <div class="stepchip" id="s5">5) Deploy</div>
+      <div class="steps" id="stepPills">
+        <div class="step-pill active" data-step="1">1) Type</div>
+        <div class="step-pill" data-step="2">2) Crop</div>
+        <div class="step-pill" data-step="3">3) Age</div>
+        <div class="step-pill" data-step="4">4) Services</div>
+        <div class="step-pill" data-step="5">5) Deploy</div>
       </div>
 
-      <div id="panel1">
-        <label>Farm type</label>
-        <div class="radioRow">
-          <label class="pill"><input type="radio" name="mode" value="OPEN_FIELD" checked> Open-field</label>
-          <label class="pill"><input type="radio" name="mode" value="GREENHOUSE"> Greenhouse</label>
+      <!-- STEP 1 -->
+      <div class="form-grid" id="step1">
+        <div class="span-2">
+          <label>Farm name *</label>
+          <input id="farmName" placeholder="Kadiri Demo" autocomplete="off" />
+          <div class="hint">Any name. Later we’ll add zones for greenhouse.</div>
         </div>
-        <div class="hint">Greenhouse zones will come later. For now we store greenhouse as farm type.</div>
-      </div>
 
-      <div id="panel2" style="display:none;">
-        <div class="form-grid">
-          <div class="span-2">
-            <label>Farm name *</label>
-            <input id="farmName" placeholder="Kadiri Demo" />
-          </div>
+        <div>
+          <label>Country</label>
+          <input id="country" placeholder="India" autocomplete="off" />
+        </div>
+        <div>
+          <label>Notes (optional)</label>
+          <input id="notes" placeholder="e.g., Mango orchard zone A" autocomplete="off" />
+          <div class="hint">If your Supabase table doesn’t have <b>notes</b> column, we auto-handle safely.</div>
+        </div>
 
-          <div>
-            <label>Crop</label>
-            <select id="crop">
-              <option value="mango">Mango</option>
-              <option value="tomato">Tomato</option>
-              <option value="chilli">Chilli</option>
-              <option value="rice">Rice</option>
-              <option value="cotton">Cotton</option>
-              <option value="groundnut">Groundnut</option>
-              <option value="maize">Maize</option>
-              <option value="wheat">Wheat</option>
-              <option value="banana">Banana</option>
-              <option value="other">Other</option>
-            </select>
-            <div class="hint">Later we’ll map crop → stage calendar → biology factors automatically.</div>
-          </div>
+        <div>
+          <label>Latitude</label>
+          <input id="lat" placeholder="14.208045" autocomplete="off" />
+        </div>
+        <div>
+          <label>Longitude</label>
+          <input id="lon" placeholder="78.290156" autocomplete="off" />
+        </div>
 
-          <div>
-            <label>Country</label>
-            <input id="country" placeholder="India" />
-          </div>
-
-          <div>
-            <label>Latitude (optional)</label>
-            <input id="lat" placeholder="14.208045" />
-          </div>
-
-          <div>
-            <label>Longitude (optional)</label>
-            <input id="lon" placeholder="78.290156" />
-          </div>
-
-          <div class="span-2">
-            <label>(Optional) Notes</label>
-            <input id="notes" placeholder="e.g., Mango, PRE_FLUSH" />
+        <div class="span-2">
+          <label>Farm type</label>
+          <div class="radio-row">
+            <label class="radio">
+              <input type="radio" name="mode" value="OPEN_FIELD" checked />
+              <span><b>OPEN_FIELD</b><div class="hint" style="margin:0;">Open farm / orchard</div></span>
+            </label>
+            <label class="radio">
+              <input type="radio" name="mode" value="GREENHOUSE" />
+              <span><b>GREENHOUSE</b><div class="hint" style="margin:0;">Controlled environment</div></span>
+            </label>
           </div>
         </div>
       </div>
 
-      <div id="panel3" style="display:none;">
-        <div class="form-grid">
-          <div id="mangoAgeBox" class="span-2" style="display:none;">
-            <label>Mango tree age (years)</label>
-            <input id="treeAgeYears" type="number" min="0" step="1" placeholder="e.g., 7" />
-            <div class="hint">Perennial crops: age changes irrigation + fertilizer decisions.</div>
-          </div>
-
-          <div id="seasonalBox" class="span-2" style="display:none;">
-            <label>Planting date</label>
-            <input id="plantingDate" type="date" />
-            <div class="hint">Seasonal crops: planting date helps compute crop stage later.</div>
-          </div>
+      <!-- STEP 2 -->
+      <div class="form-grid" id="step2" style="display:none;">
+        <div class="span-2">
+          <label>Crop</label>
+          <select id="crop">
+            <option value="mango">mango</option>
+            <option value="tomato">tomato</option>
+            <option value="chilli">chilli</option>
+            <option value="groundnut">groundnut</option>
+            <option value="cotton">cotton</option>
+            <option value="rice">rice</option>
+            <option value="wheat">wheat</option>
+            <option value="maize">maize</option>
+            <option value="banana">banana</option>
+            <option value="brinjal">brinjal (eggplant)</option>
+            <option value="potato">potato</option>
+            <option value="pigeon_pea">pigeon pea</option>
+            <option value="sugarcane">sugarcane</option>
+          </select>
+          <div class="hint" id="cropHint">Mango is perennial (tree age matters). Seasonal crops use planting date.</div>
         </div>
       </div>
 
-      <div id="panel4" style="display:none;">
-        <label>Services needed (select what you want)</label>
-        <div class="checkRow">
-          <label class="pill"><input type="checkbox" id="modIrr" checked> Irrigation</label>
-          <label class="pill"><input type="checkbox" id="modFert" checked> Fertilizer</label>
-          <label class="pill"><input type="checkbox" id="modPest" checked> Pest & disease</label>
+      <!-- STEP 3 -->
+      <div class="form-grid" id="step3" style="display:none;">
+        <div class="span-2">
+          <label>Age information</label>
+          <div class="hint" id="ageHint">For mango/orchards, enter tree age (years). For seasonal crops, give planting date.</div>
         </div>
-        <div class="hint">We only run modules you select — reduces load + keeps things fast.</div>
+
+        <div id="treeAgeWrap">
+          <label>Tree age (years)</label>
+          <input id="treeAgeYears" placeholder="e.g., 5" autocomplete="off" />
+          <div class="hint">Used for biology stage + irrigation/fertilizer rules.</div>
+        </div>
+
+        <div id="plantingWrap">
+          <label>Planting date</label>
+          <input id="plantingDate" type="date" />
+          <div class="hint">We’ll calculate crop stage from this.</div>
+        </div>
       </div>
 
-      <div id="panel5" style="display:none;">
-        <label>Deployment mode</label>
-        <div class="radioRow">
-          <label class="pill"><input type="radio" name="deploy" value="EDGE" checked> EDGE</label>
-          <label class="pill"><input type="radio" name="deploy" value="HYBRID"> HYBRID</label>
-          <label class="pill"><input type="radio" name="deploy" value="CLOUD"> CLOUD</label>
+      <!-- STEP 4 -->
+      <div class="form-grid" id="step4" style="display:none;">
+        <div class="span-2">
+          <label>Services needed</label>
+          <div class="check-row">
+            <label class="check"><input type="checkbox" id="svcIrr" checked /> Irrigation</label>
+            <label class="check"><input type="checkbox" id="svcFert" checked /> Fertilizer</label>
+            <label class="check"><input type="checkbox" id="svcPest" checked /> Pest</label>
+          </div>
+          <div class="hint">We disable modules you don’t need to reduce load.</div>
+        </div>
+      </div>
+
+      <!-- STEP 5 -->
+      <div class="form-grid" id="step5" style="display:none;">
+        <div class="span-2">
+          <label>Deployment mode</label>
+          <div class="radio-row">
+            <label class="radio">
+              <input type="radio" name="deploy" value="EDGE" checked />
+              <span><b>EDGE</b><div class="hint" style="margin:0;">Raspberry Pi on-farm</div></span>
+            </label>
+            <label class="radio">
+              <input type="radio" name="deploy" value="HYBRID" />
+              <span><b>HYBRID</b><div class="hint" style="margin:0;">Edge + Cloud storage</div></span>
+            </label>
+            <label class="radio">
+              <input type="radio" name="deploy" value="CLOUD" />
+              <span><b>CLOUD</b><div class="hint" style="margin:0;">Cloud compute + storage</div></span>
+            </label>
+          </div>
         </div>
 
-        <div class="form-grid">
-          <div>
-            <label>Cloud provider (HYBRID/CLOUD)</label>
-            <select id="cloudProvider">
-              <option value="">—</option>
-              <option value="AWS">AWS</option>
-              <option value="AZURE">Azure</option>
-              <option value="GCP">Google Cloud (GCP)</option>
-            </select>
-          </div>
-          <div>
-            <label>Edge device (EDGE)</label>
-            <select id="edgeDevice">
-              <option value="RPI">Raspberry Pi</option>
-              <option value="OTHER">Other</option>
-            </select>
-          </div>
+        <div>
+          <label>Cloud provider (HYBRID/CLOUD)</label>
+          <select id="cloudProvider">
+            <option value="">—</option>
+            <option value="AWS">AWS</option>
+            <option value="AZURE">AZURE</option>
+            <option value="GCP">GCP</option>
+            <option value="OTHER">OTHER</option>
+          </select>
+          <div class="hint">Security note: we are NOT collecting cloud keys in the website. Later onboarding will handle it safely.</div>
         </div>
 
-        <div class="hint">Security note: We are NOT collecting your cloud keys in a website. Later onboarding will handle it safely.</div>
+        <div>
+          <label>Edge device (EDGE)</label>
+          <select id="edgeDevice">
+            <option value="RPI">Raspberry Pi</option>
+            <option value="JETSON">NVIDIA Jetson</option>
+            <option value="MINIPC">Mini PC</option>
+            <option value="OTHER">Other</option>
+          </select>
+        </div>
       </div>
 
       <div class="err" id="errBox"></div>
 
       <div class="modal-actions">
         <div style="display:flex;gap:10px;flex-wrap:wrap;">
-          <button class="btn" id="btnCancel">Cancel</button>
-          <button class="btn" id="btnBack">Back</button>
+          <button class="btn" id="btnCancel" type="button">Cancel</button>
         </div>
-        <div style="display:flex;gap:10px;flex-wrap:wrap;">
-          <button class="btn" id="btnNext">Next</button>
-          <button class="btn primary" id="btnSaveFarm" style="display:none;">Save farm</button>
+        <div class="right">
+          <button class="btn ghost" id="btnBack" type="button">Back</button>
+          <button class="btn" id="btnNext" type="button">Next</button>
+          <button class="btn primary" id="btnSaveFarm" type="button" style="display:none;">Save farm</button>
         </div>
       </div>
     </div>
@@ -524,6 +642,7 @@
   <script type="module">
     import { supabase } from "./js/supabaseClient.js";
 
+    // ===== Elements =====
     const userLine = document.getElementById("userLine");
     const statusMsg = document.getElementById("statusMsg");
     const btnLogout = document.getElementById("btnLogout");
@@ -540,12 +659,21 @@
     const notifBox = document.getElementById("notifBox");
     const aiBox = document.getElementById("aiBox");
 
+    // Weather preview
+    const weatherBox = document.getElementById("weatherBox");
+    const weatherMsg = document.getElementById("weatherMsg");
+    const weatherGrid = document.getElementById("weatherGrid");
+    const wTemp = document.getElementById("wTemp");
+    const wWind = document.getElementById("wWind");
+    const wRain = document.getElementById("wRain");
+    const wHum = document.getElementById("wHum");
+
     // Chart
     const canvas = document.getElementById("chart");
     const chartMsg = document.getElementById("chartMsg");
     const btnRefresh = document.getElementById("btnRefresh");
 
-    // Modal elements
+    // Modal + steps
     const modalBackdrop = document.getElementById("modalBackdrop");
     const btnCloseModal = document.getElementById("btnCloseModal");
     const btnCancel = document.getElementById("btnCancel");
@@ -553,81 +681,47 @@
     const btnAddFarmTop = document.getElementById("btnAddFarmTop");
     const btnAddFarmInline = document.getElementById("btnAddFarmInline");
     const errBox = document.getElementById("errBox");
+
+    const stepPills = document.getElementById("stepPills");
+    const step1 = document.getElementById("step1");
+    const step2 = document.getElementById("step2");
+    const step3 = document.getElementById("step3");
+    const step4 = document.getElementById("step4");
+    const step5 = document.getElementById("step5");
     const btnBack = document.getElementById("btnBack");
     const btnNext = document.getElementById("btnNext");
 
-    // Step UI
-    const s1 = document.getElementById("s1");
-    const s2 = document.getElementById("s2");
-    const s3 = document.getElementById("s3");
-    const s4 = document.getElementById("s4");
-    const s5 = document.getElementById("s5");
-    const stepChips = [s1,s2,s3,s4,s5];
-
-    const panel1 = document.getElementById("panel1");
-    const panel2 = document.getElementById("panel2");
-    const panel3 = document.getElementById("panel3");
-    const panel4 = document.getElementById("panel4");
-    const panel5 = document.getElementById("panel5");
-    const panels = [panel1,panel2,panel3,panel4,panel5];
-
-    // Modal fields
+    // Form fields
     const farmNameEl = document.getElementById("farmName");
     const countryEl = document.getElementById("country");
+    const notesEl = document.getElementById("notes");
     const latEl = document.getElementById("lat");
     const lonEl = document.getElementById("lon");
-    const notesEl = document.getElementById("notes");
-
     const cropEl = document.getElementById("crop");
-    const mangoAgeBox = document.getElementById("mangoAgeBox");
-    const seasonalBox = document.getElementById("seasonalBox");
+    const cropHint = document.getElementById("cropHint");
+
+    const treeAgeWrap = document.getElementById("treeAgeWrap");
+    const plantingWrap = document.getElementById("plantingWrap");
     const treeAgeYearsEl = document.getElementById("treeAgeYears");
     const plantingDateEl = document.getElementById("plantingDate");
+    const ageHint = document.getElementById("ageHint");
 
-    const modIrr = document.getElementById("modIrr");
-    const modFert = document.getElementById("modFert");
-    const modPest = document.getElementById("modPest");
+    const svcIrr = document.getElementById("svcIrr");
+    const svcFert = document.getElementById("svcFert");
+    const svcPest = document.getElementById("svcPest");
 
     const cloudProviderEl = document.getElementById("cloudProvider");
     const edgeDeviceEl = document.getElementById("edgeDevice");
 
     const btnDemo = document.getElementById("btnDemo");
 
+    // ===== State =====
     let selectedFarmId = null;
     let selectedFarmObj = null;
-
-    let session = null;
+    let currentStep = 1;
+    let addFarmInFlight = false; // prevents duplicate inserts
 
     // ===== Helpers =====
-    function showModal() {
-      errBox.classList.remove("show");
-      errBox.textContent = "";
-      modalBackdrop.classList.add("show");
-      step = 0;
-      renderStep();
-      updateAgeUI();
-      // focus
-      setTimeout(() => {
-        const el = document.querySelector('input[name="mode"]:checked');
-        if (el) el.focus();
-      }, 0);
-    }
-    function closeModal() { modalBackdrop.classList.remove("show"); }
-    function showError(msg) { errBox.textContent = msg; errBox.classList.add("show"); }
-    function clearError(){ errBox.textContent=""; errBox.classList.remove("show"); }
-
-    function setKPIsEmpty() {
-      kpiIrr.textContent = "—";
-      kpiFert.textContent = "—";
-      kpiPest.textContent = "—";
-      kpiLast.textContent = "—";
-    }
-
-    function fmtTime(ts) {
-      if (!ts) return "—";
-      try { return new Date(ts).toLocaleString(); } catch { return ts; }
-    }
-
     function escapeHtml(s) {
       return String(s ?? "")
         .replaceAll("&","&amp;")
@@ -637,106 +731,168 @@
         .replaceAll("'","&#039;");
     }
 
+    function fmtTime(ts) {
+      if (!ts) return "—";
+      try { return new Date(ts).toLocaleString(); } catch { return ts; }
+    }
+
+    function showError(msg) { errBox.textContent = msg; errBox.classList.add("show"); }
+    function clearError(){ errBox.textContent = ""; errBox.classList.remove("show"); }
+
+    function showModal() {
+      clearError();
+      modalBackdrop.classList.add("show");
+      currentStep = 1;
+      renderSteps();
+      farmNameEl.focus();
+      syncAgeUI();
+    }
+    function closeModal() {
+      modalBackdrop.classList.remove("show");
+      addFarmInFlight = false;
+      btnSaveFarm.disabled = false;
+      btnNext.disabled = false;
+    }
+
     async function ensureAuthOrRedirect() {
       const { data: { session } } = await supabase.auth.getSession();
       if (!session) window.location.href = "/login.html";
       return session;
     }
 
+    function setKPIsEmpty() {
+      kpiIrr.textContent = "—";
+      kpiFert.textContent = "—";
+      kpiPest.textContent = "—";
+      kpiLast.textContent = "—";
+    }
+
     function getRadio(name){
       const el = document.querySelector(`input[name="${name}"]:checked`);
-      return el ? el.value : "";
+      return el ? el.value : null;
     }
 
-    function updateAgeUI(){
-      const crop = (cropEl?.value || "").toLowerCase();
-      const isMangoLike = (crop === "mango" || crop === "banana");
-      if (isMangoLike){
-        mangoAgeBox.style.display = "";
-        seasonalBox.style.display = "none";
+    function isPerennialCrop(crop){
+      return (crop || "").toLowerCase() === "mango" || (crop || "").toLowerCase() === "banana" || (crop || "").toLowerCase() === "sugarcane";
+    }
+
+    function syncAgeUI(){
+      const crop = (cropEl.value || "").toLowerCase();
+      const perennial = isPerennialCrop(crop);
+
+      if (perennial){
+        treeAgeWrap.style.display = "block";
+        plantingWrap.style.display = "none";
+        ageHint.textContent = "Perennial crop: please enter tree age (years).";
+        cropHint.textContent = "This crop is treated as perennial. Tree age will affect biology stage + irrigation/fertilizer rules.";
       } else {
-        mangoAgeBox.style.display = "none";
-        seasonalBox.style.display = "";
+        treeAgeWrap.style.display = "none";
+        plantingWrap.style.display = "block";
+        ageHint.textContent = "Seasonal crop: please enter planting date (we calculate stage from this).";
+        cropHint.textContent = "This crop is treated as seasonal. Planting date will decide growth stage + recommendations.";
       }
     }
-    cropEl.addEventListener("change", updateAgeUI);
 
-    // ===== Stepper =====
-    let step = 0;
+    // ===== Steps UI =====
+    function renderSteps(){
+      const steps = [step1, step2, step3, step4, step5];
+      steps.forEach((s, idx) => s.style.display = (idx+1===currentStep) ? "grid" : "none");
 
-    function renderStep(){
-      panels.forEach((p,i) => p.style.display = (i===step) ? "" : "none");
-      stepChips.forEach((c,i)=> c.classList.toggle("active", i===step));
+      stepPills.querySelectorAll(".step-pill").forEach(p => {
+        p.classList.toggle("active", Number(p.dataset.step) === currentStep);
+      });
 
-      btnBack.disabled = (step === 0);
-      btnNext.style.display = (step < 4) ? "" : "none";
-      btnSaveFarm.style.display = (step === 4) ? "" : "none";
+      // Buttons
+      btnBack.disabled = currentStep === 1;
+      btnNext.style.display = (currentStep < 5) ? "inline-block" : "none";
+      btnSaveFarm.style.display = (currentStep === 5) ? "inline-block" : "none";
     }
 
-    function validateStep(){
+    function validateStep(step){
       clearError();
 
+      const farm_name = (farmNameEl.value || "").trim();
       if (step === 1){
-        const name = (farmNameEl.value || "").trim();
-        if (!name) return "Farm name is required.";
-        const crop = (cropEl.value || "").trim();
-        if (!crop) return "Please select crop.";
-      }
-
-      if (step === 2){
-        const crop = (cropEl.value || "").toLowerCase();
-        const isMangoLike = (crop === "mango" || crop === "banana");
-        if (isMangoLike){
-          const yrs = treeAgeYearsEl.value === "" ? null : Number(treeAgeYearsEl.value);
-          if (yrs === null || Number.isNaN(yrs) || yrs < 0) return "Enter valid tree age (years).";
-        } else {
-          const pd = (plantingDateEl.value || "").trim();
-          if (!pd) return "Select planting date.";
-        }
-
+        if (!farm_name) { showError("Farm name is required."); return false; }
         const lat = (latEl.value || "").trim();
         const lon = (lonEl.value || "").trim();
-        if (lat && Number.isNaN(Number(lat))) return "Latitude must be a number.";
-        if (lon && Number.isNaN(Number(lon))) return "Longitude must be a number.";
+        if (lat && Number.isNaN(Number(lat))) { showError("Latitude must be a number."); return false; }
+        if (lon && Number.isNaN(Number(lon))) { showError("Longitude must be a number."); return false; }
+        return true;
       }
 
       if (step === 3){
-        if (!modIrr.checked && !modFert.checked && !modPest.checked) return "Select at least one service.";
+        const crop = (cropEl.value || "").toLowerCase();
+        if (isPerennialCrop(crop)){
+          const years = (treeAgeYearsEl.value || "").trim();
+          if (!years) { showError("Please enter tree age (years)."); return false; }
+          const n = Number(years);
+          if (Number.isNaN(n) || n < 0 || n > 100) { showError("Tree age must be a valid number (0–100)."); return false; }
+        } else {
+          const pd = (plantingDateEl.value || "").trim();
+          if (!pd) { showError("Please select planting date."); return false; }
+        }
+        return true;
       }
 
       if (step === 4){
-        const deploy = getRadio("deploy");
-        if (!deploy) return "Select deployment mode.";
-        if ((deploy === "CLOUD" || deploy === "HYBRID") && !cloudProviderEl.value){
-          return "Select cloud provider for CLOUD/HYBRID.";
+        if (!svcIrr.checked && !svcFert.checked && !svcPest.checked){
+          showError("Select at least one service (Irrigation / Fertilizer / Pest).");
+          return false;
         }
+        return true;
       }
 
-      return "";
+      if (step === 5){
+        const deploy = getRadio("deploy") || "EDGE";
+        if ((deploy === "HYBRID" || deploy === "CLOUD") && !cloudProviderEl.value){
+          showError("Please select a cloud provider for HYBRID/CLOUD mode.");
+          return false;
+        }
+        return true;
+      }
+
+      return true;
     }
 
-    btnBack.addEventListener("click", () => {
-      clearError();
-      step = Math.max(0, step-1);
-      renderStep();
-      updateAgeUI();
+    stepPills.addEventListener("click", (e) => {
+      const pill = e.target.closest(".step-pill");
+      if (!pill) return;
+      const target = Number(pill.dataset.step);
+      // Only allow jumping forward if current step valid
+      if (target > currentStep){
+        for (let s = currentStep; s < target; s++){
+          if (!validateStep(s)) return;
+        }
+      }
+      currentStep = target;
+      renderSteps();
     });
 
-    btnNext.addEventListener("click", () => {
-      const err = validateStep();
-      if (err) return showError(err);
-      step = Math.min(4, step+1);
-      renderStep();
-      updateAgeUI();
+    btnBack.addEventListener("click", () => {
+      if (currentStep > 1){ currentStep--; renderSteps(); }
     });
+    btnNext.addEventListener("click", () => {
+      if (!validateStep(currentStep)) return;
+      if (currentStep < 5){ currentStep++; renderSteps(); }
+    });
+
+    cropEl.addEventListener("change", syncAgeUI);
 
     // ===== Farms =====
+    function highlightSelected(id) {
+      farmListEl.querySelectorAll(".farm-item").forEach(el => {
+        const fid = Number(el.getAttribute("data-id"));
+        el.classList.toggle("selected", fid === id);
+      });
+    }
+
     async function loadFarms() {
       farmListEl.innerHTML = `<div class="msg">Loading farms...</div>`;
 
       const { data: farms, error } = await supabase
         .from("farms")
-        .select("id,farm_name,country,lat,lon,created_at,mode,crop,tree_age_years,planting_date,modules,deployment_mode,cloud_provider,edge_device")
+        .select("id,farm_name,country,lat,lon,created_at,mode,crop,tree_age_years,planting_date,modules,deployment_mode,cloud_provider,edge_device,notes")
         .order("created_at", { ascending: false });
 
       if (error) {
@@ -750,48 +906,64 @@
       }
 
       farmListEl.innerHTML = farms.map(f => {
-        const mods = f.modules || {};
+        const modules = f.modules || {};
         const services = [
-          mods.irrigation ? "Irrigation" : null,
-          mods.fertilizer ? "Fertilizer" : null,
-          mods.pest ? "Pest" : null
-        ].filter(Boolean);
+          modules.irrigation ? "Irrigation" : null,
+          modules.fertilizer ? "Fertilizer" : null,
+          modules.pest ? "Pest" : null
+        ].filter(Boolean).join(", ") || "—";
 
-        const servicesText = services.length ? services.join(", ") : "—";
-
-        const type = f.mode || "—";
+        const mode = f.mode || "—";
         const crop = f.crop || "—";
         const deploy = f.deployment_mode || "—";
 
         return `
           <div class="farm-item" data-id="${f.id}">
+            <div class="farm-actions">
+              <button class="iconbtn danger" data-action="delete" data-id="${f.id}" type="button">Delete</button>
+            </div>
+
             <div style="display:flex;justify-content:space-between;gap:12px;align-items:flex-start;flex-wrap:wrap;">
               <div>
                 <p class="farm-name">${escapeHtml(f.farm_name || "Untitled farm")}</p>
                 <p class="farm-meta">${escapeHtml(f.country || "—")} • ${f.lat ?? "—"}, ${f.lon ?? "—"}</p>
-                <div class="pillline">
-                  <span class="pilltag">Type: ${escapeHtml(type)}</span>
-                  <span class="pilltag">Crop: ${escapeHtml(crop)}</span>
-                  <span class="pilltag">Deploy: ${escapeHtml(deploy)}</span>
-                  <span class="pilltag">Services: ${escapeHtml(servicesText)}</span>
-                </div>
                 <p class="farm-id">Farm ID: ${f.id}</p>
               </div>
               <div style="color:rgba(232,238,252,0.55);font-size:12px;">
                 ${fmtTime(f.created_at)}
               </div>
             </div>
+
+            <div class="badges">
+              <span class="badge">Type: ${escapeHtml(mode)}</span>
+              <span class="badge">Crop: ${escapeHtml(crop)}</span>
+              <span class="badge">Deploy: ${escapeHtml(deploy)}</span>
+              <span class="badge">Services: ${escapeHtml(services)}</span>
+            </div>
           </div>
         `;
       }).join("");
 
+      // click to select
       farmListEl.querySelectorAll(".farm-item").forEach(item => {
-        item.addEventListener("click", () => {
+        item.addEventListener("click", (evt) => {
+          const actionBtn = evt.target.closest("[data-action]");
+          if (actionBtn) return; // handled separately
           const id = Number(item.getAttribute("data-id"));
           selectFarm(id, farms);
         });
       });
 
+      // delete
+      farmListEl.querySelectorAll('[data-action="delete"]').forEach(btn => {
+        btn.addEventListener("click", async (evt) => {
+          evt.stopPropagation();
+          const id = Number(btn.getAttribute("data-id"));
+          await deleteFarm(id);
+        });
+      });
+
+      // restore selection
       const saved = localStorage.getItem("selected_farm_id");
       if (saved) {
         const id = Number(saved);
@@ -800,13 +972,6 @@
       }
 
       return farms;
-    }
-
-    function highlightSelected(id) {
-      farmListEl.querySelectorAll(".farm-item").forEach(el => {
-        const fid = Number(el.getAttribute("data-id"));
-        el.classList.toggle("selected", fid === id);
-      });
     }
 
     async function selectFarm(id, farms) {
@@ -818,32 +983,56 @@
 
       if (!selectedFarmObj) return;
 
-      const mods = selectedFarmObj.modules || {};
+      const modules = selectedFarmObj.modules || {};
       const services = [
-        mods.irrigation ? "Irrigation" : null,
-        mods.fertilizer ? "Fertilizer" : null,
-        mods.pest ? "Pest" : null
+        modules.irrigation ? "Irrigation" : null,
+        modules.fertilizer ? "Fertilizer" : null,
+        modules.pest ? "Pest" : null
       ].filter(Boolean).join(", ") || "—";
-
-      const extraAge = (selectedFarmObj.crop || "").toLowerCase() === "mango"
-        ? (selectedFarmObj.tree_age_years != null ? `Age: ${selectedFarmObj.tree_age_years} years` : "")
-        : (selectedFarmObj.planting_date ? `Planting: ${selectedFarmObj.planting_date}` : "");
 
       selectedText.innerHTML =
         `<b>${escapeHtml(selectedFarmObj.farm_name || "Untitled")}</b> (Farm ID: ${selectedFarmObj.id})<br>` +
         `${escapeHtml(selectedFarmObj.country || "—")} • ${selectedFarmObj.lat ?? "—"}, ${selectedFarmObj.lon ?? "—"}<br>` +
         `Type: <b>${escapeHtml(selectedFarmObj.mode || "—")}</b> • Crop: <b>${escapeHtml(selectedFarmObj.crop || "—")}</b> • Deploy: <b>${escapeHtml(selectedFarmObj.deployment_mode || "—")}</b><br>` +
-        `Services: <b>${escapeHtml(services)}</b>${extraAge ? ` • ${escapeHtml(extraAge)}` : ""}`;
+        `Services: <b>${escapeHtml(services)}</b>`;
 
       await Promise.all([
         loadFarmStatus(id),
         loadNotifications(id),
         loadAIOutputs(id),
-        loadTelemetryAndDraw(id)
+        loadTelemetryAndDraw(id),
+        loadLiveWeatherPreview(selectedFarmObj)
       ]);
     }
 
-    // ===== Status (from Step 4) =====
+    async function deleteFarm(farmId){
+      const ok = confirm(`Delete Farm ID ${farmId}? This cannot be undone.`);
+      if (!ok) return;
+
+      // If selected, clear selection first
+      if (selectedFarmId === farmId){
+        selectedFarmId = null;
+        selectedFarmObj = null;
+        localStorage.removeItem("selected_farm_id");
+        selectedText.textContent = "None selected yet. Click a farm below.";
+        setKPIsEmpty();
+        aiBox.innerHTML = `<div class="msg">Select a farm to load AI outputs.</div>`;
+        notifBox.innerHTML = `<div class="msg">Select a farm to load alerts.</div>`;
+        chartMsg.textContent = "Select a farm to load chart.";
+        const ctx = canvas.getContext("2d");
+        drawEmptyChart(ctx, "No selection");
+        weatherBox.style.display = "none";
+      }
+
+      const { error } = await supabase.from("farms").delete().eq("id", farmId);
+      if (error){
+        alert("Delete failed: " + error.message + "\n\n(If RLS blocks delete, add a delete policy for owner_id = auth.uid().)");
+        return;
+      }
+      await loadFarms();
+    }
+
+    // ===== Status (farm_status) =====
     async function loadFarmStatus(farmId) {
       setKPIsEmpty();
 
@@ -953,6 +1142,43 @@
       }).join("");
     }
 
+    // ===== Live Weather Preview (temporary, not saved) =====
+    async function loadLiveWeatherPreview(farm){
+      const lat = farm?.lat;
+      const lon = farm?.lon;
+
+      if (lat == null || lon == null || Number.isNaN(Number(lat)) || Number.isNaN(Number(lon))){
+        weatherBox.style.display = "none";
+        return;
+      }
+
+      weatherBox.style.display = "block";
+      weatherGrid.style.display = "none";
+      weatherMsg.textContent = "Loading from Open-Meteo…";
+
+      try{
+        const url =
+          `https://api.open-meteo.com/v1/forecast?latitude=${encodeURIComponent(lat)}&longitude=${encodeURIComponent(lon)}` +
+          `&current=temperature_2m,relative_humidity_2m,wind_speed_10m,rain` +
+          `&timezone=auto`;
+        const res = await fetch(url);
+        if (!res.ok) throw new Error("Open-Meteo error " + res.status);
+        const j = await res.json();
+        const c = j.current || {};
+
+        wTemp.textContent = (c.temperature_2m ?? "—") + (c.temperature_2m != null ? " °C" : "");
+        wWind.textContent = (c.wind_speed_10m ?? "—") + (c.wind_speed_10m != null ? " km/h" : "");
+        wRain.textContent = (c.rain ?? "—") + (c.rain != null ? " mm" : "");
+        wHum.textContent = (c.relative_humidity_2m ?? "—") + (c.relative_humidity_2m != null ? " %" : "");
+
+        weatherMsg.textContent = `Updated: ${j.current?.time ? new Date(j.current.time).toLocaleString() : "now"}`;
+        weatherGrid.style.display = "grid";
+      }catch(e){
+        weatherMsg.textContent = "Weather preview not available right now. (" + (e?.message || "error") + ")";
+        weatherGrid.style.display = "none";
+      }
+    }
+
     // ===== Telemetry + Chart =====
     async function loadTelemetryAndDraw(farmId) {
       chartMsg.textContent = "Loading telemetry...";
@@ -1024,6 +1250,7 @@
       const innerW = w - pad*2;
       const innerH = h - pad*2;
 
+      // grid
       ctx.strokeStyle = "rgba(255,255,255,0.08)";
       ctx.lineWidth = 1;
       for (let i=0;i<5;i++){
@@ -1060,85 +1287,121 @@
       ctx.fillText("Temp (°C)", pad + 140*devicePixelRatio, pad - 6*devicePixelRatio);
     }
 
-    // ===== Add Farm (MULTI-STEP) =====
-    async function addFarm() {
-      const err = validateStep();
-      if (err) return showError(err);
+    // ===== Add Farm (NO DUPLICATES) =====
+    function buildModulesJson(){
+      return {
+        irrigation: !!svcIrr.checked,
+        fertilizer: !!svcFert.checked,
+        pest: !!svcPest.checked
+      };
+    }
 
-      clearError();
-
+    function buildFarmPayload(){
       const farm_name = (farmNameEl.value || "").trim();
-      if (!farm_name) return showError("Farm name is required.");
-
       const country = (countryEl.value || "").trim() || null;
-      const lat = (latEl.value || "").trim();
-      const lon = (lonEl.value || "").trim();
       const notes = (notesEl.value || "").trim() || null;
 
+      const lat = (latEl.value || "").trim();
+      const lon = (lonEl.value || "").trim();
       const latNum = lat ? Number(lat) : null;
       const lonNum = lon ? Number(lon) : null;
 
-      if (lat && Number.isNaN(latNum)) return showError("Latitude must be a number.");
-      if (lon && Number.isNaN(lonNum)) return showError("Longitude must be a number.");
-
       const mode = getRadio("mode") || "OPEN_FIELD";
-      const crop = (cropEl.value || "mango").trim();
+      const crop = (cropEl.value || "").trim() || null;
 
-      const cropLower = crop.toLowerCase();
-      const isMangoLike = (cropLower === "mango" || cropLower === "banana");
-      const tree_age_years = isMangoLike ? Number(treeAgeYearsEl.value) : null;
-      const planting_date = isMangoLike ? null : (plantingDateEl.value || null);
-
-      const modules = {
-        irrigation: !!modIrr.checked,
-        fertilizer: !!modFert.checked,
-        pest: !!modPest.checked
-      };
+      // age fields
+      let tree_age_years = null;
+      let planting_date = null;
+      if (isPerennialCrop((crop || "").toLowerCase())){
+        const n = Number((treeAgeYearsEl.value || "").trim());
+        tree_age_years = Number.isNaN(n) ? null : Math.floor(n);
+      } else {
+        planting_date = (plantingDateEl.value || "").trim() || null;
+      }
 
       const deployment_mode = getRadio("deploy") || "EDGE";
-      const cloud_provider = (deployment_mode === "CLOUD" || deployment_mode === "HYBRID") ? (cloudProviderEl.value || null) : null;
-      const edge_device = (deployment_mode === "EDGE") ? (edgeDeviceEl.value || "RPI") : null;
+      const cloud_provider = (deployment_mode === "HYBRID" || deployment_mode === "CLOUD") ? (cloudProviderEl.value || null) : null;
+      const edge_device = (deployment_mode === "EDGE") ? (edgeDeviceEl.value || null) : null;
 
+      const modules = buildModulesJson();
+
+      // Build full payload (we will safely drop 'notes' if the API says notes column missing)
+      const payload = {
+        farm_name,
+        country,
+        lat: latNum,
+        lon: lonNum,
+        mode,
+        crop,
+        tree_age_years,
+        planting_date,
+        modules,
+        deployment_mode,
+        cloud_provider,
+        edge_device
+      };
+
+      // include notes only if user typed it
+      if (notes) payload.notes = notes;
+
+      return payload;
+    }
+
+    async function addFarm(){
+      if (addFarmInFlight) return; // block double clicks / duplicate submits
+      addFarmInFlight = true;
       btnSaveFarm.disabled = true;
-      btnSaveFarm.textContent = "Saving...";
+      btnNext.disabled = true;
 
       try{
-        // IMPORTANT: include owner_id because your farms table has owner_id NOT NULL
-        const payload = {
-          owner_id: session.user.id,
-          farm_name,
-          country,
-          lat: latNum,
-          lon: lonNum,
-          notes,
-          mode,
-          crop,
-          tree_age_years,
-          planting_date,
-          modules,
-          deployment_mode,
-          cloud_provider,
-          edge_device
-        };
+        // Validate all steps before saving
+        for (let s=1;s<=5;s++){
+          if (!validateStep(s)) {
+            addFarmInFlight = false;
+            btnSaveFarm.disabled = false;
+            btnNext.disabled = false;
+            return;
+          }
+        }
 
-        const { data, error } = await supabase
+        const payload = buildFarmPayload();
+
+        // First try insert as-is (with notes if present)
+        let ins = await supabase
           .from("farms")
           .insert([payload])
           .select("id")
           .single();
 
-        if (error) return showError(`Save failed: ${error.message}`);
+        // If schema cache says "notes column not found", retry WITHOUT notes
+        if (ins.error && String(ins.error.message || "").includes("Could not find the 'notes' column")){
+          const { notes, ...withoutNotes } = payload;
+          ins = await supabase
+            .from("farms")
+            .insert([withoutNotes])
+            .select("id")
+            .single();
+        }
+
+        if (ins.error){
+          showError(`Save failed: ${ins.error.message}`);
+          addFarmInFlight = false;
+          btnSaveFarm.disabled = false;
+          btnNext.disabled = false;
+          return;
+        }
 
         closeModal();
 
-        // reload farms and auto-select new one
         const farms = await loadFarms();
-        if (data?.id && farms.some(f => f.id === data.id)) {
-          selectFarm(data.id, farms);
+        if (ins.data?.id && farms.some(f => f.id === ins.data.id)) {
+          selectFarm(ins.data.id, farms);
         }
       } finally {
+        // ensure we release lock even if something unexpected happens
+        addFarmInFlight = false;
         btnSaveFarm.disabled = false;
-        btnSaveFarm.textContent = "Save farm";
+        btnNext.disabled = false;
       }
     }
 
@@ -1193,12 +1456,13 @@
       await Promise.all([
         loadFarmStatus(selectedFarmId),
         loadAIOutputs(selectedFarmId),
-        loadTelemetryAndDraw(selectedFarmId)
+        loadTelemetryAndDraw(selectedFarmId),
+        loadLiveWeatherPreview(selectedFarmObj)
       ]);
     }
 
     // ========= Init =========
-    session = await ensureAuthOrRedirect();
+    const session = await ensureAuthOrRedirect();
     userLine.textContent = `Signed in as: ${session.user?.email || "Unknown"}`;
 
     btnLogout.addEventListener("click", async () => {
@@ -1224,39 +1488,15 @@
         loadFarmStatus(selectedFarmId),
         loadAIOutputs(selectedFarmId),
         loadNotifications(selectedFarmId),
-        loadTelemetryAndDraw(selectedFarmId)
+        loadTelemetryAndDraw(selectedFarmId),
+        loadLiveWeatherPreview(selectedFarmObj)
       ]);
     });
 
-    // Step clicks optional
-    stepChips.forEach((chip, idx) => {
-      chip.addEventListener("click", () => {
-        if (idx <= step) { step = idx; renderStep(); updateAgeUI(); }
-      });
-    });
-
     // Start
+    renderSteps();
+    syncAgeUI();
     await loadFarms();
-
-    // Modal back/next
-    btnNext.addEventListener("click", () => {
-      const err = validateStep();
-      if (err) return showError(err);
-      step = Math.min(4, step+1);
-      renderStep();
-      updateAgeUI();
-    });
-
-    // Save button at step 5
-    btnSaveFarm.addEventListener("click", async () => {
-      // Only save when step 5 visible
-      if (step !== 4) return;
-      await addFarm();
-    });
-
-    // when opening modal, clear + set default
-    modalBackdrop.addEventListener("transitionend", updateAgeUI);
-
   </script>
 </body>
 </html>
