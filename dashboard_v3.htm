@@ -1,0 +1,1058 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>AgriEdgeAI – Dashboard 3.0</title>
+  <style>
+    :root{
+      --bg:#070b18;
+      --panel:rgba(255,255,255,0.06);
+      --panel-border:rgba(255,255,255,0.10);
+      --text:#e8eefc;
+      --muted:rgba(232,238,252,0.7);
+      --ok: rgba(16,185,129,0.95);
+      --warn: rgba(251,191,36,0.95);
+      --info: rgba(59,130,246,0.95);
+      --critical: rgba(239,68,68,0.95);
+      --selected: rgba(59,130,246,0.14);
+      --selected-border: rgba(59,130,246,0.40);
+      --shadow: 0 16px 50px rgba(0,0,0,0.35);
+    }
+    *{ box-sizing:border-box; }
+    body{
+      margin:0;
+      background:
+        radial-gradient(1200px 800px at 70% 20%, rgba(59,130,246,0.25), transparent 60%),
+        radial-gradient(900px 600px at 20% 90%, rgba(16,185,129,0.20), transparent 55%),
+        var(--bg);
+      font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+      color: var(--text);
+      min-height:100vh;
+    }
+    header{
+      position:sticky; top:0;
+      backdrop-filter: blur(10px);
+      background: rgba(0,0,0,0.25);
+      border-bottom: 1px solid rgba(255,255,255,0.08);
+      padding:16px 20px;
+      display:flex; align-items:center; justify-content:space-between; gap:12px;
+      z-index:10;
+    }
+    .left{ display:flex; align-items:center; gap:10px; }
+    .logo{ width:34px;height:34px;border-radius:12px;
+      background: linear-gradient(135deg, rgba(59,130,246,0.9), rgba(16,185,129,0.9)); }
+    h1{ margin:0; font-size:18px; }
+    .user{ color:var(--muted); font-size:13px; margin-top:2px; }
+
+    .btn{
+      padding:10px 12px; border-radius:12px;
+      border:1px solid rgba(255,255,255,0.16);
+      background: rgba(255,255,255,0.10);
+      color: var(--text);
+      cursor:pointer; font-weight:800;
+    }
+    .btn:disabled{ opacity:0.6; cursor:not-allowed; }
+    .btn.primary{ background: rgba(255,255,255,0.92); color:#0b1025; border:0; }
+    .btn.danger{ border-color: rgba(239,68,68,0.35); }
+    .btn.ghost{ background: rgba(0,0,0,0.10); }
+
+    main{ padding:18px 20px 40px; max-width:1320px; margin:0 auto; }
+    .layout{ display:grid; grid-template-columns:1fr; gap:14px; }
+    @media (min-width:1100px){ .layout{ grid-template-columns: 380px 1fr; } }
+
+    .card{
+      background: var(--panel);
+      border: 1px solid var(--panel-border);
+      border-radius:18px;
+      padding:16px;
+      box-shadow: var(--shadow);
+    }
+    .card h2{ margin:0 0 6px; font-size:16px; }
+    .card p{ margin:0; color:var(--muted); font-size:13px; line-height:1.45; }
+    .row-between{ display:flex; align-items:center; justify-content:space-between; gap:10px; flex-wrap:wrap; }
+
+    .notice{
+      margin-top:12px;
+      padding:10px 12px;
+      border-radius:14px;
+      border:1px solid rgba(255,255,255,0.10);
+      background: rgba(0,0,0,0.18);
+      color: rgba(232,238,252,0.78);
+      font-size:13px;
+      line-height:1.4;
+    }
+    .notice.warn{ border-color: rgba(251,191,36,0.35); }
+    .notice.critical{ border-color: rgba(239,68,68,0.35); color: rgba(255,220,220,0.95); }
+    .notice.ok{ border-color: rgba(16,185,129,0.35); }
+
+    .selected-box{
+      margin-top:12px;
+      padding:12px;
+      border-radius:14px;
+      border:1px solid rgba(255,255,255,0.10);
+      background: rgba(0,0,0,0.18);
+    }
+    .selected-title{ margin:0 0 6px; font-weight:900; font-size:13px; }
+    .selected-sub{ margin:0; color: var(--muted); font-size: 13px; line-height:1.45; }
+
+    .kpis{ display:grid; grid-template-columns:repeat(2,1fr); gap:10px; margin-top:12px; }
+    .kpi{
+      background: rgba(0,0,0,0.18);
+      border:1px solid rgba(255,255,255,0.10);
+      border-radius:14px;
+      padding:12px;
+      min-height:72px;
+    }
+    .label{ color:var(--muted); font-size:12px; }
+    .value{ font-size:16px; font-weight:900; margin-top:6px; }
+
+    .farm-list{ margin-top:12px; display:grid; gap:10px; }
+    .farm-item{
+      border-radius:14px;
+      border:1px solid rgba(255,255,255,0.10);
+      background: rgba(0,0,0,0.18);
+      padding:12px;
+      cursor:pointer;
+      transition: transform 0.12s ease, border-color 0.12s ease, background 0.12s ease;
+    }
+    .farm-item:hover{ transform: translateY(-1px); border-color: rgba(255,255,255,0.18); }
+    .farm-item.selected{ background: var(--selected); border-color: var(--selected-border); }
+    .farm-name{ margin:0; font-weight:900; font-size:16px; }
+    .farm-meta{ margin:4px 0 0; color: var(--muted); font-size:13px; }
+    .farm-id{ margin:4px 0 0; color: rgba(232,238,252,0.78); font-size:12px; }
+
+    .pillbar{ display:flex; gap:8px; flex-wrap:wrap; margin-top:12px; }
+    .pill{
+      padding:8px 10px;
+      border-radius:999px;
+      border:1px solid rgba(255,255,255,0.12);
+      background: rgba(0,0,0,0.14);
+      color: rgba(232,238,252,0.78);
+      font-size:12px;
+      font-weight:900;
+      cursor:pointer;
+      user-select:none;
+    }
+    .pill.active{
+      background: rgba(255,255,255,0.92);
+      color:#0b1025;
+      border-color: rgba(255,255,255,0.0);
+    }
+
+    .grid2{ display:grid; grid-template-columns:1fr; gap:10px; margin-top:12px; }
+    @media (min-width:900px){ .grid2{ grid-template-columns: 1fr 1fr; } }
+    .span2{ grid-column: span 1; }
+    @media (min-width:900px){ .span2{ grid-column: span 2; } }
+
+    .list{ margin-top:12px; display:grid; gap:10px; }
+    .item{
+      padding:10px 12px;
+      border-radius:14px;
+      border:1px solid rgba(255,255,255,0.10);
+      background: rgba(0,0,0,0.18);
+    }
+    .t{ margin:0; font-weight:900; font-size:13px; }
+    .m{ margin:4px 0 0; color: rgba(232,238,252,0.78); font-size:13px; line-height:1.35; }
+    .s{ margin:6px 0 0; color: rgba(232,238,252,0.55); font-size:12px; }
+    .sev{ display:inline-flex; align-items:center; gap:8px; }
+    .dot{ width:10px; height:10px; border-radius:999px; background: var(--info); }
+    .sev.ok .dot{ background: var(--ok); }
+    .sev.warn .dot{ background: var(--warn); }
+    .sev.critical .dot{ background: var(--critical); }
+
+    .mono{ font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace; }
+    .controls{ display:flex; gap:10px; flex-wrap:wrap; margin-top:12px; align-items:center; }
+    input, select{
+      padding:10px 12px;
+      border-radius:14px;
+      border:1px solid rgba(255,255,255,0.14);
+      background: rgba(0,0,0,0.20);
+      color: var(--text);
+      outline:none;
+    }
+    input{ width: 260px; max-width: 100%; }
+    .chart-wrap{
+      margin-top:12px;
+      padding:12px;
+      border-radius:14px;
+      border:1px solid rgba(255,255,255,0.10);
+      background: rgba(0,0,0,0.18);
+    }
+    canvas{ width:100%; height:230px; display:block; }
+    .hint{ margin-top:8px; color: rgba(232,238,252,0.55); font-size:12px; line-height:1.35; }
+  </style>
+</head>
+
+<body>
+  <header>
+    <div class="left">
+      <div class="logo"></div>
+      <div>
+        <h1>AgriEdgeAI – Dashboard 3.0</h1>
+        <div class="user" id="userLine">Loading user…</div>
+      </div>
+    </div>
+    <div style="display:flex;gap:10px;flex-wrap:wrap;">
+      <button class="btn" id="btnV2" type="button">Dashboard v2</button>
+      <button class="btn" id="btnWebsite" type="button">Website</button>
+      <button class="btn primary" id="btnLogout" type="button">Logout</button>
+    </div>
+  </header>
+
+  <main>
+    <div class="layout">
+      <div class="card">
+        <div class="row-between">
+          <div>
+            <h2 style="margin:0 0 4px;">Farms</h2>
+            <p>Search + select to operate.</p>
+          </div>
+          <button class="btn" id="btnReloadFarms" type="button">Reload</button>
+        </div>
+
+        <div class="controls">
+          <input id="farmSearch" placeholder="Search farm name / country / id..." />
+          <button class="btn ghost" id="btnClearSearch" type="button">Clear</button>
+        </div>
+
+        <div class="selected-box">
+          <div class="selected-title">Selected farm</div>
+          <div class="selected-sub" id="selectedText">None selected yet.</div>
+        </div>
+
+        <div class="kpis">
+          <div class="kpi"><div class="label">Irrigation</div><div class="value" id="kpiIrr">—</div></div>
+          <div class="kpi"><div class="label">Fertilizer</div><div class="value" id="kpiFert">—</div></div>
+          <div class="kpi"><div class="label">Pest</div><div class="value" id="kpiPest">—</div></div>
+          <div class="kpi"><div class="label">Last update</div><div class="value" id="kpiLast">—</div></div>
+        </div>
+
+        <div class="farm-list" id="farmList">
+          <div class="notice">Loading farms…</div>
+        </div>
+
+        <div class="notice">
+          v3 adds: Realtime, Outbox, Decision Audit, Telemetry view (optional tables supported).
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="row-between">
+          <div>
+            <h2 style="margin:0 0 4px;">Operations</h2>
+            <p>Per selected farm.</p>
+          </div>
+          <div style="display:flex;gap:10px;flex-wrap:wrap;">
+            <button class="btn" id="btnRefreshSelected" type="button">Refresh</button>
+            <button class="btn" id="btnToggleRealtime" type="button">Realtime: OFF</button>
+          </div>
+        </div>
+
+        <div class="pillbar" id="tabBar">
+          <div class="pill active" data-tab="overview">Overview</div>
+          <div class="pill" data-tab="telemetry">Telemetry</div>
+          <div class="pill" data-tab="outbox">Outbox</div>
+          <div class="pill" data-tab="audit">Decision Audit</div>
+          <div class="pill" data-tab="actions">Actions</div>
+        </div>
+
+        <section id="tab_overview" style="margin-top:12px;">
+          <div class="notice" id="overviewMsg">Select a farm to load data.</div>
+
+          <div class="grid2">
+            <div class="span2">
+              <h2 style="margin:0 0 6px;">Latest AI outputs</h2>
+              <p>Table: <span class="mono">ai_outputs</span></p>
+              <div class="list" id="aiList"><div class="notice">Select a farm…</div></div>
+            </div>
+
+            <div class="span2">
+              <h2 style="margin:0 0 6px;">Latest notifications</h2>
+              <p>Table: <span class="mono">notifications</span></p>
+              <div class="list" id="notifList"><div class="notice">Select a farm…</div></div>
+            </div>
+          </div>
+        </section>
+
+        <section id="tab_telemetry" style="display:none; margin-top:12px;">
+          <div class="notice warn" id="telemetryMsg">
+            Optional table: <span class="mono">telemetry</span> (columns: farm_id, metric, value, ts)
+          </div>
+
+          <div class="controls">
+            <select id="metricA">
+              <option value="soil_moisture">soil_moisture</option>
+              <option value="temp_c">temp_c</option>
+              <option value="humidity">humidity</option>
+              <option value="npk_n">npk_n</option>
+              <option value="npk_p">npk_p</option>
+              <option value="npk_k">npk_k</option>
+            </select>
+            <select id="metricB">
+              <option value="temp_c">temp_c</option>
+              <option value="soil_moisture">soil_moisture</option>
+              <option value="humidity">humidity</option>
+              <option value="npk_n">npk_n</option>
+              <option value="npk_p">npk_p</option>
+              <option value="npk_k">npk_k</option>
+            </select>
+            <select id="pointsN">
+              <option value="24">24 points</option>
+              <option value="48">48 points</option>
+              <option value="96">96 points</option>
+            </select>
+            <button class="btn" id="btnLoadTelemetry" type="button">Load</button>
+          </div>
+
+          <div class="chart-wrap">
+            <div class="row-between">
+              <div>
+                <div style="font-weight:900;">Telemetry chart</div>
+                <div class="hint" id="telemetryHint">Select a farm and click Load.</div>
+              </div>
+            </div>
+            <canvas id="chart"></canvas>
+            <div class="hint">Note: chart auto-normalizes each series (0..1) for quick comparison.</div>
+          </div>
+        </section>
+
+        <section id="tab_outbox" style="display:none; margin-top:12px;">
+          <div class="notice warn" id="outboxMsg">
+            Optional table: <span class="mono">recs_outbox</span> (columns: farm_id, created_at, channel, payload, status)
+          </div>
+
+          <div class="controls">
+            <select id="outboxStatus">
+              <option value="">All status</option>
+              <option value="PENDING">PENDING</option>
+              <option value="SENT">SENT</option>
+              <option value="FAILED">FAILED</option>
+            </select>
+            <button class="btn" id="btnLoadOutbox" type="button">Load</button>
+          </div>
+
+          <div class="list" id="outboxList"><div class="notice">Select a farm…</div></div>
+        </section>
+
+        <section id="tab_audit" style="display:none; margin-top:12px;">
+          <div class="notice warn" id="auditMsg">
+            Optional table: <span class="mono">decision_audit</span> (columns: farm_id, created_at, module, should_notify, reason, details)
+          </div>
+
+          <div class="controls">
+            <select id="auditModule">
+              <option value="">All modules</option>
+              <option value="irrigation">irrigation</option>
+              <option value="fertilizer">fertilizer</option>
+              <option value="pest">pest</option>
+              <option value="monitor">monitor</option>
+            </select>
+            <button class="btn" id="btnLoadAudit" type="button">Load</button>
+          </div>
+
+          <div class="list" id="auditList"><div class="notice">Select a farm…</div></div>
+        </section>
+
+        <section id="tab_actions" style="display:none; margin-top:12px;">
+          <div class="notice warn">
+            Run Now uses Edge Function <span class="mono">run-now</span> if exists; fallback logs into <span class="mono">ai_outputs</span>.
+          </div>
+
+          <div class="controls">
+            <button class="btn primary" id="btnRunNow" type="button">Run Now</button>
+            <button class="btn" id="btnTestNotif" type="button">Test Notification</button>
+            <button class="btn" id="btnTestOutbox" type="button">Test Outbox</button>
+            <button class="btn danger" id="btnDeleteFarm" type="button">Delete Farm</button>
+          </div>
+
+          <div class="notice" id="actionResult" style="display:none;"></div>
+        </section>
+      </div>
+    </div>
+  </main>
+
+  <script type="module">
+    import { supabase } from "./js/supabaseClient.js";
+
+    const userLine = document.getElementById("userLine");
+    const btnLogout = document.getElementById("btnLogout");
+    const btnWebsite = document.getElementById("btnWebsite");
+    const btnV2 = document.getElementById("btnV2");
+
+    const btnReloadFarms = document.getElementById("btnReloadFarms");
+    const btnRefreshSelected = document.getElementById("btnRefreshSelected");
+    const btnToggleRealtime = document.getElementById("btnToggleRealtime");
+
+    const farmSearch = document.getElementById("farmSearch");
+    const btnClearSearch = document.getElementById("btnClearSearch");
+    const farmListEl = document.getElementById("farmList");
+    const selectedText = document.getElementById("selectedText");
+
+    const kpiIrr = document.getElementById("kpiIrr");
+    const kpiFert = document.getElementById("kpiFert");
+    const kpiPest = document.getElementById("kpiPest");
+    const kpiLast = document.getElementById("kpiLast");
+
+    const tabBar = document.getElementById("tabBar");
+    const tabs = {
+      overview: document.getElementById("tab_overview"),
+      telemetry: document.getElementById("tab_telemetry"),
+      outbox: document.getElementById("tab_outbox"),
+      audit: document.getElementById("tab_audit"),
+      actions: document.getElementById("tab_actions"),
+    };
+
+    const overviewMsg = document.getElementById("overviewMsg");
+    const aiList = document.getElementById("aiList");
+    const notifList = document.getElementById("notifList");
+
+    const metricA = document.getElementById("metricA");
+    const metricB = document.getElementById("metricB");
+    const pointsN = document.getElementById("pointsN");
+    const btnLoadTelemetry = document.getElementById("btnLoadTelemetry");
+    const telemetryHint = document.getElementById("telemetryHint");
+    const chart = document.getElementById("chart");
+
+    const outboxStatus = document.getElementById("outboxStatus");
+    const btnLoadOutbox = document.getElementById("btnLoadOutbox");
+    const outboxList = document.getElementById("outboxList");
+
+    const auditModule = document.getElementById("auditModule");
+    const btnLoadAudit = document.getElementById("btnLoadAudit");
+    const auditList = document.getElementById("auditList");
+
+    const btnRunNow = document.getElementById("btnRunNow");
+    const btnTestNotif = document.getElementById("btnTestNotif");
+    const btnTestOutbox = document.getElementById("btnTestOutbox");
+    const btnDeleteFarm = document.getElementById("btnDeleteFarm");
+    const actionResult = document.getElementById("actionResult");
+
+    let farmsCache = [];
+    let filteredCache = [];
+    let selectedFarmId = null;
+    let selectedFarmObj = null;
+
+    let realtimeOn = false;
+    let rtChannel = null;
+
+    function escapeHtml(s) {
+      return String(s ?? "")
+        .replaceAll("&","&amp;")
+        .replaceAll("<","&lt;")
+        .replaceAll(">","&gt;")
+        .replaceAll('"',"&quot;")
+        .replaceAll("'","&#039;");
+    }
+    function fmtTime(ts){
+      if (!ts) return "—";
+      try { return new Date(ts).toLocaleString(); } catch { return ts; }
+    }
+    function setKPIsEmpty(){
+      kpiIrr.textContent = "—";
+      kpiFert.textContent = "—";
+      kpiPest.textContent = "—";
+      kpiLast.textContent = "—";
+    }
+    function showBox(el, msg, cls){
+      el.style.display = "block";
+      el.className = "notice" + (cls ? (" " + cls) : "");
+      el.textContent = msg;
+    }
+    function hideBox(el){
+      el.style.display = "none";
+      el.textContent = "";
+      el.className = "notice";
+    }
+    function tableNotReadyMsg(table, errorMessage){
+      return `Table not ready: ${table}. (${errorMessage || "not found / RLS"})`;
+    }
+    function renderListItem(title, msg, time, severity){
+      const sev = (severity || "info").toLowerCase();
+      const cls = ["ok","warn","info","critical"].includes(sev) ? sev : "info";
+      return `
+        <div class="item">
+          <div class="sev ${cls}">
+            <span class="dot"></span>
+            <p class="t">${escapeHtml(title || cls.toUpperCase())}</p>
+          </div>
+          <p class="m">${escapeHtml(msg || "")}</p>
+          <p class="s">${escapeHtml(time ? fmtTime(time) : "")}</p>
+        </div>
+      `;
+    }
+
+    async function ensureAuthOrRedirect(){
+      const { data: { session } } = await supabase.auth.getSession();
+      if (!session) window.location.href = "/login.html";
+      return session;
+    }
+
+    function setActiveTab(tabName){
+      Object.keys(tabs).forEach(k => { tabs[k].style.display = (k === tabName) ? "block" : "none"; });
+      tabBar.querySelectorAll(".pill").forEach(p => p.classList.toggle("active", p.dataset.tab === tabName));
+    }
+    tabBar.addEventListener("click", (e) => {
+      const pill = e.target.closest(".pill");
+      if (!pill) return;
+      setActiveTab(pill.dataset.tab);
+    });
+
+    function highlightSelected(id){
+      farmListEl.querySelectorAll(".farm-item").forEach(el => {
+        const fid = Number(el.getAttribute("data-id"));
+        el.classList.toggle("selected", fid === id);
+      });
+    }
+
+    function renderFarmCard(f){
+      return `
+        <div class="farm-item" data-id="${f.id}">
+          <p class="farm-name">${escapeHtml(f.farm_name || "Untitled")}</p>
+          <p class="farm-meta">${escapeHtml(f.country || "—")} • ${f.lat ?? "—"}, ${f.lon ?? "—"}</p>
+          <p class="farm-id">Farm ID: ${f.id} • ${fmtTime(f.created_at)}</p>
+        </div>
+      `;
+    }
+
+    function applySearch(){
+      const q = (farmSearch.value || "").trim().toLowerCase();
+      if (!q){
+        filteredCache = [...farmsCache];
+      } else {
+        filteredCache = farmsCache.filter(f => {
+          const a = String(f.farm_name || "").toLowerCase();
+          const b = String(f.country || "").toLowerCase();
+          const c = String(f.id || "").toLowerCase();
+          return a.includes(q) || b.includes(q) || c.includes(q);
+        });
+      }
+      if (!filteredCache.length){
+        farmListEl.innerHTML = `<div class="notice">No farms match search.</div>`;
+        return;
+      }
+      farmListEl.innerHTML = filteredCache.map(renderFarmCard).join("");
+      farmListEl.querySelectorAll(".farm-item").forEach(item => {
+        item.addEventListener("click", () => {
+          const id = Number(item.getAttribute("data-id"));
+          selectFarm(id);
+        });
+      });
+      if (selectedFarmId) highlightSelected(selectedFarmId);
+    }
+
+    async function loadFarms(){
+      farmListEl.innerHTML = `<div class="notice">Loading farms…</div>`;
+      setKPIsEmpty();
+
+      const { data: farms, error } = await supabase
+        .from("farms")
+        .select("id,farm_name,country,lat,lon,created_at,mode,crop,deployment_mode")
+        .order("created_at", { ascending: false });
+
+      if (error){
+        farmListEl.innerHTML = `<div class="notice critical">Farms not loading: ${escapeHtml(error.message)}</div>`;
+        return [];
+      }
+
+      farmsCache = farms || [];
+      filteredCache = [...farmsCache];
+
+      if (!farmsCache.length){
+        farmListEl.innerHTML = `<div class="notice">No farms yet.</div>`;
+        return [];
+      }
+
+      applySearch();
+
+      const saved = localStorage.getItem("selected_farm_id");
+      if (saved){
+        const id = Number(saved);
+        if (farmsCache.some(f => f.id === id)) await selectFarm(id);
+      }
+      return farmsCache;
+    }
+
+    async function selectFarm(id){
+      selectedFarmId = id;
+      selectedFarmObj = farmsCache.find(f => f.id === id) || null;
+      localStorage.setItem("selected_farm_id", String(id));
+      highlightSelected(id);
+
+      if (!selectedFarmObj){
+        selectedText.textContent = "None selected yet.";
+        return;
+      }
+
+      selectedText.innerHTML =
+        `<b>${escapeHtml(selectedFarmObj.farm_name || "Untitled")}</b> (ID: ${selectedFarmObj.id})<br>` +
+        `${escapeHtml(selectedFarmObj.country || "—")} • ${selectedFarmObj.lat ?? "—"}, ${selectedFarmObj.lon ?? "—"}<br>` +
+        `Type: <b>${escapeHtml(selectedFarmObj.mode || "—")}</b> • Crop: <b>${escapeHtml(selectedFarmObj.crop || "—")}</b> • Deploy: <b>${escapeHtml(selectedFarmObj.deployment_mode || "—")}</b>`;
+
+      overviewMsg.textContent = `Selected Farm ID ${id}. Loading…`;
+
+      await Promise.all([
+        loadFarmStatus(id),
+        loadLatestAI(id),
+        loadLatestNotifications(id),
+        loadOutbox(id),
+        loadAudit(id)
+      ]);
+
+      clearChart();
+      telemetryHint.textContent = "Select a farm and click Load.";
+
+      if (realtimeOn) await startRealtime();
+      overviewMsg.textContent = "Ready ✅";
+    }
+
+    async function loadFarmStatus(farmId){
+      setKPIsEmpty();
+
+      const { data, error } = await supabase
+        .from("farm_status")
+        .select("irrigation_status,fertilizer_status,pest_status,last_update")
+        .eq("farm_id", farmId)
+        .maybeSingle();
+
+      if (error) return;
+
+      if (!data){
+        await supabase.from("farm_status").insert([{ farm_id: farmId }]);
+        return loadFarmStatus(farmId);
+      }
+
+      kpiIrr.textContent = data.irrigation_status || "Prototype";
+      kpiFert.textContent = data.fertilizer_status || "Prototype";
+      kpiPest.textContent = data.pest_status || "Prototype";
+      kpiLast.textContent = fmtTime(data.last_update);
+    }
+
+    async function loadLatestAI(farmId){
+      aiList.innerHTML = `<div class="notice">Loading AI outputs…</div>`;
+      const { data, error } = await supabase
+        .from("ai_outputs")
+        .select("created_at,module,title,message,severity")
+        .eq("farm_id", farmId)
+        .order("created_at", { ascending: false })
+        .limit(8);
+
+      if (error){
+        aiList.innerHTML = `<div class="notice warn">${escapeHtml(error.message)}</div>`;
+        return;
+      }
+      if (!data || !data.length){
+        aiList.innerHTML = `<div class="notice">No AI outputs yet.</div>`;
+        return;
+      }
+      aiList.innerHTML = data.map(r => {
+        const title = r.title || ((r.module || "module").toUpperCase() + " update");
+        return renderListItem(title, r.message, r.created_at, r.severity);
+      }).join("");
+    }
+
+    async function loadLatestNotifications(farmId){
+      notifList.innerHTML = `<div class="notice">Loading notifications…</div>`;
+      const { data, error } = await supabase
+        .from("notifications")
+        .select("created_at,title,msg,severity")
+        .eq("farm_id", farmId)
+        .order("created_at", { ascending: false })
+        .limit(8);
+
+      if (error){
+        notifList.innerHTML = `<div class="notice warn">${escapeHtml(error.message)}</div>`;
+        return;
+      }
+      if (!data || !data.length){
+        notifList.innerHTML = `<div class="notice">No notifications yet.</div>`;
+        return;
+      }
+      notifList.innerHTML = data.map(r => renderListItem(r.title, r.msg, r.created_at, r.severity)).join("");
+    }
+
+    async function loadOutbox(farmId){
+      outboxList.innerHTML = `<div class="notice">Loading outbox…</div>`;
+      if (!farmId){
+        outboxList.innerHTML = `<div class="notice">Select a farm…</div>`;
+        return;
+      }
+
+      let q = supabase
+        .from("recs_outbox")
+        .select("created_at,channel,status,payload")
+        .eq("farm_id", farmId)
+        .order("created_at", { ascending: false })
+        .limit(12);
+
+      if (outboxStatus.value) q = q.eq("status", outboxStatus.value);
+
+      const { data, error } = await q;
+
+      if (error){
+        outboxList.innerHTML = `<div class="notice warn">${escapeHtml(tableNotReadyMsg("recs_outbox", error.message))}</div>`;
+        return;
+      }
+      if (!data || !data.length){
+        outboxList.innerHTML = `<div class="notice">No outbox rows.</div>`;
+        return;
+      }
+
+      outboxList.innerHTML = data.map(r => {
+        const title = `Channel: ${r.channel || "—"} • Status: ${r.status || "—"}`;
+        let msg = "";
+        try{
+          if (typeof r.payload === "string") msg = r.payload.slice(0, 260);
+          else msg = JSON.stringify(r.payload).slice(0, 260);
+        }catch{ msg = String(r.payload || "").slice(0,260); }
+        return renderListItem(title, msg, r.created_at, (r.status === "FAILED") ? "critical" : (r.status === "SENT" ? "ok" : "info"));
+      }).join("");
+    }
+
+    async function loadAudit(farmId){
+      auditList.innerHTML = `<div class="notice">Loading decision audit…</div>`;
+      if (!farmId){
+        auditList.innerHTML = `<div class="notice">Select a farm…</div>`;
+        return;
+      }
+
+      let q = supabase
+        .from("decision_audit")
+        .select("created_at,module,should_notify,reason,details")
+        .eq("farm_id", farmId)
+        .order("created_at", { ascending: false })
+        .limit(12);
+
+      if (auditModule.value) q = q.eq("module", auditModule.value);
+
+      const { data, error } = await q;
+
+      if (error){
+        auditList.innerHTML = `<div class="notice warn">${escapeHtml(tableNotReadyMsg("decision_audit", error.message))}</div>`;
+        return;
+      }
+      if (!data || !data.length){
+        auditList.innerHTML = `<div class="notice">No audit rows.</div>`;
+        return;
+      }
+
+      auditList.innerHTML = data.map(r => {
+        const yn = (r.should_notify === true) ? "YES" : ((r.should_notify === false) ? "NO" : "—");
+        const title = `${(r.module || "module").toUpperCase()} • notify=${yn} • ${r.reason || "—"}`;
+        let msg = "";
+        try{
+          if (typeof r.details === "string") msg = r.details.slice(0, 280);
+          else msg = JSON.stringify(r.details).slice(0, 280);
+        }catch{ msg = String(r.details || "").slice(0,280); }
+        const sev = (r.should_notify === true) ? "warn" : "info";
+        return renderListItem(title, msg || "—", r.created_at, sev);
+      }).join("");
+    }
+
+    function clearChart(){
+      const ctx = chart.getContext("2d");
+      const w = chart.width = Math.max(300, chart.clientWidth) * devicePixelRatio;
+      const h = chart.height = Math.max(200, chart.clientHeight) * devicePixelRatio;
+      ctx.clearRect(0,0,w,h);
+      ctx.strokeStyle = "rgba(255,255,255,0.12)";
+      ctx.lineWidth = 2;
+      ctx.strokeRect(14*devicePixelRatio, 14*devicePixelRatio, w-28*devicePixelRatio, h-28*devicePixelRatio);
+      ctx.fillStyle = "rgba(232,238,252,0.65)";
+      ctx.font = `${14*devicePixelRatio}px system-ui, -apple-system, Segoe UI, Arial`;
+      ctx.fillText("No data", 28*devicePixelRatio, 44*devicePixelRatio);
+    }
+
+    function norm(arr){
+      if (!arr || !arr.length) return [];
+      const min = Math.min(...arr);
+      const max = Math.max(...arr);
+      if (max === min) return arr.map(_ => 0.5);
+      return arr.map(v => (v - min) / (max - min));
+    }
+
+    function drawSeries(ctx, series, pad, innerW, innerH, color){
+      if (!series || series.length < 2) return;
+      ctx.strokeStyle = color;
+      ctx.lineWidth = 2.5 * devicePixelRatio;
+      ctx.beginPath();
+      series.forEach((v, i) => {
+        const x = pad + (innerW * (i / (series.length - 1)));
+        const y = pad + innerH - (innerH * v);
+        if (i === 0) ctx.moveTo(x,y);
+        else ctx.lineTo(x,y);
+      });
+      ctx.stroke();
+    }
+
+    function drawTwoSeries(a, b, labelA, labelB){
+      const ctx = chart.getContext("2d");
+      const w = chart.width = Math.max(300, chart.clientWidth) * devicePixelRatio;
+      const h = chart.height = Math.max(200, chart.clientHeight) * devicePixelRatio;
+      ctx.clearRect(0,0,w,h);
+
+      const pad = 18 * devicePixelRatio;
+      const innerW = w - pad*2;
+      const innerH = h - pad*2;
+
+      ctx.strokeStyle = "rgba(255,255,255,0.08)";
+      ctx.lineWidth = 1;
+      for (let i=0;i<5;i++){
+        const y = pad + (innerH * i/4);
+        ctx.beginPath(); ctx.moveTo(pad, y); ctx.lineTo(pad+innerW, y); ctx.stroke();
+      }
+
+      const an = norm(a);
+      const bn = norm(b);
+
+      drawSeries(ctx, an, pad, innerW, innerH, "rgba(59,130,246,0.95)");
+      drawSeries(ctx, bn, pad, innerW, innerH, "rgba(16,185,129,0.95)");
+
+      ctx.fillStyle = "rgba(232,238,252,0.65)";
+      ctx.font = `${12*devicePixelRatio}px system-ui, -apple-system, Segoe UI, Arial`;
+      ctx.fillText(labelA || "A", pad, pad - 6*devicePixelRatio);
+      ctx.fillText(labelB || "B", pad + 160*devicePixelRatio, pad - 6*devicePixelRatio);
+    }
+
+    async function loadTelemetry(){
+      if (!selectedFarmId){
+        telemetryHint.textContent = "Select a farm first.";
+        clearChart();
+        return;
+      }
+      const mA = metricA.value;
+      const mB = metricB.value;
+      const n = Number(pointsN.value || "24") || 24;
+
+      telemetryHint.textContent = "Loading telemetry…";
+
+      const [qa, qb] = await Promise.all([
+        supabase.from("telemetry")
+          .select("ts,value")
+          .eq("farm_id", selectedFarmId)
+          .eq("metric", mA)
+          .order("ts", { ascending: true })
+          .limit(n),
+        supabase.from("telemetry")
+          .select("ts,value")
+          .eq("farm_id", selectedFarmId)
+          .eq("metric", mB)
+          .order("ts", { ascending: true })
+          .limit(n)
+      ]);
+
+      if (qa.error || qb.error){
+        telemetryHint.textContent = "Telemetry not available (table/policy or no data).";
+        clearChart();
+        return;
+      }
+
+      const a = (qa.data || []).map(r => Number(r.value)).filter(v => Number.isFinite(v));
+      const b = (qb.data || []).map(r => Number(r.value)).filter(v => Number.isFinite(v));
+
+      if (!a.length && !b.length){
+        telemetryHint.textContent = "No telemetry rows for selected metrics.";
+        clearChart();
+        return;
+      }
+
+      telemetryHint.textContent = `Loaded ${Math.max(a.length,b.length)} points.`;
+      drawTwoSeries(a, b, mA, mB);
+    }
+
+    async function logAI(title, message, severity){
+      if (!selectedFarmId) return;
+      await supabase.from("ai_outputs").insert([{
+        farm_id: selectedFarmId,
+        module: "ops",
+        title,
+        message,
+        severity: severity || "info",
+        created_at: new Date().toISOString()
+      }]);
+    }
+
+    async function runNow(){
+      hideBox(actionResult);
+      if (!selectedFarmId){ showBox(actionResult, "Select a farm first.", "warn"); return; }
+      btnRunNow.disabled = true;
+      try{
+        const { data, error } = await supabase.functions.invoke("run-now", { body: { farm_id: selectedFarmId } });
+        if (error){
+          await logAI("Run Now (fallback)", `Requested run for Farm ID ${selectedFarmId}.`, "warn");
+          showBox(actionResult, "Run requested (fallback). Edge Function not ready; logged into ai_outputs.", "warn");
+        } else {
+          await logAI("Run Now invoked", `Response: ${JSON.stringify(data).slice(0,240)}`, "ok");
+          showBox(actionResult, "Run Now invoked ✅", "ok");
+        }
+        await loadLatestAI(selectedFarmId);
+      } finally { btnRunNow.disabled = false; }
+    }
+
+    async function testNotification(){
+      hideBox(actionResult);
+      if (!selectedFarmId){ showBox(actionResult, "Select a farm first.", "warn"); return; }
+      const { error } = await supabase.from("notifications").insert([{
+        farm_id: selectedFarmId,
+        title: "Test notification",
+        msg: "Temporary test alert from Dashboard 3.0.",
+        severity: "info",
+        created_at: new Date().toISOString()
+      }]);
+      if (error){ showBox(actionResult, "Notification insert failed: " + error.message, "critical"); return; }
+      showBox(actionResult, "Test notification created ✅", "ok");
+      await loadLatestNotifications(selectedFarmId);
+    }
+
+    async function testOutbox(){
+      hideBox(actionResult);
+      if (!selectedFarmId){ showBox(actionResult, "Select a farm first.", "warn"); return; }
+      const payload = {
+        farm_id: selectedFarmId,
+        channel: "WHATSAPP",
+        status: "PENDING",
+        payload: { msg: "Test outbox row from Dashboard 3.0", ts: new Date().toISOString() },
+        created_at: new Date().toISOString()
+      };
+      const { error } = await supabase.from("recs_outbox").insert([payload]);
+      if (error){ showBox(actionResult, tableNotReadyMsg("recs_outbox", error.message), "warn"); return; }
+      showBox(actionResult, "Test outbox row created ✅", "ok");
+      await loadOutbox(selectedFarmId);
+    }
+
+    async function deleteSelectedFarm(){
+      hideBox(actionResult);
+      if (!selectedFarmId){ showBox(actionResult, "Select a farm first.", "warn"); return; }
+      const ok = confirm(`Delete Farm ID ${selectedFarmId}? This cannot be undone.`);
+      if (!ok) return;
+
+      btnDeleteFarm.disabled = true;
+      try{
+        const { error } = await supabase.from("farms").delete().eq("id", selectedFarmId);
+        if (error){ showBox(actionResult, "Delete failed: " + error.message, "critical"); return; }
+
+        selectedFarmId = null;
+        selectedFarmObj = null;
+        localStorage.removeItem("selected_farm_id");
+
+        selectedText.textContent = "None selected yet.";
+        setKPIsEmpty();
+        overviewMsg.textContent = "Select a farm to load data.";
+        aiList.innerHTML = `<div class="notice">Select a farm…</div>`;
+        notifList.innerHTML = `<div class="notice">Select a farm…</div>`;
+        outboxList.innerHTML = `<div class="notice">Select a farm…</div>`;
+        auditList.innerHTML = `<div class="notice">Select a farm…</div>`;
+        telemetryHint.textContent = "Select a farm and click Load.";
+        clearChart();
+
+        await stopRealtime();
+        await loadFarms();
+        showBox(actionResult, "Farm deleted ✅", "ok");
+      } finally { btnDeleteFarm.disabled = false; }
+    }
+
+    async function stopRealtime(){
+      if (rtChannel){
+        try { await supabase.removeChannel(rtChannel); } catch {}
+        rtChannel = null;
+      }
+    }
+
+    async function startRealtime(){
+      if (!selectedFarmId) return;
+      await stopRealtime();
+
+      rtChannel = supabase.channel("rt-farm-" + selectedFarmId);
+
+      rtChannel.on("postgres_changes", {
+        event: "INSERT",
+        schema: "public",
+        table: "ai_outputs",
+        filter: "farm_id=eq." + selectedFarmId
+      }, async () => { await loadLatestAI(selectedFarmId); });
+
+      rtChannel.on("postgres_changes", {
+        event: "INSERT",
+        schema: "public",
+        table: "notifications",
+        filter: "farm_id=eq." + selectedFarmId
+      }, async () => { await loadLatestNotifications(selectedFarmId); });
+
+      rtChannel.on("postgres_changes", {
+        event: "INSERT",
+        schema: "public",
+        table: "recs_outbox",
+        filter: "farm_id=eq." + selectedFarmId
+      }, async () => { await loadOutbox(selectedFarmId); });
+
+      rtChannel.on("postgres_changes", {
+        event: "INSERT",
+        schema: "public",
+        table: "decision_audit",
+        filter: "farm_id=eq." + selectedFarmId
+      }, async () => { await loadAudit(selectedFarmId); });
+
+      rtChannel.subscribe((status) => {
+        if (status === "SUBSCRIBED"){
+          btnToggleRealtime.textContent = "Realtime: ON";
+        }
+      });
+    }
+
+    async function toggleRealtime(){
+      realtimeOn = !realtimeOn;
+      if (realtimeOn){
+        btnToggleRealtime.textContent = "Realtime: ON (starting)";
+        await startRealtime();
+      } else {
+        btnToggleRealtime.textContent = "Realtime: OFF";
+        await stopRealtime();
+      }
+    }
+
+    farmSearch.addEventListener("input", applySearch);
+    btnClearSearch.addEventListener("click", () => { farmSearch.value = ""; applySearch(); });
+
+    btnLoadTelemetry.addEventListener("click", loadTelemetry);
+    btnLoadOutbox.addEventListener("click", () => loadOutbox(selectedFarmId));
+    btnLoadAudit.addEventListener("click", () => loadAudit(selectedFarmId));
+
+    outboxStatus.addEventListener("change", () => { if (selectedFarmId) loadOutbox(selectedFarmId); });
+    auditModule.addEventListener("change", () => { if (selectedFarmId) loadAudit(selectedFarmId); });
+
+    btnReloadFarms.addEventListener("click", loadFarms);
+    btnRefreshSelected.addEventListener("click", async () => {
+      if (!selectedFarmId) return;
+      await Promise.all([
+        loadFarmStatus(selectedFarmId),
+        loadLatestAI(selectedFarmId),
+        loadLatestNotifications(selectedFarmId),
+        loadOutbox(selectedFarmId),
+        loadAudit(selectedFarmId)
+      ]);
+      if (tabs.telemetry.style.display !== "none") await loadTelemetry();
+    });
+
+    btnToggleRealtime.addEventListener("click", toggleRealtime);
+
+    btnRunNow.addEventListener("click", runNow);
+    btnTestNotif.addEventListener("click", testNotification);
+    btnTestOutbox.addEventListener("click", testOutbox);
+    btnDeleteFarm.addEventListener("click", deleteSelectedFarm);
+
+    btnWebsite.addEventListener("click", () => window.location.href = "/");
+    btnV2.addEventListener("click", () => window.location.href = "/dashboard2.html");
+
+    btnLogout.addEventListener("click", async () => {
+      await stopRealtime();
+      await supabase.auth.signOut();
+      window.location.href = "/login.html";
+    });
+
+    const session = await ensureAuthOrRedirect();
+    userLine.textContent = `Signed in as: ${session.user?.email || "Unknown"}`;
+    setActiveTab("overview");
+    clearChart();
+    await loadFarms();
+  </script>
+</body>
+</html>
