@@ -3,118 +3,150 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>AgriEdgeAI – Dashboard</title>
+  <title>AgriEdgeAI - Unified Dashboard</title>
   <style>
     :root{
-      --bg:#070b18;
+      --bg:#0a0f1f;
+      --bg-2:#0b1428;
       --panel:rgba(255,255,255,0.06);
       --panel-border:rgba(255,255,255,0.10);
-      --text:#e8eefc;
-      --muted:rgba(232,238,252,0.7);
+      --text:#edf2ff;
+      --muted:rgba(237,242,255,0.68);
       --ok: rgba(16,185,129,0.95);
       --warn: rgba(251,191,36,0.95);
       --info: rgba(59,130,246,0.95);
       --critical: rgba(239,68,68,0.95);
-      --selected: rgba(59,130,246,0.14);
-      --selected-border: rgba(59,130,246,0.40);
+      --selected: rgba(59,130,246,0.16);
+      --selected-border: rgba(59,130,246,0.45);
       --danger: rgba(239,68,68,0.95);
+      --shadow: 0 20px 60px rgba(0,0,0,0.45);
+      --glow: 0 0 0 1px rgba(255,255,255,0.06), 0 18px 60px rgba(0,0,0,0.35);
+      --accent: #27d3b6;
+      --accent-2: #4aa3ff;
     }
+    *{ box-sizing:border-box; }
     body{
       margin:0;
-      background: radial-gradient(1200px 800px at 70% 20%, rgba(59,130,246,0.25), transparent 60%),
-                  radial-gradient(900px 600px at 20% 90%, rgba(16,185,129,0.20), transparent 55%),
-                  var(--bg);
-      font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+      background:
+        radial-gradient(1100px 700px at 80% 0%, rgba(59,130,246,0.22), transparent 60%),
+        radial-gradient(900px 600px at 10% 90%, rgba(16,185,129,0.22), transparent 55%),
+        linear-gradient(180deg, rgba(11,18,36,0.8), rgba(8,12,24,0.95)),
+        var(--bg);
       color: var(--text);
+      font-family: "Space Grotesk","Manrope","Plus Jakarta Sans","Segoe UI",sans-serif;
       min-height:100vh;
     }
     header{
       position:sticky; top:0;
-      backdrop-filter: blur(10px);
-      background: rgba(0,0,0,0.25);
+      backdrop-filter: blur(12px);
+      background: rgba(5,10,24,0.65);
       border-bottom: 1px solid rgba(255,255,255,0.08);
       padding:16px 20px;
       display:flex; align-items:center; justify-content:space-between; gap:12px;
-      z-index: 10;
+      z-index:10;
     }
-    .left{ display:flex; align-items:center; gap:10px; }
-    .logo{ width:34px;height:34px;border-radius:12px;
-      background: linear-gradient(135deg, rgba(59,130,246,0.9), rgba(16,185,129,0.9)); }
-    h1{ margin:0; font-size:18px; }
+    .left{ display:flex; align-items:center; gap:12px; }
+    .logo{
+      width:38px;height:38px;border-radius:14px;
+      background: conic-gradient(from 120deg, rgba(59,130,246,0.95), rgba(16,185,129,0.95), rgba(14,165,233,0.95));
+      box-shadow: 0 0 25px rgba(59,130,246,0.28);
+    }
+    h1{ margin:0; font-size:18px; letter-spacing:0.3px; }
     .user{ color:var(--muted); font-size:13px; margin-top:2px; }
+
+    .toolbar{ display:flex; gap:10px; flex-wrap:wrap; }
     .btn{
       padding:10px 12px; border-radius:12px;
       border:1px solid rgba(255,255,255,0.16);
       background: rgba(255,255,255,0.10);
       color: var(--text);
-      cursor:pointer; font-weight:700;
+      cursor:pointer; font-weight:800; font-size:12px;
+      transition: transform 0.12s ease, background 0.12s ease, border-color 0.12s ease;
     }
-    .btn:disabled{ opacity:0.6; cursor:not-allowed; }
+    .btn:hover{ transform: translateY(-1px); border-color: rgba(255,255,255,0.22); }
+    .btn:disabled{ opacity:0.6; cursor:not-allowed; transform:none; }
     .btn.primary{ background: rgba(255,255,255,0.92); color:#0b1025; border:0; }
-    .btn.danger{ border-color: rgba(239,68,68,0.35); }
-    .btn.ghost{ background: rgba(0,0,0,0.10); }
+    .btn.danger{ border-color: rgba(239,68,68,0.35); color: rgba(255,220,220,0.95); }
+    .btn.ghost{ background: rgba(0,0,0,0.12); }
+    .btn.accent{ background: linear-gradient(135deg, var(--accent), var(--accent-2)); border:0; color:#081521; }
 
-    main{ padding:18px 20px 40px; max-width:1200px; margin:0 auto; }
-    .grid{ display:grid; grid-template-columns:1fr; gap:14px; margin-top:14px; }
-    @media (min-width:1100px){ .grid{ grid-template-columns:1.25fr 0.75fr; } }
+    main{ padding:18px 20px 40px; max-width:1360px; margin:0 auto; }
+    .layout{ display:grid; grid-template-columns:1fr; gap:16px; }
+    @media (min-width:1120px){ .layout{ grid-template-columns: 380px 1fr; } }
+
     .card{
       background: var(--panel);
       border: 1px solid var(--panel-border);
-      border-radius:18px;
+      border-radius:20px;
       padding:16px;
-      box-shadow: 0 16px 50px rgba(0,0,0,0.35);
+      box-shadow: var(--shadow);
+      animation: riseIn 0.45s ease both;
     }
     .card h2{ margin:0 0 6px; font-size:16px; }
     .card p{ margin:0; color:var(--muted); font-size:13px; line-height:1.45; }
-
-    .chips{ display:flex; gap:10px; flex-wrap:wrap; margin-top:10px; }
-    .chip{
-      display:inline-flex; align-items:center; gap:8px;
-      padding:8px 10px; border-radius:999px;
-      border: 1px solid rgba(255,255,255,0.12);
-      background: rgba(0,0,0,0.18);
-      font-size: 13px;
-      color: rgba(232,238,252,0.85);
-    }
-    .dot{ width:10px; height:10px; border-radius:999px; background: var(--info); }
-
-    .kpis{ display:grid; grid-template-columns:repeat(2,1fr); gap:10px; margin-top:12px; }
-    .kpi{ background: rgba(0,0,0,0.18); border:1px solid rgba(255,255,255,0.10);
-      border-radius:14px; padding:12px; }
-    .label{ color:var(--muted); font-size:12px; }
-    .value{ font-size:18px; font-weight:800; margin-top:6px; }
-
-    .msg{ margin-top:12px; color:var(--muted); font-size:13px; }
     .row-between{ display:flex; align-items:center; justify-content:space-between; gap:10px; flex-wrap:wrap; }
 
+    .notice{
+      margin-top:12px;
+      padding:10px 12px;
+      border-radius:14px;
+      border:1px solid rgba(255,255,255,0.10);
+      background: rgba(0,0,0,0.18);
+      color: rgba(237,242,255,0.8);
+      font-size:13px;
+      line-height:1.4;
+    }
+    .notice.warn{ border-color: rgba(251,191,36,0.35); }
+    .notice.critical{ border-color: rgba(239,68,68,0.35); color: rgba(255,220,220,0.95); }
+    .notice.ok{ border-color: rgba(16,185,129,0.35); }
+
     .selected-box{
-      margin-top: 12px;
-      padding: 12px;
-      border-radius: 14px;
-      border: 1px solid rgba(255,255,255,0.10);
+      margin-top:12px;
+      padding:12px;
+      border-radius:14px;
+      border:1px solid rgba(255,255,255,0.10);
       background: rgba(0,0,0,0.18);
     }
-    .selected-title{ margin:0 0 6px; font-weight:900; }
+    .selected-title{ margin:0 0 6px; font-weight:900; font-size:13px; }
     .selected-sub{ margin:0; color: var(--muted); font-size: 13px; line-height:1.45; }
 
-    .farm-list{ margin-top: 12px; display:grid; gap:10px; }
+    .kpis{ display:grid; grid-template-columns:repeat(2,1fr); gap:10px; margin-top:12px; }
+    .kpi{
+      background: rgba(0,0,0,0.18);
+      border:1px solid rgba(255,255,255,0.10);
+      border-radius:14px;
+      padding:12px;
+      min-height:72px;
+    }
+    .label{ color:var(--muted); font-size:12px; }
+    .value{ font-size:16px; font-weight:900; margin-top:6px; }
+
+    .farm-controls{ display:flex; gap:10px; flex-wrap:wrap; margin-top:12px; }
+    .farm-controls input{
+      flex:1; min-width:180px;
+      padding:10px 12px;
+      border-radius:14px;
+      border:1px solid rgba(255,255,255,0.14);
+      background: rgba(0,0,0,0.20);
+      color: var(--text);
+      outline:none;
+    }
+
+    .farm-list{ margin-top:12px; display:grid; gap:10px; }
     .farm-item{
       border-radius:14px;
-      border: 1px solid rgba(255,255,255,0.10);
+      border:1px solid rgba(255,255,255,0.10);
       background: rgba(0,0,0,0.18);
-      padding: 12px;
-      cursor: pointer;
+      padding:12px;
+      cursor:pointer;
       transition: transform 0.12s ease, border-color 0.12s ease, background 0.12s ease;
-      position: relative;
+      position:relative;
     }
     .farm-item:hover{ transform: translateY(-1px); border-color: rgba(255,255,255,0.18); }
-    .farm-item.selected{
-      background: var(--selected);
-      border-color: var(--selected-border);
-    }
-    .farm-name{ margin:0; font-weight:900; font-size: 18px; letter-spacing:0.2px; }
-    .farm-meta{ margin:4px 0 0; color: var(--muted); font-size: 13px; }
-    .farm-id{ margin:4px 0 0; color: rgba(232,238,252,0.78); font-size: 13px; }
+    .farm-item.selected{ background: var(--selected); border-color: var(--selected-border); }
+    .farm-name{ margin:0; font-weight:900; font-size:16px; }
+    .farm-meta{ margin:4px 0 0; color: var(--muted); font-size:13px; }
+    .farm-id{ margin:4px 0 0; color: rgba(237,242,255,0.78); font-size:12px; }
     .badges{ display:flex; gap:8px; flex-wrap:wrap; margin-top:10px; }
     .badge{
       display:inline-flex; align-items:center;
@@ -122,9 +154,9 @@
       border-radius:999px;
       border:1px solid rgba(255,255,255,0.12);
       background: rgba(0,0,0,0.18);
-      color: rgba(232,238,252,0.82);
+      color: rgba(237,242,255,0.82);
       font-size: 12px;
-      font-weight:700;
+      font-weight:800;
     }
 
     .farm-actions{
@@ -148,7 +180,7 @@
       border-radius: 12px;
       border:1px solid rgba(255,255,255,0.14);
       background: rgba(0,0,0,0.18);
-      color: rgba(232,238,252,0.9);
+      color: rgba(237,242,255,0.9);
       cursor:pointer;
       font-weight:900;
       font-size: 12px;
@@ -158,39 +190,67 @@
       color: rgba(255,220,220,0.95);
     }
 
-    .notif{
-      margin-top: 10px;
-      padding: 10px 12px;
-      border-radius: 14px;
-      border: 1px solid rgba(255,255,255,0.10);
+    .pillbar{ display:flex; gap:8px; flex-wrap:wrap; margin-top:12px; }
+    .pill{
+      padding:8px 10px;
+      border-radius:999px;
+      border:1px solid rgba(255,255,255,0.12);
+      background: rgba(0,0,0,0.14);
+      color: rgba(237,242,255,0.78);
+      font-size:12px;
+      font-weight:900;
+      cursor:pointer;
+      user-select:none;
+    }
+    .pill.active{
+      background: rgba(255,255,255,0.92);
+      color:#0b1025;
+      border-color: rgba(255,255,255,0.0);
+    }
+
+    .grid2{ display:grid; grid-template-columns:1fr; gap:10px; margin-top:12px; }
+    @media (min-width:900px){ .grid2{ grid-template-columns: 1fr 1fr; } }
+    .span2{ grid-column: span 1; }
+    @media (min-width:900px){ .span2{ grid-column: span 2; } }
+
+    .list{ margin-top:12px; display:grid; gap:10px; }
+    .item{
+      padding:10px 12px;
+      border-radius:14px;
+      border:1px solid rgba(255,255,255,0.10);
       background: rgba(0,0,0,0.18);
     }
-    .notif-title{ margin:0; font-weight:900; font-size: 14px; }
-    .notif-msg{ margin:4px 0 0; color: rgba(232,238,252,0.8); font-size: 13px; line-height: 1.4; }
-    .notif-time{ margin:6px 0 0; color: rgba(232,238,252,0.55); font-size: 12px; }
+    .t{ margin:0; font-weight:900; font-size:13px; }
+    .m{ margin:4px 0 0; color: rgba(237,242,255,0.78); font-size:13px; line-height:1.35; }
+    .s{ margin:6px 0 0; color: rgba(237,242,255,0.55); font-size:12px; }
     .sev{ display:inline-flex; align-items:center; gap:8px; }
-    .sev .dot{ background: var(--info); }
+    .dot{ width:10px; height:10px; border-radius:999px; background: var(--info); }
     .sev.ok .dot{ background: var(--ok); }
     .sev.warn .dot{ background: var(--warn); }
     .sev.critical .dot{ background: var(--critical); }
-    .sev.info .dot{ background: var(--info); }
+
+    .mono{ font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace; }
+    .controls{ display:flex; gap:10px; flex-wrap:wrap; margin-top:12px; align-items:center; }
+    input, select, textarea{
+      padding:10px 12px;
+      border-radius:14px;
+      border:1px solid rgba(255,255,255,0.14);
+      background: rgba(0,0,0,0.20);
+      color: var(--text);
+      outline:none;
+    }
+    textarea{ min-height: 88px; resize: vertical; }
+    input{ width: 260px; max-width: 100%; }
 
     .chart-wrap{
-      margin-top: 12px;
-      border-radius: 14px;
-      border: 1px solid rgba(255,255,255,0.10);
+      margin-top:12px;
+      padding:12px;
+      border-radius:14px;
+      border:1px solid rgba(255,255,255,0.10);
       background: rgba(0,0,0,0.18);
-      padding: 12px;
     }
-    canvas{ width:100%; height:220px; display:block; }
-    .legend{
-      display:flex; gap:14px; flex-wrap:wrap; margin-top:10px;
-      color: rgba(232,238,252,0.75); font-size: 13px;
-    }
-    .lg{ display:flex; align-items:center; gap:8px; }
-    .sw{ width:14px; height:14px; border-radius: 4px; display:inline-block; background: var(--info); }
-    .sw.a{ background: rgba(59,130,246,0.95); }
-    .sw.b{ background: rgba(16,185,129,0.95); }
+    canvas{ width:100%; height:230px; display:block; }
+    .hint{ margin-top:8px; color: rgba(237,242,255,0.55); font-size:12px; line-height:1.35; }
 
     /* Modal */
     .modal-backdrop{
@@ -205,12 +265,12 @@
     .modal-backdrop.show{ display:flex; }
     .modal{
       width: 100%;
-      max-width: 860px;
+      max-width: 900px;
       border-radius: 18px;
       border: 1px solid rgba(255,255,255,0.10);
       background: rgba(10,15,30,0.92);
       backdrop-filter: blur(10px);
-      box-shadow: 0 18px 60px rgba(0,0,0,0.55);
+      box-shadow: var(--glow);
       padding: 16px;
     }
     .modal-head{
@@ -245,7 +305,7 @@
       border-radius: 999px;
       border: 1px solid rgba(255,255,255,0.12);
       background: rgba(0,0,0,0.14);
-      color: rgba(232,238,252,0.78);
+      color: rgba(237,242,255,0.78);
       font-size: 12px;
       font-weight:900;
       cursor:pointer;
@@ -268,19 +328,6 @@
       .span-2{ grid-column: span 2; }
     }
     label{ display:block; font-size: 13px; color: var(--muted); margin-bottom: 6px; }
-    input, select{
-      width:100%;
-      padding: 12px;
-      border-radius: 14px;
-      border: 1px solid rgba(255,255,255,0.14);
-      background: rgba(0,0,0,0.20);
-      color: var(--text);
-      outline: none;
-      box-sizing: border-box;
-    }
-    select{ cursor:pointer; }
-    .hint{ margin-top:6px; color: rgba(232,238,252,0.55); font-size: 12px; }
-
     .radio-row{
       display:flex; gap:10px; flex-wrap:wrap;
       padding: 10px;
@@ -357,8 +404,13 @@
       border-radius: 14px;
       padding: 10px 12px;
     }
-    .wcell .k{ color: rgba(232,238,252,0.55); font-size: 12px; }
+    .wcell .k{ color: rgba(237,242,255,0.55); font-size: 12px; }
     .wcell .v{ margin-top: 6px; font-weight: 900; font-size: 15px; }
+
+    @keyframes riseIn{
+      from{ opacity:0; transform: translateY(8px); }
+      to{ opacity:1; transform: translateY(0); }
+    }
   </style>
 </head>
 
@@ -367,101 +419,301 @@
     <div class="left">
       <div class="logo"></div>
       <div>
-        <h1>AgriEdgeAI – Customer Dashboard</h1>
+        <h1>AgriEdgeAI - Unified Dashboard</h1>
         <div class="user" id="userLine">Loading user...</div>
       </div>
     </div>
-    <div style="display:flex;gap:10px;flex-wrap:wrap;">
+    <div class="toolbar">
       <button class="btn" id="btnWebsite" type="button">Website</button>
+      <button class="btn ghost" id="btnLegacyV2" type="button">Legacy v2</button>
+      <button class="btn ghost" id="btnLegacyV3" type="button">Legacy v3</button>
       <button class="btn" id="btnAddFarmTop" type="button">Add Farm</button>
       <button class="btn danger" id="btnDeleteFarmTop" type="button" disabled>Delete Selected</button>
-      <button class="btn danger" id="btnDemo" type="button">Create Demo Data</button>
+      <button class="btn" id="btnDemo" type="button">Create Demo Data</button>
+      <button class="btn" id="btnRefreshSelected" type="button">Refresh</button>
+      <button class="btn" id="btnToggleRealtime" type="button">Realtime: OFF</button>
       <button class="btn primary" id="btnLogout" type="button">Logout</button>
     </div>
   </header>
 
   <main>
-    <div class="grid">
+    <div class="layout">
       <!-- LEFT COLUMN -->
       <div class="card">
-        <h2>Farm Overview</h2>
-        <p>This shows farms stored in Supabase (<b>public.farms</b>). Step 6: weather alerts + delete farm + charts + AI outputs per selected farm.</p>
+        <div class="row-between">
+          <div>
+            <h2 style="margin:0 0 4px;">Farms</h2>
+            <p>Search + select to operate. Use Add Farm for onboarding.</p>
+          </div>
+          <button class="btn" id="btnReloadFarms" type="button">Reload</button>
+        </div>
 
-        <div class="chips">
-          <span class="chip"><span class="dot" style="background:var(--ok)"></span>Framework test: PASS</span>
-          <span class="chip"><span class="dot" style="background:var(--warn)"></span>Real-time data: pending</span>
-          <span class="chip"><span class="dot" style="background:var(--info)"></span>WhatsApp delivery: pending</span>
+        <div class="farm-controls">
+          <input id="farmSearch" placeholder="Search farm name / country / id..." />
+          <button class="btn ghost" id="btnClearSearch" type="button">Clear</button>
         </div>
 
         <div class="selected-box">
-          <p class="selected-title">Selected farm</p>
-          <p class="selected-sub" id="selectedText">None selected yet. Click a farm below.</p>
+          <div class="selected-title">Selected farm</div>
+          <div class="selected-sub" id="selectedText">None selected yet.</div>
         </div>
 
         <div class="kpis">
-          <div class="kpi"><div class="label">Irrigation status</div><div class="value" id="kpiIrr">—</div></div>
-          <div class="kpi"><div class="label">Fertilizer status</div><div class="value" id="kpiFert">—</div></div>
-          <div class="kpi"><div class="label">Pest risk</div><div class="value" id="kpiPest">—</div></div>
-          <div class="kpi"><div class="label">Last update</div><div class="value" id="kpiLast">—</div></div>
-        </div>
-
-        <!-- CHARTS -->
-        <div class="chart-wrap">
-          <div class="row-between">
-            <div>
-              <div style="font-weight:900;">Telemetry (last 24 points)</div>
-              <div style="color:var(--muted);font-size:13px;margin-top:4px;">Soil moisture + Temperature per selected farm.</div>
-            </div>
-            <button class="btn" id="btnRefresh" type="button">Refresh</button>
-          </div>
-
-          <canvas id="chart"></canvas>
-
-          <div class="legend">
-            <div class="lg"><span class="sw a"></span> Soil Moisture</div>
-            <div class="lg"><span class="sw b"></span> Temp (°C)</div>
-          </div>
-
-          <div class="msg" id="chartMsg">Select a farm to load chart.</div>
-        </div>
-
-        <div class="row-between" style="margin-top:14px;">
-          <h2 style="margin:0;font-size:16px;">Your farms</h2>
-          <button class="btn" id="btnAddFarmInline" type="button">+ Add</button>
+          <div class="kpi"><div class="label">Irrigation</div><div class="value" id="kpiIrr">-</div></div>
+          <div class="kpi"><div class="label">Fertilizer</div><div class="value" id="kpiFert">-</div></div>
+          <div class="kpi"><div class="label">Pest</div><div class="value" id="kpiPest">-</div></div>
+          <div class="kpi"><div class="label">Last update</div><div class="value" id="kpiLast">-</div></div>
         </div>
 
         <div class="farm-list" id="farmList">
-          <div class="msg">Loading farms...</div>
+          <div class="notice">Loading farms...</div>
         </div>
 
-        <div class="msg" id="statusMsg"></div>
+        <div class="notice" id="statusMsg">Unified dashboard: farms, ai_outputs, notifications, telemetry, setup, devices, zones, outbox, audit.</div>
       </div>
 
       <!-- RIGHT COLUMN -->
       <div class="card">
-        <h2>AI Outputs (per selected farm)</h2>
-        <p>Reads from <b>public.ai_outputs</b> and updates when you select a farm.</p>
-        <div id="aiBox" class="msg">Select a farm to load AI outputs.</div>
-
-        <div style="height:12px;"></div>
-
-        <h2>Notifications</h2>
-        <p>Reads from <b>public.notifications</b> per selected farm. (Also adds auto weather alerts - best effort.)</p>
-        <div id="notifBox" class="msg">Select a farm to load alerts.</div>
-
-        <div class="weather-mini" id="weatherBox" style="display:none;">
-          <h3>Live Weather (Open-Meteo) – temporary preview</h3>
-          <div class="msg" id="weatherMsg" style="margin-top:6px;">Loading…</div>
-          <div class="wrow" id="weatherGrid" style="display:none;">
-            <div class="wcell"><div class="k">Temperature</div><div class="v" id="wTemp">—</div></div>
-            <div class="wcell"><div class="k">Wind</div><div class="v" id="wWind">—</div></div>
-            <div class="wcell"><div class="k">Rain (now)</div><div class="v" id="wRain">—</div></div>
-            <div class="wcell"><div class="k">Humidity</div><div class="v" id="wHum">—</div></div>
+        <div class="row-between">
+          <div>
+            <h2 style="margin:0 0 4px;">Operations</h2>
+            <p>Everything is per selected farm.</p>
           </div>
-          <div class="hint" style="margin-top:10px;">
-            Note: this preview uses only farm coordinates. Later we’ll store weather + AI outputs in DB and push WhatsApp alerts.
+          <div class="controls">
+            <button class="btn" id="btnRunNow" type="button">Run Now</button>
+            <button class="btn" id="btnTestNotif" type="button">Test Notification</button>
+            <button class="btn" id="btnTestOutbox" type="button">Test Outbox</button>
+            <button class="btn danger" id="btnDeleteFarm" type="button">Delete Farm</button>
           </div>
         </div>
+
+        <div class="pillbar" id="tabBar">
+          <div class="pill active" data-tab="overview">Overview</div>
+          <div class="pill" data-tab="telemetry">Telemetry</div>
+          <div class="pill" data-tab="weather">Weather</div>
+          <div class="pill" data-tab="setup">Setup</div>
+          <div class="pill" data-tab="devices">Devices</div>
+          <div class="pill" data-tab="zones">Zones</div>
+          <div class="pill" data-tab="outbox">Outbox</div>
+          <div class="pill" data-tab="audit">Decision Audit</div>
+        </div>
+
+        <section id="tab_overview" style="margin-top:12px;">
+          <div class="notice" id="overviewMsg">Select a farm to load data.</div>
+          <div class="grid2">
+            <div class="span2">
+              <h2 style="margin:0 0 6px;">Latest AI outputs</h2>
+              <p>Table: <span class="mono">ai_outputs</span></p>
+              <div class="list" id="aiList"><div class="notice">Select a farm...</div></div>
+            </div>
+
+            <div class="span2">
+              <h2 style="margin:0 0 6px;">Latest notifications</h2>
+              <p>Table: <span class="mono">notifications</span></p>
+              <div class="list" id="notifList"><div class="notice">Select a farm...</div></div>
+            </div>
+          </div>
+        </section>
+
+        <section id="tab_telemetry" style="display:none; margin-top:12px;">
+          <div class="notice warn" id="telemetryMsg">
+            Optional table: <span class="mono">telemetry</span> (columns: farm_id, metric, value, ts)
+          </div>
+
+          <div class="controls">
+            <select id="metricA">
+              <option value="soil_moisture">soil_moisture</option>
+              <option value="temp_c">temp_c</option>
+              <option value="humidity">humidity</option>
+              <option value="npk_n">npk_n</option>
+              <option value="npk_p">npk_p</option>
+              <option value="npk_k">npk_k</option>
+            </select>
+            <select id="metricB">
+              <option value="temp_c">temp_c</option>
+              <option value="soil_moisture">soil_moisture</option>
+              <option value="humidity">humidity</option>
+              <option value="npk_n">npk_n</option>
+              <option value="npk_p">npk_p</option>
+              <option value="npk_k">npk_k</option>
+            </select>
+            <select id="pointsN">
+              <option value="24">24 points</option>
+              <option value="48">48 points</option>
+              <option value="96">96 points</option>
+            </select>
+            <button class="btn" id="btnLoadTelemetry" type="button">Load</button>
+          </div>
+
+          <div class="chart-wrap">
+            <div class="row-between">
+              <div>
+                <div style="font-weight:900;">Telemetry chart</div>
+                <div class="hint" id="telemetryHint">Select a farm and click Load.</div>
+              </div>
+            </div>
+            <canvas id="chart"></canvas>
+            <div class="hint">Note: chart auto-normalizes each series (0..1) for quick comparison.</div>
+          </div>
+        </section>
+
+        <section id="tab_weather" style="display:none; margin-top:12px;">
+          <div class="notice warn">
+            Live weather preview uses Open-Meteo with farm coordinates.
+          </div>
+          <div class="weather-mini" id="weatherBox" style="display:none;">
+            <h3>Live Weather Preview</h3>
+            <div class="notice" id="weatherMsg" style="margin-top:6px;">Loading...</div>
+            <div class="wrow" id="weatherGrid" style="display:none;">
+              <div class="wcell"><div class="k">Temperature</div><div class="v" id="wTemp">-</div></div>
+              <div class="wcell"><div class="k">Wind</div><div class="v" id="wWind">-</div></div>
+              <div class="wcell"><div class="k">Rain (now)</div><div class="v" id="wRain">-</div></div>
+              <div class="wcell"><div class="k">Humidity</div><div class="v" id="wHum">-</div></div>
+            </div>
+            <div class="hint" style="margin-top:10px;">
+              Note: this preview uses only farm coordinates. Later we store weather + AI outputs in DB and push alerts.
+            </div>
+          </div>
+        </section>
+
+        <section id="tab_setup" style="display:none; margin-top:12px;">
+          <div class="notice warn" id="setupMsg">Optional table: <span class="mono">farm_setup</span></div>
+          <div class="grid2">
+            <div>
+              <label>Season label</label>
+              <input id="setupSeason" placeholder="DEMO_2026" />
+            </div>
+            <div>
+              <label>Stage code</label>
+              <select id="setupStage">
+                <option value="">-</option>
+                <option value="PRE_FLUSH">PRE_FLUSH</option>
+                <option value="FLOWERING">FLOWERING</option>
+                <option value="FRUIT_SET">FRUIT_SET</option>
+                <option value="FRUIT_GROWTH">FRUIT_GROWTH</option>
+                <option value="HARVEST">HARVEST</option>
+                <option value="POST_HARVEST">POST_HARVEST</option>
+              </select>
+            </div>
+            <div>
+              <label>Stage start date</label>
+              <input id="setupStart" type="date" />
+            </div>
+            <div>
+              <label>Stage end date</label>
+              <input id="setupEnd" type="date" />
+            </div>
+            <div>
+              <label>Irrigation method</label>
+              <select id="setupIrrMethod">
+                <option value="">-</option>
+                <option value="DRIP">DRIP</option>
+                <option value="FLOOD">FLOOD</option>
+                <option value="SPRINKLER">SPRINKLER</option>
+                <option value="MANUAL">MANUAL</option>
+              </select>
+            </div>
+            <div>
+              <label>Pump flow rate (L/min)</label>
+              <input id="setupPumpLpm" placeholder="35" />
+            </div>
+            <div class="span2">
+              <label>Notes</label>
+              <textarea id="setupNotes" placeholder="Any setup notes..."></textarea>
+            </div>
+          </div>
+          <div class="controls">
+            <button class="btn" id="btnLoadSetup" type="button">Load</button>
+            <button class="btn primary" id="btnSaveSetup" type="button">Save</button>
+          </div>
+          <div class="notice" id="setupResult" style="display:none;"></div>
+        </section>
+
+        <section id="tab_devices" style="display:none; margin-top:12px;">
+          <div class="notice warn" id="devicesMsg">
+            Optional tables: <span class="mono">device_links</span>, <span class="mono">device_heartbeats</span>
+          </div>
+          <div class="grid2">
+            <div class="span2">
+              <label>Device label</label>
+              <input id="devLabel" placeholder="RPI-KADIRI-001" />
+              <label>Device type</label>
+              <select id="devType">
+                <option value="">-</option>
+                <option value="RPI">Raspberry Pi</option>
+                <option value="JETSON">NVIDIA Jetson</option>
+                <option value="MINIPC">Mini PC</option>
+                <option value="OTHER">Other</option>
+              </select>
+              <label>Device token (optional)</label>
+              <input id="devToken" placeholder="" />
+              <div class="controls">
+                <button class="btn" id="btnLoadDevices" type="button">Load</button>
+                <button class="btn primary" id="btnLinkDevice" type="button">Link</button>
+              </div>
+              <div class="notice" id="devResult" style="display:none;"></div>
+
+              <h2 style="margin:14px 0 6px;">Devices</h2>
+              <div class="list" id="devList"><div class="notice">Select a farm...</div></div>
+
+              <h2 style="margin:14px 0 6px;">Heartbeats</h2>
+              <div class="list" id="hbList"><div class="notice">Select a farm...</div></div>
+            </div>
+          </div>
+        </section>
+
+        <section id="tab_zones" style="display:none; margin-top:12px;">
+          <div class="notice warn" id="zonesMsg">Optional table: <span class="mono">farm_zones</span></div>
+          <div class="grid2">
+            <div class="span2">
+              <label>Zone name</label>
+              <input id="zoneName" placeholder="Zone A" />
+              <label>Zone notes</label>
+              <input id="zoneNotes" placeholder="e.g., Tomato row 1-4" />
+              <div class="controls">
+                <button class="btn" id="btnLoadZones" type="button">Load</button>
+                <button class="btn primary" id="btnAddZone" type="button">Add</button>
+              </div>
+              <div class="notice" id="zoneResult" style="display:none;"></div>
+
+              <h2 style="margin:14px 0 6px;">Zones</h2>
+              <div class="list" id="zoneList"><div class="notice">Select a farm...</div></div>
+            </div>
+          </div>
+        </section>
+
+        <section id="tab_outbox" style="display:none; margin-top:12px;">
+          <div class="notice warn" id="outboxMsg">
+            Optional table: <span class="mono">recs_outbox</span> (columns: farm_id, created_at, channel, payload, status)
+          </div>
+          <div class="controls">
+            <select id="outboxStatus">
+              <option value="">All status</option>
+              <option value="PENDING">PENDING</option>
+              <option value="SENT">SENT</option>
+              <option value="FAILED">FAILED</option>
+            </select>
+            <button class="btn" id="btnLoadOutbox" type="button">Load</button>
+          </div>
+          <div class="list" id="outboxList"><div class="notice">Select a farm...</div></div>
+        </section>
+
+        <section id="tab_audit" style="display:none; margin-top:12px;">
+          <div class="notice warn" id="auditMsg">
+            Optional table: <span class="mono">decision_audit</span> (columns: farm_id, created_at, module, should_notify, reason, details)
+          </div>
+          <div class="controls">
+            <select id="auditModule">
+              <option value="">All modules</option>
+              <option value="irrigation">irrigation</option>
+              <option value="fertilizer">fertilizer</option>
+              <option value="pest">pest</option>
+              <option value="monitor">monitor</option>
+            </select>
+            <button class="btn" id="btnLoadAudit" type="button">Load</button>
+          </div>
+          <div class="list" id="auditList"><div class="notice">Select a farm...</div></div>
+        </section>
       </div>
     </div>
   </main>
@@ -472,9 +724,9 @@
       <div class="modal-head">
         <div>
           <h3>Add a farm</h3>
-          <p>We save farm profile: <b>type → crop → age → services → deployment</b>. Only you can see your farms (RLS).</p>
+          <p>We save farm profile: type, crop, age, services, deployment. Only you can see your farms (RLS).</p>
         </div>
-        <button class="xbtn" id="btnCloseModal" type="button">×</button>
+        <button class="xbtn" id="btnCloseModal" type="button">x</button>
       </div>
 
       <div class="steps" id="stepPills">
@@ -490,7 +742,7 @@
         <div class="span-2">
           <label>Farm name *</label>
           <input id="farmName" placeholder="Kadiri Demo" autocomplete="off" />
-          <div class="hint">Any name. Later we’ll add zones for greenhouse.</div>
+          <div class="hint">Any name. Later we can add zones for greenhouse.</div>
         </div>
 
         <div>
@@ -500,7 +752,7 @@
         <div>
           <label>Notes (optional)</label>
           <input id="notes" placeholder="e.g., Mango orchard zone A" autocomplete="off" />
-          <div class="hint">If your Supabase table doesn’t have <b>notes</b> column, we auto-handle safely.</div>
+          <div class="hint">If your farms table does not have notes column, we handle safely.</div>
         </div>
 
         <div>
@@ -566,7 +818,7 @@
         <div id="plantingWrap">
           <label>Planting date</label>
           <input id="plantingDate" type="date" />
-          <div class="hint">We’ll calculate crop stage from this.</div>
+          <div class="hint">We calculate crop stage from this.</div>
         </div>
       </div>
 
@@ -579,7 +831,7 @@
             <label class="check"><input type="checkbox" id="svcFert" checked /> Fertilizer</label>
             <label class="check"><input type="checkbox" id="svcPest" checked /> Pest</label>
           </div>
-          <div class="hint">We disable modules you don’t need to reduce load.</div>
+          <div class="hint">We disable modules you do not need to reduce load.</div>
         </div>
       </div>
 
@@ -606,13 +858,13 @@
         <div>
           <label>Cloud provider (HYBRID/CLOUD)</label>
           <select id="cloudProvider">
-            <option value="">—</option>
+            <option value="">-</option>
             <option value="AWS">AWS</option>
             <option value="AZURE">AZURE</option>
             <option value="GCP">GCP</option>
             <option value="OTHER">OTHER</option>
           </select>
-          <div class="hint">Security note: we are NOT collecting cloud keys in the website. Later onboarding will handle it safely.</div>
+          <div class="hint">We do not collect cloud keys in the website. Onboarding handles it safely later.</div>
         </div>
 
         <div>
@@ -644,14 +896,25 @@
   <script type="module">
     import { supabase } from "./js/supabaseClient.js";
 
-    // ===== Elements =====
+    // Elements
     const userLine = document.getElementById("userLine");
     const statusMsg = document.getElementById("statusMsg");
+
     const btnLogout = document.getElementById("btnLogout");
     const btnWebsite = document.getElementById("btnWebsite");
+    const btnLegacyV2 = document.getElementById("btnLegacyV2");
+    const btnLegacyV3 = document.getElementById("btnLegacyV3");
 
+    const btnReloadFarms = document.getElementById("btnReloadFarms");
+    const btnRefreshSelected = document.getElementById("btnRefreshSelected");
+    const btnToggleRealtime = document.getElementById("btnToggleRealtime");
+
+    const btnAddFarmTop = document.getElementById("btnAddFarmTop");
     const btnDeleteFarmTop = document.getElementById("btnDeleteFarmTop");
+    const btnDemo = document.getElementById("btnDemo");
 
+    const farmSearch = document.getElementById("farmSearch");
+    const btnClearSearch = document.getElementById("btnClearSearch");
     const farmListEl = document.getElementById("farmList");
     const selectedText = document.getElementById("selectedText");
 
@@ -660,10 +923,29 @@
     const kpiPest = document.getElementById("kpiPest");
     const kpiLast = document.getElementById("kpiLast");
 
-    const notifBox = document.getElementById("notifBox");
-    const aiBox = document.getElementById("aiBox");
+    const tabBar = document.getElementById("tabBar");
+    const tabs = {
+      overview: document.getElementById("tab_overview"),
+      telemetry: document.getElementById("tab_telemetry"),
+      weather: document.getElementById("tab_weather"),
+      setup: document.getElementById("tab_setup"),
+      devices: document.getElementById("tab_devices"),
+      zones: document.getElementById("tab_zones"),
+      outbox: document.getElementById("tab_outbox"),
+      audit: document.getElementById("tab_audit"),
+    };
 
-    // Weather preview
+    const overviewMsg = document.getElementById("overviewMsg");
+    const aiList = document.getElementById("aiList");
+    const notifList = document.getElementById("notifList");
+
+    const metricA = document.getElementById("metricA");
+    const metricB = document.getElementById("metricB");
+    const pointsN = document.getElementById("pointsN");
+    const btnLoadTelemetry = document.getElementById("btnLoadTelemetry");
+    const telemetryHint = document.getElementById("telemetryHint");
+    const chart = document.getElementById("chart");
+
     const weatherBox = document.getElementById("weatherBox");
     const weatherMsg = document.getElementById("weatherMsg");
     const weatherGrid = document.getElementById("weatherGrid");
@@ -672,18 +954,51 @@
     const wRain = document.getElementById("wRain");
     const wHum = document.getElementById("wHum");
 
-    // Chart
-    const canvas = document.getElementById("chart");
-    const chartMsg = document.getElementById("chartMsg");
-    const btnRefresh = document.getElementById("btnRefresh");
+    const setupSeason = document.getElementById("setupSeason");
+    const setupStage = document.getElementById("setupStage");
+    const setupStart = document.getElementById("setupStart");
+    const setupEnd = document.getElementById("setupEnd");
+    const setupIrrMethod = document.getElementById("setupIrrMethod");
+    const setupPumpLpm = document.getElementById("setupPumpLpm");
+    const setupNotes = document.getElementById("setupNotes");
+    const btnLoadSetup = document.getElementById("btnLoadSetup");
+    const btnSaveSetup = document.getElementById("btnSaveSetup");
+    const setupResult = document.getElementById("setupResult");
+
+    const devLabel = document.getElementById("devLabel");
+    const devType = document.getElementById("devType");
+    const devToken = document.getElementById("devToken");
+    const btnLoadDevices = document.getElementById("btnLoadDevices");
+    const btnLinkDevice = document.getElementById("btnLinkDevice");
+    const devResult = document.getElementById("devResult");
+    const devList = document.getElementById("devList");
+    const hbList = document.getElementById("hbList");
+
+    const zoneName = document.getElementById("zoneName");
+    const zoneNotes = document.getElementById("zoneNotes");
+    const btnLoadZones = document.getElementById("btnLoadZones");
+    const btnAddZone = document.getElementById("btnAddZone");
+    const zoneResult = document.getElementById("zoneResult");
+    const zoneList = document.getElementById("zoneList");
+
+    const outboxStatus = document.getElementById("outboxStatus");
+    const btnLoadOutbox = document.getElementById("btnLoadOutbox");
+    const outboxList = document.getElementById("outboxList");
+
+    const auditModule = document.getElementById("auditModule");
+    const btnLoadAudit = document.getElementById("btnLoadAudit");
+    const auditList = document.getElementById("auditList");
+
+    const btnRunNow = document.getElementById("btnRunNow");
+    const btnTestNotif = document.getElementById("btnTestNotif");
+    const btnTestOutbox = document.getElementById("btnTestOutbox");
+    const btnDeleteFarm = document.getElementById("btnDeleteFarm");
 
     // Modal + steps
     const modalBackdrop = document.getElementById("modalBackdrop");
     const btnCloseModal = document.getElementById("btnCloseModal");
     const btnCancel = document.getElementById("btnCancel");
     const btnSaveFarm = document.getElementById("btnSaveFarm");
-    const btnAddFarmTop = document.getElementById("btnAddFarmTop");
-    const btnAddFarmInline = document.getElementById("btnAddFarmInline");
     const errBox = document.getElementById("errBox");
 
     const stepPills = document.getElementById("stepPills");
@@ -717,16 +1032,20 @@
     const cloudProviderEl = document.getElementById("cloudProvider");
     const edgeDeviceEl = document.getElementById("edgeDevice");
 
-    const btnDemo = document.getElementById("btnDemo");
-
-    // ===== State =====
+    // State
+    let farmsCache = [];
+    let filteredCache = [];
     let selectedFarmId = null;
     let selectedFarmObj = null;
-    let currentStep = 1;
-    let addFarmInFlight = false; // prevents duplicate inserts
-    let weatherAlertLock = false; // prevents spam auto inserts
 
-    // ===== Helpers =====
+    let currentStep = 1;
+    let addFarmInFlight = false;
+    let weatherAlertLock = false;
+
+    let realtimeOn = false;
+    let rtChannel = null;
+
+    // Helpers
     function escapeHtml(s) {
       return String(s ?? "")
         .replaceAll("&","&amp;")
@@ -735,12 +1054,1010 @@
         .replaceAll('"',"&quot;")
         .replaceAll("'","&#039;");
     }
-
-    function fmtTime(ts) {
-      if (!ts) return "—";
+    function fmtTime(ts){
+      if (!ts) return "-";
       try { return new Date(ts).toLocaleString(); } catch { return ts; }
     }
+    function setKPIsEmpty(){
+      kpiIrr.textContent = "-";
+      kpiFert.textContent = "-";
+      kpiPest.textContent = "-";
+      kpiLast.textContent = "-";
+    }
+    function showBox(el, msg, cls){
+      el.style.display = "block";
+      el.className = "notice" + (cls ? (" " + cls) : "");
+      el.textContent = msg;
+    }
+    function hideBox(el){
+      el.style.display = "none";
+      el.textContent = "";
+      el.className = "notice";
+    }
+    function tableNotReadyMsg(table, errorMessage){
+      return "Table not ready: " + table + ". (" + (errorMessage || "not found / RLS") + ")";
+    }
 
+    async function ensureAuthOrRedirect(){
+      const { data: { session } } = await supabase.auth.getSession();
+      if (!session) window.location.href = "/login.html";
+      return session;
+    }
+
+    function setActiveTab(tabName){
+      Object.keys(tabs).forEach(k => { tabs[k].style.display = (k === tabName) ? "block" : "none"; });
+      tabBar.querySelectorAll(".pill").forEach(p => p.classList.toggle("active", p.dataset.tab === tabName));
+    }
+    tabBar.addEventListener("click", (e) => {
+      const pill = e.target.closest(".pill");
+      if (!pill) return;
+      setActiveTab(pill.dataset.tab);
+    });
+
+    function highlightSelected(id){
+      farmListEl.querySelectorAll(".farm-item").forEach(el => {
+        const fid = Number(el.getAttribute("data-id"));
+        el.classList.toggle("selected", fid === id);
+      });
+    }
+
+    function renderFarmCard(f){
+      const modules = f.modules || {};
+      const services = [
+        modules.irrigation ? "Irrigation" : null,
+        modules.fertilizer ? "Fertilizer" : null,
+        modules.pest ? "Pest" : null
+      ].filter(Boolean).join(", ") || "-";
+
+      return `
+        <div class="farm-item" data-id="${f.id}">
+          <div class="farm-actions">
+            <button class="iconbtn danger" data-action="delete" data-id="${f.id}" type="button">Delete</button>
+          </div>
+          <div style="display:flex;justify-content:space-between;gap:12px;align-items:flex-start;flex-wrap:wrap;">
+            <div>
+              <p class="farm-name">${escapeHtml(f.farm_name || "Untitled")}</p>
+              <p class="farm-meta">${escapeHtml(f.country || "-")} • ${f.lat ?? "-"}, ${f.lon ?? "-"}</p>
+              <p class="farm-id">Farm ID: ${f.id}</p>
+            </div>
+            <div style="color:rgba(237,242,255,0.55);font-size:12px;">
+              ${fmtTime(f.created_at)}
+            </div>
+          </div>
+          <div class="badges">
+            <span class="badge">Type: ${escapeHtml(f.mode || "-")}</span>
+            <span class="badge">Crop: ${escapeHtml(f.crop || "-")}</span>
+            <span class="badge">Deploy: ${escapeHtml(f.deployment_mode || "-")}</span>
+            <span class="badge">Services: ${escapeHtml(services)}</span>
+          </div>
+        </div>
+      `;
+    }
+
+    function renderListItem(title, msg, time, severity){
+      const sev = (severity || "info").toLowerCase();
+      const cls = ["ok","warn","info","critical"].includes(sev) ? sev : "info";
+      return `
+        <div class="item">
+          <div class="sev ${cls}">
+            <span class="dot"></span>
+            <p class="t">${escapeHtml(title || cls.toUpperCase())}</p>
+          </div>
+          <p class="m">${escapeHtml(msg || "")}</p>
+          <p class="s">${escapeHtml(time ? fmtTime(time) : "")}</p>
+        </div>
+      `;
+    }
+
+    function updateDeleteSelectedButton(){
+      btnDeleteFarmTop.disabled = !selectedFarmId;
+    }
+
+    function applySearch(){
+      const q = (farmSearch.value || "").trim().toLowerCase();
+      if (!q){
+        filteredCache = [...farmsCache];
+      } else {
+        filteredCache = farmsCache.filter(f => {
+          const a = String(f.farm_name || "").toLowerCase();
+          const b = String(f.country || "").toLowerCase();
+          const c = String(f.id || "").toLowerCase();
+          return a.includes(q) || b.includes(q) || c.includes(q);
+        });
+      }
+      if (!filteredCache.length){
+        farmListEl.innerHTML = `<div class="notice">No farms match search.</div>`;
+        return;
+      }
+      farmListEl.innerHTML = filteredCache.map(renderFarmCard).join("");
+      farmListEl.querySelectorAll(".farm-item").forEach(item => {
+        item.addEventListener("click", (evt) => {
+          const actionBtn = evt.target.closest("[data-action]");
+          if (actionBtn) return;
+          const id = Number(item.getAttribute("data-id"));
+          selectFarm(id);
+        });
+      });
+      farmListEl.querySelectorAll('[data-action="delete"]').forEach(btn => {
+        btn.addEventListener("click", async (evt) => {
+          evt.stopPropagation();
+          const id = Number(btn.getAttribute("data-id"));
+          await deleteFarm(id);
+        });
+      });
+      if (selectedFarmId) highlightSelected(selectedFarmId);
+    }
+
+    async function loadFarms(){
+      farmListEl.innerHTML = `<div class="notice">Loading farms...</div>`;
+      setKPIsEmpty();
+
+      const { data: farms, error } = await supabase
+        .from("farms")
+        .select("id,farm_name,country,lat,lon,created_at,mode,crop,tree_age_years,planting_date,modules,deployment_mode,cloud_provider,edge_device,notes")
+        .order("created_at", { ascending: false });
+
+      if (error){
+        farmListEl.innerHTML = `<div class="notice critical">Farms not loading: ${escapeHtml(error.message)}</div>`;
+        return [];
+      }
+
+      farmsCache = farms || [];
+      filteredCache = [...farmsCache];
+
+      if (!farmsCache.length){
+        farmListEl.innerHTML = `<div class="notice">No farms yet. Click Add Farm.</div>`;
+        selectedFarmId = null;
+        selectedFarmObj = null;
+        updateDeleteSelectedButton();
+        return [];
+      }
+
+      applySearch();
+
+      const saved = localStorage.getItem("selected_farm_id");
+      if (saved){
+        const id = Number(saved);
+        if (farmsCache.some(f => f.id === id)) await selectFarm(id);
+      } else {
+        await selectFarm(farmsCache[0].id);
+      }
+
+      return farmsCache;
+    }
+
+    async function selectFarm(id){
+      selectedFarmId = id;
+      selectedFarmObj = farmsCache.find(f => f.id === id) || null;
+      localStorage.setItem("selected_farm_id", String(id));
+      highlightSelected(id);
+      updateDeleteSelectedButton();
+
+      if (!selectedFarmObj){
+        selectedText.textContent = "None selected yet.";
+        return;
+      }
+
+      const modules = selectedFarmObj.modules || {};
+      const services = [
+        modules.irrigation ? "Irrigation" : null,
+        modules.fertilizer ? "Fertilizer" : null,
+        modules.pest ? "Pest" : null
+      ].filter(Boolean).join(", ") || "-";
+
+      selectedText.innerHTML =
+        `<b>${escapeHtml(selectedFarmObj.farm_name || "Untitled")}</b> (ID: ${selectedFarmObj.id})<br>` +
+        `${escapeHtml(selectedFarmObj.country || "-")} • ${selectedFarmObj.lat ?? "-"}, ${selectedFarmObj.lon ?? "-"}<br>` +
+        `Type: <b>${escapeHtml(selectedFarmObj.mode || "-")}</b> • Crop: <b>${escapeHtml(selectedFarmObj.crop || "-")}</b> • Deploy: <b>${escapeHtml(selectedFarmObj.deployment_mode || "-")}</b><br>` +
+        `Services: <b>${escapeHtml(services)}</b>`;
+
+      overviewMsg.textContent = "Loading...";
+      await Promise.all([
+        loadFarmStatus(id),
+        loadLatestAI(id),
+        loadLatestNotifications(id),
+        loadSetup(),
+        loadDevices(),
+        loadZones(),
+        loadOutbox(id),
+        loadAudit(id),
+        loadLiveWeatherPreview(selectedFarmObj)
+      ]);
+
+      clearChart();
+      telemetryHint.textContent = "Select a farm and click Load.";
+
+      await weatherAutoAlert(selectedFarmObj);
+
+      if (realtimeOn) await startRealtime();
+      overviewMsg.textContent = "Ready.";
+    }
+
+    async function loadFarmStatus(farmId){
+      setKPIsEmpty();
+
+      const { data, error } = await supabase
+        .from("farm_status")
+        .select("irrigation_status,fertilizer_status,pest_status,last_update")
+        .eq("farm_id", farmId)
+        .maybeSingle();
+
+      if (error) {
+        statusMsg.textContent = "Status not loading yet: " + error.message;
+        return;
+      }
+
+      if (!data){
+        await supabase.from("farm_status").insert([{ farm_id: farmId }]);
+        return loadFarmStatus(farmId);
+      }
+
+      kpiIrr.textContent = data.irrigation_status || "Prototype";
+      kpiFert.textContent = data.fertilizer_status || "Prototype";
+      kpiPest.textContent = data.pest_status || "Prototype";
+      kpiLast.textContent = fmtTime(data.last_update);
+    }
+
+    async function loadLatestAI(farmId){
+      aiList.innerHTML = `<div class="notice">Loading AI outputs...</div>`;
+      const { data, error } = await supabase
+        .from("ai_outputs")
+        .select("created_at,module,title,message,severity")
+        .eq("farm_id", farmId)
+        .order("created_at", { ascending: false })
+        .limit(8);
+
+      if (error){
+        aiList.innerHTML = `<div class="notice warn">${escapeHtml(error.message)}</div>`;
+        return;
+      }
+      if (!data || !data.length){
+        aiList.innerHTML = `<div class="notice">No AI outputs yet.</div>`;
+        return;
+      }
+      aiList.innerHTML = data.map(r => {
+        const title = r.title || ((r.module || "module").toUpperCase() + " update");
+        return renderListItem(title, r.message, r.created_at, r.severity);
+      }).join("");
+    }
+
+    async function loadLatestNotifications(farmId){
+      notifList.innerHTML = `<div class="notice">Loading notifications...</div>`;
+      const { data, error } = await supabase
+        .from("notifications")
+        .select("created_at,title,msg,severity")
+        .eq("farm_id", farmId)
+        .order("created_at", { ascending: false })
+        .limit(8);
+
+      if (error){
+        notifList.innerHTML = `<div class="notice warn">${escapeHtml(error.message)}</div>`;
+        return;
+      }
+      if (!data || !data.length){
+        notifList.innerHTML = `<div class="notice">No notifications yet.</div>`;
+        return;
+      }
+      notifList.innerHTML = data.map(r => renderListItem(r.title, r.msg, r.created_at, r.severity)).join("");
+    }
+
+    // Weather preview + auto alert
+    async function loadLiveWeatherPreview(farm){
+      const lat = farm?.lat;
+      const lon = farm?.lon;
+
+      if (lat == null || lon == null || Number.isNaN(Number(lat)) || Number.isNaN(Number(lon))){
+        weatherBox.style.display = "none";
+        return;
+      }
+
+      weatherBox.style.display = "block";
+      weatherGrid.style.display = "none";
+      weatherMsg.textContent = "Loading from Open-Meteo...";
+
+      try{
+        const url =
+          "https://api.open-meteo.com/v1/forecast?latitude=" + encodeURIComponent(lat) +
+          "&longitude=" + encodeURIComponent(lon) +
+          "&current=temperature_2m,relative_humidity_2m,wind_speed_10m,rain&timezone=auto";
+        const res = await fetch(url);
+        if (!res.ok) throw new Error("Open-Meteo error " + res.status);
+        const j = await res.json();
+        const c = j.current || {};
+
+        wTemp.textContent = (c.temperature_2m ?? "-") + (c.temperature_2m != null ? " C" : "");
+        wWind.textContent = (c.wind_speed_10m ?? "-") + (c.wind_speed_10m != null ? " km/h" : "");
+        wRain.textContent = (c.rain ?? "-") + (c.rain != null ? " mm" : "");
+        wHum.textContent = (c.relative_humidity_2m ?? "-") + (c.relative_humidity_2m != null ? " %" : "");
+
+        weatherMsg.textContent = "Updated: " + (j.current?.time ? new Date(j.current.time).toLocaleString() : "now");
+        weatherGrid.style.display = "grid";
+      }catch(e){
+        weatherMsg.textContent = "Weather preview not available right now. (" + (e?.message || "error") + ")";
+        weatherGrid.style.display = "none";
+      }
+    }
+
+    async function weatherAutoAlert(farm){
+      if (!farm) return;
+      if (weatherAlertLock) return;
+      weatherAlertLock = true;
+      setTimeout(() => { weatherAlertLock = false; }, 60 * 1000);
+
+      const lat = farm?.lat;
+      const lon = farm?.lon;
+      if (lat == null || lon == null || Number.isNaN(Number(lat)) || Number.isNaN(Number(lon))) return;
+
+      try{
+        const url =
+          "https://api.open-meteo.com/v1/forecast?latitude=" + encodeURIComponent(lat) +
+          "&longitude=" + encodeURIComponent(lon) +
+          "&daily=precipitation_probability_max,precipitation_sum,temperature_2m_max,temperature_2m_min&timezone=auto";
+        const res = await fetch(url);
+        if (!res.ok) return;
+        const j = await res.json();
+        const d = j.daily || {};
+
+        const pprob = Array.isArray(d.precipitation_probability_max) ? d.precipitation_probability_max[0] : null;
+        const psum = Array.isArray(d.precipitation_sum) ? d.precipitation_sum[0] : null;
+        const tmax = Array.isArray(d.temperature_2m_max) ? d.temperature_2m_max[0] : null;
+        const tmin = Array.isArray(d.temperature_2m_min) ? d.temperature_2m_min[0] : null;
+
+        if (pprob == null && psum == null && tmax == null && tmin == null) return;
+
+        let severity = "info";
+        if ((pprob != null && pprob >= 60) || (psum != null && psum >= 5)) severity = "warn";
+        if ((tmax != null && tmax >= 42) || (psum != null && psum >= 50)) severity = "critical";
+
+        const parts = [];
+        if (pprob != null) parts.push("Rain probability: " + pprob + "%");
+        if (psum != null) parts.push("Expected rain: " + psum + " mm");
+        if (tmax != null) parts.push("Max temp: " + tmax + " C");
+        if (tmin != null) parts.push("Min temp: " + tmin + " C");
+        const msg = parts.join(" | ");
+
+        await supabase.from("notifications").insert([{
+          farm_id: farm.id,
+          title: "Weather (auto)",
+          msg,
+          severity
+        }]);
+
+        if (selectedFarmId === farm.id){
+          await loadLatestNotifications(farm.id);
+        }
+      }catch(e){
+        // silent
+      }
+    }
+
+    // Telemetry chart
+    function clearChart(){
+      const ctx = chart.getContext("2d");
+      const w = chart.width = Math.max(300, chart.clientWidth) * devicePixelRatio;
+      const h = chart.height = Math.max(200, chart.clientHeight) * devicePixelRatio;
+      ctx.clearRect(0,0,w,h);
+      ctx.strokeStyle = "rgba(255,255,255,0.12)";
+      ctx.lineWidth = 2;
+      ctx.strokeRect(14*devicePixelRatio, 14*devicePixelRatio, w-28*devicePixelRatio, h-28*devicePixelRatio);
+      ctx.fillStyle = "rgba(237,242,255,0.65)";
+      ctx.font = `${14*devicePixelRatio}px system-ui, -apple-system, Segoe UI, Arial`;
+      ctx.fillText("No data", 28*devicePixelRatio, 44*devicePixelRatio);
+    }
+    function norm(arr){
+      if (!arr || !arr.length) return [];
+      const min = Math.min(...arr);
+      const max = Math.max(...arr);
+      if (max === min) return arr.map(_ => 0.5);
+      return arr.map(v => (v - min) / (max - min));
+    }
+    function drawSeries(ctx, series, pad, innerW, innerH, color){
+      if (!series || series.length < 2) return;
+      ctx.strokeStyle = color;
+      ctx.lineWidth = 2.5 * devicePixelRatio;
+      ctx.beginPath();
+      series.forEach((v, i) => {
+        const x = pad + (innerW * (i / (series.length - 1)));
+        const y = pad + innerH - (innerH * v);
+        if (i === 0) ctx.moveTo(x,y);
+        else ctx.lineTo(x,y);
+      });
+      ctx.stroke();
+    }
+    function drawTwoSeries(a, b, labelA, labelB){
+      const ctx = chart.getContext("2d");
+      const w = chart.width = Math.max(300, chart.clientWidth) * devicePixelRatio;
+      const h = chart.height = Math.max(200, chart.clientHeight) * devicePixelRatio;
+      ctx.clearRect(0,0,w,h);
+
+      const pad = 18 * devicePixelRatio;
+      const innerW = w - pad*2;
+      const innerH = h - pad*2;
+
+      ctx.strokeStyle = "rgba(255,255,255,0.08)";
+      ctx.lineWidth = 1;
+      for (let i=0;i<5;i++){
+        const y = pad + (innerH * i/4);
+        ctx.beginPath(); ctx.moveTo(pad, y); ctx.lineTo(pad+innerW, y); ctx.stroke();
+      }
+
+      const an = norm(a);
+      const bn = norm(b);
+
+      drawSeries(ctx, an, pad, innerW, innerH, "rgba(59,130,246,0.95)");
+      drawSeries(ctx, bn, pad, innerW, innerH, "rgba(16,185,129,0.95)");
+
+      ctx.fillStyle = "rgba(237,242,255,0.65)";
+      ctx.font = `${12*devicePixelRatio}px system-ui, -apple-system, Segoe UI, Arial`;
+      ctx.fillText(labelA || "A", pad, pad - 6*devicePixelRatio);
+      ctx.fillText(labelB || "B", pad + 160*devicePixelRatio, pad - 6*devicePixelRatio);
+    }
+
+    async function loadTelemetry(){
+      if (!selectedFarmId){
+        telemetryHint.textContent = "Select a farm first.";
+        clearChart();
+        return;
+      }
+      const mA = metricA.value;
+      const mB = metricB.value;
+      const n = Number(pointsN.value || "24") || 24;
+
+      telemetryHint.textContent = "Loading telemetry...";
+
+      const [qa, qb] = await Promise.all([
+        supabase.from("telemetry")
+          .select("ts,value")
+          .eq("farm_id", selectedFarmId)
+          .eq("metric", mA)
+          .order("ts", { ascending: true })
+          .limit(n),
+        supabase.from("telemetry")
+          .select("ts,value")
+          .eq("farm_id", selectedFarmId)
+          .eq("metric", mB)
+          .order("ts", { ascending: true })
+          .limit(n)
+      ]);
+
+      if (qa.error || qb.error){
+        telemetryHint.textContent = "Telemetry not available (table/policy or no data).";
+        clearChart();
+        return;
+      }
+
+      const a = (qa.data || []).map(r => Number(r.value)).filter(v => Number.isFinite(v));
+      const b = (qb.data || []).map(r => Number(r.value)).filter(v => Number.isFinite(v));
+
+      if (!a.length && !b.length){
+        telemetryHint.textContent = "No telemetry rows for selected metrics.";
+        clearChart();
+        return;
+      }
+
+      telemetryHint.textContent = "Loaded " + Math.max(a.length,b.length) + " points.";
+      drawTwoSeries(a, b, mA, mB);
+    }
+
+    // Setup
+    async function loadSetup(){
+      hideBox(setupResult);
+      if (!selectedFarmId){
+        showBox(setupResult, "Select a farm first.", "warn");
+        return;
+      }
+
+      const { data, error } = await supabase
+        .from("farm_setup")
+        .select("season_label,stage_code,stage_start,stage_end,irrigation_method,pump_lpm,notes,updated_at")
+        .eq("farm_id", selectedFarmId)
+        .maybeSingle();
+
+      if (error){
+        showBox(setupResult, tableNotReadyMsg("farm_setup", error.message), "warn");
+        return;
+      }
+
+      if (!data){
+        setupSeason.value = "";
+        setupStage.value = "";
+        setupStart.value = "";
+        setupEnd.value = "";
+        setupIrrMethod.value = "";
+        setupPumpLpm.value = "";
+        setupNotes.value = "";
+        showBox(setupResult, "No setup row yet.", "ok");
+        return;
+      }
+
+      setupSeason.value = data.season_label || "";
+      setupStage.value = data.stage_code || "";
+      setupStart.value = data.stage_start ? String(data.stage_start).slice(0,10) : "";
+      setupEnd.value = data.stage_end ? String(data.stage_end).slice(0,10) : "";
+      setupIrrMethod.value = data.irrigation_method || "";
+      setupPumpLpm.value = (data.pump_lpm ?? "") + "";
+      setupNotes.value = data.notes || "";
+      showBox(setupResult, "Setup loaded. " + fmtTime(data.updated_at), "ok");
+    }
+
+    async function saveSetup(){
+      hideBox(setupResult);
+      if (!selectedFarmId){
+        showBox(setupResult, "Select a farm first.", "warn");
+        return;
+      }
+
+      const pumpTxt = (setupPumpLpm.value || "").trim();
+      const pump = pumpTxt ? Number(pumpTxt) : null;
+      if (pumpTxt && Number.isNaN(pump)){
+        showBox(setupResult, "Pump L/min must be a number.", "critical");
+        return;
+      }
+
+      const payload = {
+        farm_id: selectedFarmId,
+        season_label: (setupSeason.value || "").trim() || null,
+        stage_code: (setupStage.value || "").trim() || null,
+        stage_start: (setupStart.value || "").trim() || null,
+        stage_end: (setupEnd.value || "").trim() || null,
+        irrigation_method: (setupIrrMethod.value || "").trim() || null,
+        pump_lpm: pumpTxt ? pump : null,
+        notes: (setupNotes.value || "").trim() || null,
+        updated_at: new Date().toISOString()
+      };
+
+      const { error } = await supabase
+        .from("farm_setup")
+        .upsert([payload], { onConflict: "farm_id" });
+
+      if (error){
+        showBox(setupResult, tableNotReadyMsg("farm_setup", error.message), "warn");
+        return;
+      }
+      showBox(setupResult, "Saved.", "ok");
+    }
+
+    // Devices
+    async function loadDevices(){
+      hideBox(devResult);
+      if (!selectedFarmId){
+        devList.innerHTML = `<div class="notice">Select a farm...</div>`;
+        hbList.innerHTML = `<div class="notice">Select a farm...</div>`;
+        return;
+      }
+
+      const dl = await supabase
+        .from("device_links")
+        .select("created_at,device_label,device_type")
+        .eq("farm_id", selectedFarmId)
+        .order("created_at", { ascending: false })
+        .limit(10);
+
+      if (dl.error){
+        devList.innerHTML = `<div class="notice warn">${escapeHtml(tableNotReadyMsg("device_links", dl.error.message))}</div>`;
+      } else if (!dl.data || !dl.data.length){
+        devList.innerHTML = `<div class="notice">No devices linked yet.</div>`;
+      } else {
+        devList.innerHTML = dl.data.map(r =>
+          renderListItem(r.device_label || "Device", "Type: " + (r.device_type || "-"), r.created_at, "info")
+        ).join("");
+      }
+
+      const hb = await supabase
+        .from("device_heartbeats")
+        .select("last_seen,device_label,status")
+        .eq("farm_id", selectedFarmId)
+        .order("last_seen", { ascending: false })
+        .limit(5);
+
+      if (hb.error){
+        hbList.innerHTML = `<div class="notice warn">${escapeHtml(tableNotReadyMsg("device_heartbeats", hb.error.message))}</div>`;
+      } else if (!hb.data || !hb.data.length){
+        hbList.innerHTML = `<div class="notice">No heartbeats yet.</div>`;
+      } else {
+        hbList.innerHTML = hb.data.map(r =>
+          renderListItem(r.device_label || "Device", "Status: " + (r.status || "-"), r.last_seen,
+            (r.status || "").toLowerCase().includes("ok") ? "ok" : "info"
+          )
+        ).join("");
+      }
+    }
+
+    async function linkDevice(){
+      hideBox(devResult);
+      if (!selectedFarmId){
+        showBox(devResult, "Select a farm first.", "warn");
+        return;
+      }
+
+      const label = (devLabel.value || "").trim();
+      if (!label){
+        showBox(devResult, "Device label is required.", "critical");
+        return;
+      }
+
+      const payload = {
+        farm_id: selectedFarmId,
+        device_label: label,
+        device_type: (devType.value || "").trim() || null,
+        device_token: (devToken.value || "").trim() || null,
+        created_at: new Date().toISOString()
+      };
+
+      const { error } = await supabase.from("device_links").insert([payload]);
+      if (error){
+        showBox(devResult, tableNotReadyMsg("device_links", error.message), "warn");
+        return;
+      }
+
+      showBox(devResult, "Device linked.", "ok");
+      devLabel.value = "";
+      devType.value = "";
+      devToken.value = "";
+      await loadDevices();
+    }
+
+    // Zones
+    async function loadZones(){
+      hideBox(zoneResult);
+      if (!selectedFarmId){
+        zoneList.innerHTML = `<div class="notice">Select a farm...</div>`;
+        return;
+      }
+
+      const { data, error } = await supabase
+        .from("farm_zones")
+        .select("created_at,zone_name,notes,id")
+        .eq("farm_id", selectedFarmId)
+        .order("created_at", { ascending: false })
+        .limit(20);
+
+      if (error){
+        zoneList.innerHTML = `<div class="notice warn">${escapeHtml(tableNotReadyMsg("farm_zones", error.message))}</div>`;
+        return;
+      }
+      if (!data || !data.length){
+        zoneList.innerHTML = `<div class="notice">No zones yet.</div>`;
+        return;
+      }
+
+      zoneList.innerHTML = data.map(r =>
+        renderListItem(r.zone_name || "Zone", r.notes || "-", r.created_at, "info")
+      ).join("");
+    }
+
+    async function addZone(){
+      hideBox(zoneResult);
+      if (!selectedFarmId){
+        showBox(zoneResult, "Select a farm first.", "warn");
+        return;
+      }
+
+      const name = (zoneName.value || "").trim();
+      if (!name){
+        showBox(zoneResult, "Zone name is required.", "critical");
+        return;
+      }
+
+      const payload = {
+        farm_id: selectedFarmId,
+        zone_name: name,
+        notes: (zoneNotes.value || "").trim() || null,
+        created_at: new Date().toISOString()
+      };
+
+      const { error } = await supabase.from("farm_zones").insert([payload]);
+      if (error){
+        showBox(zoneResult, tableNotReadyMsg("farm_zones", error.message), "warn");
+        return;
+      }
+
+      showBox(zoneResult, "Zone added.", "ok");
+      zoneName.value = "";
+      zoneNotes.value = "";
+      await loadZones();
+    }
+
+    // Outbox
+    async function loadOutbox(farmId){
+      outboxList.innerHTML = `<div class="notice">Loading outbox...</div>`;
+      if (!farmId){
+        outboxList.innerHTML = `<div class="notice">Select a farm...</div>`;
+        return;
+      }
+
+      let q = supabase
+        .from("recs_outbox")
+        .select("created_at,channel,status,payload")
+        .eq("farm_id", farmId)
+        .order("created_at", { ascending: false })
+        .limit(12);
+
+      if (outboxStatus.value) q = q.eq("status", outboxStatus.value);
+
+      const { data, error } = await q;
+
+      if (error){
+        outboxList.innerHTML = `<div class="notice warn">${escapeHtml(tableNotReadyMsg("recs_outbox", error.message))}</div>`;
+        return;
+      }
+      if (!data || !data.length){
+        outboxList.innerHTML = `<div class="notice">No outbox rows.</div>`;
+        return;
+      }
+
+      outboxList.innerHTML = data.map(r => {
+        const title = "Channel: " + (r.channel || "-") + " | Status: " + (r.status || "-");
+        let msg = "";
+        try{
+          if (typeof r.payload === "string") msg = r.payload.slice(0, 260);
+          else msg = JSON.stringify(r.payload).slice(0, 260);
+        }catch{ msg = String(r.payload || "").slice(0,260); }
+        return renderListItem(title, msg, r.created_at, (r.status === "FAILED") ? "critical" : (r.status === "SENT" ? "ok" : "info"));
+      }).join("");
+    }
+
+    // Audit
+    async function loadAudit(farmId){
+      auditList.innerHTML = `<div class="notice">Loading decision audit...</div>`;
+      if (!farmId){
+        auditList.innerHTML = `<div class="notice">Select a farm...</div>`;
+        return;
+      }
+
+      let q = supabase
+        .from("decision_audit")
+        .select("created_at,module,should_notify,reason,details")
+        .eq("farm_id", farmId)
+        .order("created_at", { ascending: false })
+        .limit(12);
+
+      if (auditModule.value) q = q.eq("module", auditModule.value);
+
+      const { data, error } = await q;
+
+      if (error){
+        auditList.innerHTML = `<div class="notice warn">${escapeHtml(tableNotReadyMsg("decision_audit", error.message))}</div>`;
+        return;
+      }
+      if (!data || !data.length){
+        auditList.innerHTML = `<div class="notice">No audit rows.</div>`;
+        return;
+      }
+
+      auditList.innerHTML = data.map(r => {
+        const yn = (r.should_notify === true) ? "YES" : ((r.should_notify === false) ? "NO" : "-");
+        const title = (r.module || "module").toUpperCase() + " | notify=" + yn + " | " + (r.reason || "-");
+        let msg = "";
+        try{
+          if (typeof r.details === "string") msg = r.details.slice(0, 280);
+          else msg = JSON.stringify(r.details).slice(0, 280);
+        }catch{ msg = String(r.details || "").slice(0,280); }
+        const sev = (r.should_notify === true) ? "warn" : "info";
+        return renderListItem(title, msg || "-", r.created_at, sev);
+      }).join("");
+    }
+
+    // Realtime
+    async function stopRealtime(){
+      if (rtChannel){
+        try { await supabase.removeChannel(rtChannel); } catch {}
+        rtChannel = null;
+      }
+    }
+
+    async function startRealtime(){
+      if (!selectedFarmId) return;
+      await stopRealtime();
+
+      rtChannel = supabase.channel("rt-farm-" + selectedFarmId);
+
+      rtChannel.on("postgres_changes", {
+        event: "INSERT",
+        schema: "public",
+        table: "ai_outputs",
+        filter: "farm_id=eq." + selectedFarmId
+      }, async () => { await loadLatestAI(selectedFarmId); });
+
+      rtChannel.on("postgres_changes", {
+        event: "INSERT",
+        schema: "public",
+        table: "notifications",
+        filter: "farm_id=eq." + selectedFarmId
+      }, async () => { await loadLatestNotifications(selectedFarmId); });
+
+      rtChannel.on("postgres_changes", {
+        event: "INSERT",
+        schema: "public",
+        table: "recs_outbox",
+        filter: "farm_id=eq." + selectedFarmId
+      }, async () => { await loadOutbox(selectedFarmId); });
+
+      rtChannel.on("postgres_changes", {
+        event: "INSERT",
+        schema: "public",
+        table: "decision_audit",
+        filter: "farm_id=eq." + selectedFarmId
+      }, async () => { await loadAudit(selectedFarmId); });
+
+      rtChannel.subscribe((status) => {
+        if (status === "SUBSCRIBED"){
+          btnToggleRealtime.textContent = "Realtime: ON";
+        }
+      });
+    }
+
+    async function toggleRealtime(){
+      realtimeOn = !realtimeOn;
+      if (realtimeOn){
+        btnToggleRealtime.textContent = "Realtime: ON (starting)";
+        await startRealtime();
+      } else {
+        btnToggleRealtime.textContent = "Realtime: OFF";
+        await stopRealtime();
+      }
+    }
+
+    // Actions
+    async function logAI(title, message, severity){
+      if (!selectedFarmId) return;
+      await supabase.from("ai_outputs").insert([{
+        farm_id: selectedFarmId,
+        module: "ops",
+        title,
+        message,
+        severity: severity || "info",
+        created_at: new Date().toISOString()
+      }]);
+    }
+
+    async function runNow(){
+      if (!selectedFarmId){ alert("Select a farm first."); return; }
+      btnRunNow.disabled = true;
+      try{
+        const { data, error } = await supabase.functions.invoke("run-now", { body: { farm_id: selectedFarmId } });
+        if (error){
+          await logAI("Run Now (fallback)", "Requested run for Farm ID " + selectedFarmId + ".", "warn");
+          alert("Run requested (fallback). Edge Function not ready; logged into ai_outputs.");
+        } else {
+          await logAI("Run Now invoked", "Response: " + JSON.stringify(data).slice(0,240), "ok");
+          alert("Run Now invoked.");
+        }
+        await loadLatestAI(selectedFarmId);
+      } finally { btnRunNow.disabled = false; }
+    }
+
+    async function testNotification(){
+      if (!selectedFarmId){ alert("Select a farm first."); return; }
+      const { error } = await supabase.from("notifications").insert([{
+        farm_id: selectedFarmId,
+        title: "Test notification",
+        msg: "Temporary test alert from Unified Dashboard.",
+        severity: "info",
+        created_at: new Date().toISOString()
+      }]);
+      if (error){ alert("Notification insert failed: " + error.message); return; }
+      await loadLatestNotifications(selectedFarmId);
+    }
+
+    async function testOutbox(){
+      if (!selectedFarmId){ alert("Select a farm first."); return; }
+      const payload = {
+        farm_id: selectedFarmId,
+        channel: "WHATSAPP",
+        status: "PENDING",
+        payload: { msg: "Test outbox row from Unified Dashboard", ts: new Date().toISOString() },
+        created_at: new Date().toISOString()
+      };
+      const { error } = await supabase.from("recs_outbox").insert([payload]);
+      if (error){ alert(tableNotReadyMsg("recs_outbox", error.message)); return; }
+      await loadOutbox(selectedFarmId);
+    }
+
+    async function deleteFarm(farmId){
+      const ok = confirm("Delete Farm ID " + farmId + "? This cannot be undone. It will also try to remove telemetry, AI outputs, notifications and farm_status.");
+      if (!ok) return;
+
+      if (selectedFarmId === farmId){
+        btnDeleteFarmTop.disabled = true;
+      }
+
+      await Promise.allSettled([
+        supabase.from("telemetry").delete().eq("farm_id", farmId),
+        supabase.from("ai_outputs").delete().eq("farm_id", farmId),
+        supabase.from("notifications").delete().eq("farm_id", farmId),
+        supabase.from("farm_status").delete().eq("farm_id", farmId)
+      ]);
+
+      const { error } = await supabase.from("farms").delete().eq("id", farmId);
+      if (error){
+        alert("Delete failed: " + error.message + "\nIf this is RLS policy issue, add a DELETE policy for farms where owner_id = auth.uid().");
+        updateDeleteSelectedButton();
+        return;
+      }
+
+      if (selectedFarmId === farmId){
+        selectedFarmId = null;
+        selectedFarmObj = null;
+        localStorage.removeItem("selected_farm_id");
+        selectedText.textContent = "None selected yet.";
+        setKPIsEmpty();
+        overviewMsg.textContent = "Select a farm to load data.";
+        aiList.innerHTML = `<div class="notice">Select a farm...</div>`;
+        notifList.innerHTML = `<div class="notice">Select a farm...</div>`;
+        outboxList.innerHTML = `<div class="notice">Select a farm...</div>`;
+        auditList.innerHTML = `<div class="notice">Select a farm...</div>`;
+        clearChart();
+        weatherBox.style.display = "none";
+      }
+
+      await loadFarms();
+      statusMsg.textContent = "Farm deleted.";
+    }
+
+    async function deleteSelectedFarm(){
+      if (!selectedFarmId) return;
+      await deleteFarm(selectedFarmId);
+    }
+
+    // Demo data
+    async function createDemoData(){
+      if (!selectedFarmId) {
+        alert("Please select a farm first.");
+        return;
+      }
+
+      const now = Date.now();
+      const rows = [];
+      for (let i=0;i<24;i++){
+        const ts = new Date(now - (23-i)*30*60*1000).toISOString();
+        const soil = 18 + Math.sin(i/3)*3 + Math.random()*1.2;
+        const temp = 24 + Math.sin(i/4)*2 + Math.random()*0.8;
+        rows.push({ farm_id: selectedFarmId, metric: "soil_moisture", value: Number(soil.toFixed(2)), unit:"%", ts });
+        rows.push({ farm_id: selectedFarmId, metric: "temp_c", value: Number(temp.toFixed(2)), unit:"C", ts });
+      }
+
+      const { error: tErr } = await supabase.from("telemetry").insert(rows);
+      if (tErr) return alert("Telemetry insert failed: " + tErr.message);
+
+      const aiRows = [
+        {
+          farm_id: selectedFarmId,
+          module: "irrigation",
+          title: "Irrigation recommendation",
+          message: "Soil moisture trending down. Consider 40-55 minutes irrigation in evening (prototype).",
+          severity: "info"
+        },
+        {
+          farm_id: selectedFarmId,
+          module: "pest",
+          title: "Pest watch",
+          message: "Humidity rising pattern. Do quick leaf check tomorrow morning.",
+          severity: "warn"
+        }
+      ];
+
+      const { error: aErr } = await supabase.from("ai_outputs").insert(aiRows);
+      if (aErr) return alert("AI outputs insert failed: " + aErr.message);
+
+      await supabase.from("farm_status").update({
+        irrigation_status: "Connected",
+        fertilizer_status: "Prototype",
+        pest_status: "Prototype",
+        last_update: new Date().toISOString()
+      }).eq("farm_id", selectedFarmId);
+
+      alert("Demo data created. Now click Refresh or load telemetry.");
+      await Promise.all([
+        loadFarmStatus(selectedFarmId),
+        loadLatestAI(selectedFarmId),
+        loadTelemetry(),
+        loadLiveWeatherPreview(selectedFarmObj),
+        loadLatestNotifications(selectedFarmId)
+      ]);
+    }
+
+    // Add Farm modal logic
     function showError(msg) { errBox.textContent = msg; errBox.classList.add("show"); }
     function clearError(){ errBox.textContent = ""; errBox.classList.remove("show"); }
 
@@ -757,19 +2074,6 @@
       addFarmInFlight = false;
       btnSaveFarm.disabled = false;
       btnNext.disabled = false;
-    }
-
-    async function ensureAuthOrRedirect() {
-      const { data: { session } } = await supabase.auth.getSession();
-      if (!session) window.location.href = "/login.html";
-      return session;
-    }
-
-    function setKPIsEmpty() {
-      kpiIrr.textContent = "—";
-      kpiFert.textContent = "—";
-      kpiPest.textContent = "—";
-      kpiLast.textContent = "—";
     }
 
     function getRadio(name){
@@ -799,7 +2103,6 @@
       }
     }
 
-    // ===== Steps UI =====
     function renderSteps(){
       const steps = [step1, step2, step3, step4, step5];
       steps.forEach((s, idx) => s.style.display = (idx+1===currentStep) ? "grid" : "none");
@@ -832,7 +2135,7 @@
           const years = (treeAgeYearsEl.value || "").trim();
           if (!years) { showError("Please enter tree age (years)."); return false; }
           const n = Number(years);
-          if (Number.isNaN(n) || n < 0 || n > 100) { showError("Tree age must be a valid number (0–100)."); return false; }
+          if (Number.isNaN(n) || n < 0 || n > 100) { showError("Tree age must be a valid number (0-100)."); return false; }
         } else {
           const pd = (plantingDateEl.value || "").trim();
           if (!pd) { showError("Please select planting date."); return false; }
@@ -883,517 +2186,6 @@
 
     cropEl.addEventListener("change", syncAgeUI);
 
-    // ===== Farms =====
-    function highlightSelected(id) {
-      farmListEl.querySelectorAll(".farm-item").forEach(el => {
-        const fid = Number(el.getAttribute("data-id"));
-        el.classList.toggle("selected", fid === id);
-      });
-    }
-
-    function updateDeleteSelectedButton(){
-      btnDeleteFarmTop.disabled = !selectedFarmId;
-    }
-
-    async function loadFarms() {
-      farmListEl.innerHTML = `<div class="msg">Loading farms...</div>`;
-
-      const { data: farms, error } = await supabase
-        .from("farms")
-        .select("id,farm_name,country,lat,lon,created_at,mode,crop,tree_age_years,planting_date,modules,deployment_mode,cloud_provider,edge_device,notes")
-        .order("created_at", { ascending: false });
-
-      if (error) {
-        farmListEl.innerHTML = `<div class="msg">Farms not loading yet: ${escapeHtml(error.message)}</div>`;
-        return [];
-      }
-
-      if (!farms || farms.length === 0) {
-        farmListEl.innerHTML = `<div class="msg">No farms yet. Click “Add Farm”.</div>`;
-        selectedFarmId = null;
-        selectedFarmObj = null;
-        updateDeleteSelectedButton();
-        return [];
-      }
-
-      farmListEl.innerHTML = farms.map(f => {
-        const modules = f.modules || {};
-        const services = [
-          modules.irrigation ? "Irrigation" : null,
-          modules.fertilizer ? "Fertilizer" : null,
-          modules.pest ? "Pest" : null
-        ].filter(Boolean).join(", ") || "—";
-
-        const mode = f.mode || "—";
-        const crop = f.crop || "—";
-        const deploy = f.deployment_mode || "—";
-
-        return `
-          <div class="farm-item" data-id="${f.id}">
-            <div class="farm-actions">
-              <button class="iconbtn danger" data-action="delete" data-id="${f.id}" type="button">Delete</button>
-            </div>
-
-            <div style="display:flex;justify-content:space-between;gap:12px;align-items:flex-start;flex-wrap:wrap;">
-              <div>
-                <p class="farm-name">${escapeHtml(f.farm_name || "Untitled farm")}</p>
-                <p class="farm-meta">${escapeHtml(f.country || "—")} • ${f.lat ?? "—"}, ${f.lon ?? "—"}</p>
-                <p class="farm-id">Farm ID: ${f.id}</p>
-              </div>
-              <div style="color:rgba(232,238,252,0.55);font-size:12px;">
-                ${fmtTime(f.created_at)}
-              </div>
-            </div>
-
-            <div class="badges">
-              <span class="badge">Type: ${escapeHtml(mode)}</span>
-              <span class="badge">Crop: ${escapeHtml(crop)}</span>
-              <span class="badge">Deploy: ${escapeHtml(deploy)}</span>
-              <span class="badge">Services: ${escapeHtml(services)}</span>
-            </div>
-          </div>
-        `;
-      }).join("");
-
-      // click to select
-      farmListEl.querySelectorAll(".farm-item").forEach(item => {
-        item.addEventListener("click", (evt) => {
-          const actionBtn = evt.target.closest("[data-action]");
-          if (actionBtn) return;
-          const id = Number(item.getAttribute("data-id"));
-          selectFarm(id, farms);
-        });
-      });
-
-      // delete per card
-      farmListEl.querySelectorAll('[data-action="delete"]').forEach(btn => {
-        btn.addEventListener("click", async (evt) => {
-          evt.stopPropagation();
-          const id = Number(btn.getAttribute("data-id"));
-          await deleteFarm(id, { fromTopButton:false });
-        });
-      });
-
-      // restore selection
-      const saved = localStorage.getItem("selected_farm_id");
-      if (saved) {
-        const id = Number(saved);
-        const exists = farms.some(f => f.id === id);
-        if (exists) {
-          await selectFarm(id, farms);
-          return farms;
-        }
-      }
-
-      // default: select first
-      await selectFarm(farms[0].id, farms);
-      return farms;
-    }
-
-    async function selectFarm(id, farms) {
-      selectedFarmId = id;
-      selectedFarmObj = farms.find(f => f.id === id) || null;
-
-      localStorage.setItem("selected_farm_id", String(id));
-      highlightSelected(id);
-      updateDeleteSelectedButton();
-
-      if (!selectedFarmObj) return;
-
-      const modules = selectedFarmObj.modules || {};
-      const services = [
-        modules.irrigation ? "Irrigation" : null,
-        modules.fertilizer ? "Fertilizer" : null,
-        modules.pest ? "Pest" : null
-      ].filter(Boolean).join(", ") || "—";
-
-      selectedText.innerHTML =
-        `<b>${escapeHtml(selectedFarmObj.farm_name || "Untitled")}</b> (Farm ID: ${selectedFarmObj.id})<br>` +
-        `${escapeHtml(selectedFarmObj.country || "—")} • ${selectedFarmObj.lat ?? "—"}, ${selectedFarmObj.lon ?? "—"}<br>` +
-        `Type: <b>${escapeHtml(selectedFarmObj.mode || "—")}</b> • Crop: <b>${escapeHtml(selectedFarmObj.crop || "—")}</b> • Deploy: <b>${escapeHtml(selectedFarmObj.deployment_mode || "—")}</b><br>` +
-        `Services: <b>${escapeHtml(services)}</b>`;
-
-      await Promise.all([
-        loadFarmStatus(id),
-        loadNotifications(id),
-        loadAIOutputs(id),
-        loadTelemetryAndDraw(id),
-        loadLiveWeatherPreview(selectedFarmObj)
-      ]);
-
-      // Step 6: auto weather alert (best-effort) after selection
-      await weatherAutoAlert(selectedFarmObj);
-    }
-
-    async function deleteFarm(farmId, opts={ fromTopButton:false }){
-      const ok = confirm(`Delete Farm ID ${farmId}? This cannot be undone.\n\nIt will also try to remove telemetry, AI outputs, notifications and farm_status for this farm.`);
-      if (!ok) return;
-
-      // If selected, disable delete button immediately
-      if (selectedFarmId === farmId){
-        btnDeleteFarmTop.disabled = true;
-      }
-
-      // Best effort: delete children first (avoids FK issues if no ON DELETE CASCADE)
-      await Promise.allSettled([
-        supabase.from("telemetry").delete().eq("farm_id", farmId),
-        supabase.from("ai_outputs").delete().eq("farm_id", farmId),
-        supabase.from("notifications").delete().eq("farm_id", farmId),
-        supabase.from("farm_status").delete().eq("farm_id", farmId)
-      ]);
-
-      // Then delete farm
-      const { error } = await supabase.from("farms").delete().eq("id", farmId);
-      if (error){
-        alert(
-          "Delete failed: " + error.message +
-          "\n\nIf this is RLS policy issue, you must add a DELETE policy for farms where owner_id = auth.uid()."
-        );
-        updateDeleteSelectedButton();
-        return;
-      }
-
-      // Clear UI if deleted farm was selected
-      if (selectedFarmId === farmId){
-        selectedFarmId = null;
-        selectedFarmObj = null;
-        localStorage.removeItem("selected_farm_id");
-        selectedText.textContent = "None selected yet. Click a farm below.";
-        setKPIsEmpty();
-        aiBox.innerHTML = `<div class="msg">Select a farm to load AI outputs.</div>`;
-        notifBox.innerHTML = `<div class="msg">Select a farm to load alerts.</div>`;
-        chartMsg.textContent = "Select a farm to load chart.";
-        const ctx = canvas.getContext("2d");
-        drawEmptyChart(ctx, "No selection");
-        weatherBox.style.display = "none";
-      }
-
-      // Reload farms and auto-select first if exists
-      await loadFarms();
-      statusMsg.textContent = "Farm deleted ✅";
-    }
-
-    // top delete selected
-    btnDeleteFarmTop.addEventListener("click", async () => {
-      if (!selectedFarmId) return;
-      await deleteFarm(selectedFarmId, { fromTopButton:true });
-    });
-
-    // ===== Status (farm_status) =====
-    async function loadFarmStatus(farmId) {
-      setKPIsEmpty();
-
-      const { data, error } = await supabase
-        .from("farm_status")
-        .select("irrigation_status,fertilizer_status,pest_status,last_update")
-        .eq("farm_id", farmId)
-        .maybeSingle();
-
-      if (error) {
-        statusMsg.textContent = `Status not loading yet: ${error.message}`;
-        return;
-      }
-
-      if (!data) {
-        const { error: insErr } = await supabase
-          .from("farm_status")
-          .insert([{ farm_id: farmId }]);
-
-        if (insErr) {
-          statusMsg.textContent = `Status row missing and insert blocked: ${insErr.message}`;
-          return;
-        }
-        return loadFarmStatus(farmId);
-      }
-
-      kpiIrr.textContent = data.irrigation_status || "Prototype";
-      kpiFert.textContent = data.fertilizer_status || "Prototype";
-      kpiPest.textContent = data.pest_status || "Prototype";
-      kpiLast.textContent = fmtTime(data.last_update);
-
-      statusMsg.textContent = "Step 6 running ✅ Weather alerts + Delete Farm + charts + AI outputs.";
-    }
-
-    // ===== Notifications =====
-    async function loadNotifications(farmId) {
-      notifBox.innerHTML = `<div class="msg">Loading alerts...</div>`;
-
-      const { data: notifs, error } = await supabase
-        .from("notifications")
-        .select("created_at,title,msg,severity")
-        .eq("farm_id", farmId)
-        .order("created_at", { ascending: false })
-        .limit(8);
-
-      if (error) {
-        notifBox.innerHTML = `<div class="msg">Notifications not loading yet: ${escapeHtml(error.message)}</div>`;
-        return;
-      }
-
-      if (!notifs || notifs.length === 0) {
-        notifBox.innerHTML = `<div class="msg">No alerts yet for this farm.</div>`;
-        return;
-      }
-
-      notifBox.innerHTML = notifs.map(n => {
-        const sev = (n.severity || "info").toLowerCase();
-        const cls = ["ok","warn","info","critical"].includes(sev) ? sev : "info";
-        return `
-          <div class="notif">
-            <div class="sev ${cls}">
-              <span class="dot"></span>
-              <p class="notif-title">${escapeHtml(n.title || (cls.toUpperCase()))}</p>
-            </div>
-            <p class="notif-msg">${escapeHtml(n.msg || "")}</p>
-            <p class="notif-time">${fmtTime(n.created_at)}</p>
-          </div>
-        `;
-      }).join("");
-    }
-
-    // ===== AI Outputs =====
-    async function loadAIOutputs(farmId) {
-      aiBox.innerHTML = `<div class="msg">Loading AI outputs...</div>`;
-
-      const { data, error } = await supabase
-        .from("ai_outputs")
-        .select("created_at,module,title,message,severity")
-        .eq("farm_id", farmId)
-        .order("created_at", { ascending: false })
-        .limit(8);
-
-      if (error) {
-        aiBox.innerHTML = `<div class="msg">AI outputs not loading yet: ${escapeHtml(error.message)}</div>`;
-        return;
-      }
-
-      if (!data || data.length === 0) {
-        aiBox.innerHTML = `<div class="msg">No AI outputs yet for this farm. (Use “Create Demo Data” to test.)</div>`;
-        return;
-      }
-
-      aiBox.innerHTML = data.map(n => {
-        const sev = (n.severity || "info").toLowerCase();
-        const cls = ["ok","warn","info","critical"].includes(sev) ? sev : "info";
-        const title = n.title || `${(n.module || "module").toUpperCase()} update`;
-        return `
-          <div class="notif">
-            <div class="sev ${cls}">
-              <span class="dot"></span>
-              <p class="notif-title">${escapeHtml(title)}</p>
-            </div>
-            <p class="notif-msg">${escapeHtml(n.message || "")}</p>
-            <p class="notif-time">${fmtTime(n.created_at)}</p>
-          </div>
-        `;
-      }).join("");
-    }
-
-    // ===== Live Weather Preview (temporary, not saved) =====
-    async function loadLiveWeatherPreview(farm){
-      const lat = farm?.lat;
-      const lon = farm?.lon;
-
-      if (lat == null || lon == null || Number.isNaN(Number(lat)) || Number.isNaN(Number(lon))){
-        weatherBox.style.display = "none";
-        return;
-      }
-
-      weatherBox.style.display = "block";
-      weatherGrid.style.display = "none";
-      weatherMsg.textContent = "Loading from Open-Meteo…";
-
-      try{
-        const url =
-          `https://api.open-meteo.com/v1/forecast?latitude=${encodeURIComponent(lat)}&longitude=${encodeURIComponent(lon)}` +
-          `&current=temperature_2m,relative_humidity_2m,wind_speed_10m,rain` +
-          `&timezone=auto`;
-        const res = await fetch(url);
-        if (!res.ok) throw new Error("Open-Meteo error " + res.status);
-        const j = await res.json();
-        const c = j.current || {};
-
-        wTemp.textContent = (c.temperature_2m ?? "—") + (c.temperature_2m != null ? " °C" : "");
-        wWind.textContent = (c.wind_speed_10m ?? "—") + (c.wind_speed_10m != null ? " km/h" : "");
-        wRain.textContent = (c.rain ?? "—") + (c.rain != null ? " mm" : "");
-        wHum.textContent = (c.relative_humidity_2m ?? "—") + (c.relative_humidity_2m != null ? " %" : "");
-
-        weatherMsg.textContent = `Updated: ${j.current?.time ? new Date(j.current.time).toLocaleString() : "now"}`;
-        weatherGrid.style.display = "grid";
-      }catch(e){
-        weatherMsg.textContent = "Weather preview not available right now. (" + (e?.message || "error") + ")";
-        weatherGrid.style.display = "none";
-      }
-    }
-
-    // ===== Weather Auto Alert (best effort insert into notifications) =====
-    async function weatherAutoAlert(farm){
-      if (!farm) return;
-
-      // prevent spam: allow once per selection (and also keep 60 min local lock)
-      if (weatherAlertLock) return;
-      weatherAlertLock = true;
-      setTimeout(() => { weatherAlertLock = false; }, 60 * 1000); // 1 min lock
-
-      const lat = farm?.lat;
-      const lon = farm?.lon;
-      if (lat == null || lon == null || Number.isNaN(Number(lat)) || Number.isNaN(Number(lon))) return;
-
-      try{
-        // daily summary (today)
-        const url =
-          `https://api.open-meteo.com/v1/forecast?latitude=${encodeURIComponent(lat)}&longitude=${encodeURIComponent(lon)}` +
-          `&daily=precipitation_probability_max,precipitation_sum,temperature_2m_max,temperature_2m_min` +
-          `&timezone=auto`;
-        const res = await fetch(url);
-        if (!res.ok) return;
-        const j = await res.json();
-        const d = j.daily || {};
-
-        const pprob = Array.isArray(d.precipitation_probability_max) ? d.precipitation_probability_max[0] : null;
-        const psum = Array.isArray(d.precipitation_sum) ? d.precipitation_sum[0] : null;
-        const tmax = Array.isArray(d.temperature_2m_max) ? d.temperature_2m_max[0] : null;
-        const tmin = Array.isArray(d.temperature_2m_min) ? d.temperature_2m_min[0] : null;
-
-        if (pprob == null && psum == null && tmax == null && tmin == null) return;
-
-        let severity = "info";
-        if ((pprob != null && pprob >= 60) || (psum != null && psum >= 5)) severity = "warn";
-        if ((tmax != null && tmax >= 42) || (psum != null && psum >= 50)) severity = "critical";
-
-        const parts = [];
-        if (pprob != null) parts.push(`Rain probability: ${pprob}%`);
-        if (psum != null) parts.push(`Expected rain: ${psum} mm`);
-        if (tmax != null) parts.push(`Max temp: ${tmax}°C`);
-        if (tmin != null) parts.push(`Min temp: ${tmin}°C`);
-        const msg = parts.join(" · ");
-
-        // Insert into DB (best effort; if RLS blocks, it will fail silently)
-        await supabase.from("notifications").insert([{
-          farm_id: farm.id,
-          title: "Weather (auto)",
-          msg,
-          severity
-        }]);
-
-        // Reload notification list (even if insert blocked, list still works)
-        if (selectedFarmId === farm.id){
-          await loadNotifications(farm.id);
-        }
-      }catch(e){
-        // silent
-      }
-    }
-
-    // ===== Telemetry + Chart =====
-    async function loadTelemetryAndDraw(farmId) {
-      chartMsg.textContent = "Loading telemetry...";
-      const ctx = canvas.getContext("2d");
-
-      const [sm, tp] = await Promise.all([
-        supabase.from("telemetry")
-          .select("ts,value")
-          .eq("farm_id", farmId)
-          .eq("metric", "soil_moisture")
-          .order("ts", { ascending: true })
-          .limit(24),
-        supabase.from("telemetry")
-          .select("ts,value")
-          .eq("farm_id", farmId)
-          .eq("metric", "temp_c")
-          .order("ts", { ascending: true })
-          .limit(24)
-      ]);
-
-      if (sm.error || tp.error) {
-        chartMsg.textContent = "Telemetry not loading yet (table/policy or no data).";
-        drawEmptyChart(ctx, "No telemetry");
-        return;
-      }
-
-      const seriesA = (sm.data || []).map(r => r.value);
-      const seriesB = (tp.data || []).map(r => r.value);
-
-      if (seriesA.length === 0 && seriesB.length === 0) {
-        chartMsg.textContent = "No telemetry yet. Click “Create Demo Data” to test chart.";
-        drawEmptyChart(ctx, "No telemetry");
-        return;
-      }
-
-      chartMsg.textContent = `Loaded telemetry for Farm ID ${farmId}.`;
-      drawTwoSeries(ctx, seriesA, seriesB);
-    }
-
-    function drawEmptyChart(ctx, label) {
-      const w = canvas.width = canvas.clientWidth * devicePixelRatio;
-      const h = canvas.height = canvas.clientHeight * devicePixelRatio;
-      ctx.clearRect(0,0,w,h);
-
-      ctx.globalAlpha = 0.9;
-      ctx.strokeStyle = "rgba(255,255,255,0.14)";
-      ctx.lineWidth = 2;
-      ctx.strokeRect(14*devicePixelRatio, 14*devicePixelRatio, w-28*devicePixelRatio, h-28*devicePixelRatio);
-
-      ctx.fillStyle = "rgba(232,238,252,0.65)";
-      ctx.font = `${14*devicePixelRatio}px system-ui, -apple-system, Segoe UI, Arial`;
-      ctx.fillText(label, 28*devicePixelRatio, 44*devicePixelRatio);
-    }
-
-    function norm(arr) {
-      if (!arr || arr.length === 0) return [];
-      const min = Math.min(...arr);
-      const max = Math.max(...arr);
-      if (max === min) return arr.map(_ => 0.5);
-      return arr.map(v => (v - min) / (max - min));
-    }
-
-    function drawTwoSeries(ctx, a, b) {
-      const w = canvas.width = canvas.clientWidth * devicePixelRatio;
-      const h = canvas.height = canvas.clientHeight * devicePixelRatio;
-      ctx.clearRect(0,0,w,h);
-
-      const pad = 18 * devicePixelRatio;
-      const innerW = w - pad*2;
-      const innerH = h - pad*2;
-
-      // grid
-      ctx.strokeStyle = "rgba(255,255,255,0.08)";
-      ctx.lineWidth = 1;
-      for (let i=0;i<5;i++){
-        const y = pad + (innerH * i/4);
-        ctx.beginPath();
-        ctx.moveTo(pad, y);
-        ctx.lineTo(pad+innerW, y);
-        ctx.stroke();
-      }
-
-      const an = norm(a);
-      const bn = norm(b);
-
-      function drawLine(series, color) {
-        if (!series || series.length < 2) return;
-        ctx.strokeStyle = color;
-        ctx.lineWidth = 2.5 * devicePixelRatio;
-        ctx.beginPath();
-        series.forEach((v, i) => {
-          const x = pad + (innerW * (i / (series.length - 1)));
-          const y = pad + innerH - (innerH * v);
-          if (i === 0) ctx.moveTo(x,y);
-          else ctx.lineTo(x,y);
-        });
-        ctx.stroke();
-      }
-
-      drawLine(an, "rgba(59,130,246,0.95)");
-      drawLine(bn, "rgba(16,185,129,0.95)");
-
-      ctx.fillStyle = "rgba(232,238,252,0.65)";
-      ctx.font = `${12*devicePixelRatio}px system-ui, -apple-system, Segoe UI, Arial`;
-      ctx.fillText("Soil moisture", pad, pad - 6*devicePixelRatio);
-      ctx.fillText("Temp (°C)", pad + 140*devicePixelRatio, pad - 6*devicePixelRatio);
-    }
-
-    // ===== Add Farm (NO DUPLICATES) =====
     function buildModulesJson(){
       return {
         irrigation: !!svcIrr.checked,
@@ -1483,7 +2275,7 @@
         }
 
         if (ins.error){
-          showError(`Save failed: ${ins.error.message}`);
+          showError("Save failed: " + ins.error.message);
           addFarmInFlight = false;
           btnSaveFarm.disabled = false;
           btnNext.disabled = false;
@@ -1494,7 +2286,7 @@
 
         const farms = await loadFarms();
         if (ins.data?.id && farms.some(f => f.id === ins.data.id)) {
-          await selectFarm(ins.data.id, farms);
+          await selectFarm(ins.data.id);
         }
       } finally {
         addFarmInFlight = false;
@@ -1503,98 +2295,76 @@
       }
     }
 
-    // ===== Demo Data =====
-    async function createDemoData() {
-      if (!selectedFarmId) {
-        alert("Please select a farm first.");
-        return;
-      }
-
-      const now = Date.now();
-      const rows = [];
-      for (let i=0;i<24;i++){
-        const ts = new Date(now - (23-i)*30*60*1000).toISOString();
-        const soil = 18 + Math.sin(i/3)*3 + Math.random()*1.2;
-        const temp = 24 + Math.sin(i/4)*2 + Math.random()*0.8;
-        rows.push({ farm_id: selectedFarmId, metric: "soil_moisture", value: Number(soil.toFixed(2)), unit:"%", ts });
-        rows.push({ farm_id: selectedFarmId, metric: "temp_c", value: Number(temp.toFixed(2)), unit:"C", ts });
-      }
-
-      const { error: tErr } = await supabase.from("telemetry").insert(rows);
-      if (tErr) return alert("Telemetry insert failed: " + tErr.message);
-
-      const aiRows = [
-        {
-          farm_id: selectedFarmId,
-          module: "irrigation",
-          title: "Irrigation recommendation",
-          message: "Soil moisture trending down. Consider 40–55 minutes irrigation in evening (prototype).",
-          severity: "info"
-        },
-        {
-          farm_id: selectedFarmId,
-          module: "pest",
-          title: "Pest watch",
-          message: "Humidity rising pattern. Do quick leaf check tomorrow morning.",
-          severity: "warn"
-        }
-      ];
-
-      const { error: aErr } = await supabase.from("ai_outputs").insert(aiRows);
-      if (aErr) return alert("AI outputs insert failed: " + aErr.message);
-
-      await supabase.from("farm_status").update({
-        irrigation_status: "Connected",
-        fertilizer_status: "Prototype",
-        pest_status: "Prototype",
-        last_update: new Date().toISOString()
-      }).eq("farm_id", selectedFarmId);
-
-      alert("Demo data created ✅ Now click Refresh (or re-select farm).");
-      await Promise.all([
-        loadFarmStatus(selectedFarmId),
-        loadAIOutputs(selectedFarmId),
-        loadTelemetryAndDraw(selectedFarmId),
-        loadLiveWeatherPreview(selectedFarmObj),
-        loadNotifications(selectedFarmId)
-      ]);
-    }
-
-    // ========= Init =========
-    const session = await ensureAuthOrRedirect();
-    userLine.textContent = `Signed in as: ${session.user?.email || "Unknown"}`;
-
+    // Wire up events
     btnLogout.addEventListener("click", async () => {
+      await stopRealtime();
       await supabase.auth.signOut();
       localStorage.removeItem("selected_farm_id");
       window.location.href = "/login.html";
     });
 
     btnWebsite.addEventListener("click", () => window.location.href = "/");
+    btnLegacyV2.addEventListener("click", () => window.location.href = "/dashboard2.html");
+    btnLegacyV3.addEventListener("click", () => window.location.href = "/dashboard3.html");
 
     btnAddFarmTop.addEventListener("click", showModal);
-    btnAddFarmInline.addEventListener("click", showModal);
     btnCloseModal.addEventListener("click", closeModal);
     btnCancel.addEventListener("click", closeModal);
     modalBackdrop.addEventListener("click", (e) => { if (e.target === modalBackdrop) closeModal(); });
 
     btnSaveFarm.addEventListener("click", addFarm);
 
-    btnDemo.addEventListener("click", createDemoData);
-    btnRefresh.addEventListener("click", async () => {
+    btnReloadFarms.addEventListener("click", loadFarms);
+    btnRefreshSelected.addEventListener("click", async () => {
       if (!selectedFarmId) return;
       await Promise.all([
         loadFarmStatus(selectedFarmId),
-        loadAIOutputs(selectedFarmId),
-        loadNotifications(selectedFarmId),
-        loadTelemetryAndDraw(selectedFarmId),
+        loadLatestAI(selectedFarmId),
+        loadLatestNotifications(selectedFarmId),
+        loadSetup(),
+        loadDevices(),
+        loadZones(),
+        loadOutbox(selectedFarmId),
+        loadAudit(selectedFarmId),
         loadLiveWeatherPreview(selectedFarmObj)
       ]);
-      // optional: refresh weather alert too (not every refresh, only if you want)
-      // await weatherAutoAlert(selectedFarmObj);
+      if (tabs.telemetry.style.display !== "none") await loadTelemetry();
     });
 
-    renderSteps();
+    btnToggleRealtime.addEventListener("click", toggleRealtime);
+
+    btnLoadTelemetry.addEventListener("click", loadTelemetry);
+
+    btnLoadSetup.addEventListener("click", loadSetup);
+    btnSaveSetup.addEventListener("click", saveSetup);
+
+    btnLoadDevices.addEventListener("click", loadDevices);
+    btnLinkDevice.addEventListener("click", linkDevice);
+
+    btnLoadZones.addEventListener("click", loadZones);
+    btnAddZone.addEventListener("click", addZone);
+
+    btnLoadOutbox.addEventListener("click", () => loadOutbox(selectedFarmId));
+    btnLoadAudit.addEventListener("click", () => loadAudit(selectedFarmId));
+    outboxStatus.addEventListener("change", () => { if (selectedFarmId) loadOutbox(selectedFarmId); });
+    auditModule.addEventListener("change", () => { if (selectedFarmId) loadAudit(selectedFarmId); });
+
+    btnRunNow.addEventListener("click", runNow);
+    btnTestNotif.addEventListener("click", testNotification);
+    btnTestOutbox.addEventListener("click", testOutbox);
+    btnDeleteFarm.addEventListener("click", deleteSelectedFarm);
+    btnDeleteFarmTop.addEventListener("click", deleteSelectedFarm);
+
+    btnDemo.addEventListener("click", createDemoData);
+
+    farmSearch.addEventListener("input", applySearch);
+    btnClearSearch.addEventListener("click", () => { farmSearch.value = ""; applySearch(); });
+
+    // Init
+    const session = await ensureAuthOrRedirect();
+    userLine.textContent = "Signed in as: " + (session.user?.email || "Unknown");
+    setActiveTab("overview");
+    clearChart();
     syncAgeUI();
     await loadFarms();
     updateDeleteSelectedButton();
