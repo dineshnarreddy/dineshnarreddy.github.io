@@ -3,11 +3,10 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>AgriEdgeAI - Unified Dashboard</title>
+  <title>AgriEdgeAI – Dashboard</title>
   <style>
     :root{
       --bg:#0a0f1f;
-      --bg-2:#0b1428;
       --panel:rgba(255,255,255,0.06);
       --panel-border:rgba(255,255,255,0.10);
       --text:#edf2ff;
@@ -20,7 +19,6 @@
       --selected-border: rgba(59,130,246,0.45);
       --danger: rgba(239,68,68,0.95);
       --shadow: 0 20px 60px rgba(0,0,0,0.45);
-      --glow: 0 0 0 1px rgba(255,255,255,0.06), 0 18px 60px rgba(0,0,0,0.35);
       --accent: #27d3b6;
       --accent-2: #4aa3ff;
     }
@@ -68,7 +66,6 @@
     .btn.primary{ background: rgba(255,255,255,0.92); color:#0b1025; border:0; }
     .btn.danger{ border-color: rgba(239,68,68,0.35); color: rgba(255,220,220,0.95); }
     .btn.ghost{ background: rgba(0,0,0,0.12); }
-    .btn.accent{ background: linear-gradient(135deg, var(--accent), var(--accent-2)); border:0; color:#081521; }
 
     main{ padding:18px 20px 40px; max-width:1360px; margin:0 auto; }
     .layout{ display:grid; grid-template-columns:1fr; gap:16px; }
@@ -270,7 +267,7 @@
       border: 1px solid rgba(255,255,255,0.10);
       background: rgba(10,15,30,0.92);
       backdrop-filter: blur(10px);
-      box-shadow: var(--glow);
+      box-shadow: 0 0 0 1px rgba(255,255,255,0.06), 0 18px 60px rgba(0,0,0,0.35);
       padding: 16px;
     }
     .modal-head{
@@ -419,17 +416,13 @@
     <div class="left">
       <div class="logo"></div>
       <div>
-        <h1>AgriEdgeAI - Unified Dashboard</h1>
+        <h1>AgriEdgeAI – Dashboard</h1>
         <div class="user" id="userLine">Loading user...</div>
       </div>
     </div>
     <div class="toolbar">
       <button class="btn" id="btnWebsite" type="button">Website</button>
-      <button class="btn ghost" id="btnLegacyV2" type="button">Legacy v2</button>
-      <button class="btn ghost" id="btnLegacyV3" type="button">Legacy v3</button>
       <button class="btn" id="btnAddFarmTop" type="button">Add Farm</button>
-      <button class="btn danger" id="btnDeleteFarmTop" type="button" disabled>Delete Selected</button>
-      <button class="btn" id="btnDemo" type="button">Create Demo Data</button>
       <button class="btn" id="btnRefreshSelected" type="button">Refresh</button>
       <button class="btn" id="btnToggleRealtime" type="button">Realtime: OFF</button>
       <button class="btn primary" id="btnLogout" type="button">Logout</button>
@@ -469,7 +462,7 @@
           <div class="notice">Loading farms...</div>
         </div>
 
-        <div class="notice" id="statusMsg">Unified dashboard: farms, ai_outputs, notifications, telemetry, setup, devices, zones, outbox, audit.</div>
+        <div class="notice" id="statusMsg">Dashboard ready: select a farm to load all tabs.</div>
       </div>
 
       <!-- RIGHT COLUMN -->
@@ -902,16 +895,12 @@
 
     const btnLogout = document.getElementById("btnLogout");
     const btnWebsite = document.getElementById("btnWebsite");
-    const btnLegacyV2 = document.getElementById("btnLegacyV2");
-    const btnLegacyV3 = document.getElementById("btnLegacyV3");
 
     const btnReloadFarms = document.getElementById("btnReloadFarms");
     const btnRefreshSelected = document.getElementById("btnRefreshSelected");
     const btnToggleRealtime = document.getElementById("btnToggleRealtime");
 
     const btnAddFarmTop = document.getElementById("btnAddFarmTop");
-    const btnDeleteFarmTop = document.getElementById("btnDeleteFarmTop");
-    const btnDemo = document.getElementById("btnDemo");
 
     const farmSearch = document.getElementById("farmSearch");
     const btnClearSearch = document.getElementById("btnClearSearch");
@@ -1080,7 +1069,7 @@
 
     async function ensureAuthOrRedirect(){
       const { data: { session } } = await supabase.auth.getSession();
-      if (!session) window.location.href = "/login.html";
+      if (!session) window.location.href = "./login.html";
       return session;
     }
 
@@ -1149,10 +1138,6 @@
       `;
     }
 
-    function updateDeleteSelectedButton(){
-      btnDeleteFarmTop.disabled = !selectedFarmId;
-    }
-
     function applySearch(){
       const q = (farmSearch.value || "").trim().toLowerCase();
       if (!q){
@@ -1209,7 +1194,6 @@
         farmListEl.innerHTML = `<div class="notice">No farms yet. Click Add Farm.</div>`;
         selectedFarmId = null;
         selectedFarmObj = null;
-        updateDeleteSelectedButton();
         return [];
       }
 
@@ -1231,7 +1215,6 @@
       selectedFarmObj = farmsCache.find(f => f.id === id) || null;
       localStorage.setItem("selected_farm_id", String(id));
       highlightSelected(id);
-      updateDeleteSelectedButton();
 
       if (!selectedFarmObj){
         selectedText.textContent = "None selected yet.";
@@ -1932,7 +1915,7 @@
       const { error } = await supabase.from("notifications").insert([{
         farm_id: selectedFarmId,
         title: "Test notification",
-        msg: "Temporary test alert from Unified Dashboard.",
+        msg: "Temporary test alert from Dashboard.",
         severity: "info",
         created_at: new Date().toISOString()
       }]);
@@ -1946,7 +1929,7 @@
         farm_id: selectedFarmId,
         channel: "WHATSAPP",
         status: "PENDING",
-        payload: { msg: "Test outbox row from Unified Dashboard", ts: new Date().toISOString() },
+        payload: { msg: "Test outbox row from Dashboard", ts: new Date().toISOString() },
         created_at: new Date().toISOString()
       };
       const { error } = await supabase.from("recs_outbox").insert([payload]);
@@ -1958,10 +1941,6 @@
       const ok = confirm("Delete Farm ID " + farmId + "? This cannot be undone. It will also try to remove telemetry, AI outputs, notifications and farm_status.");
       if (!ok) return;
 
-      if (selectedFarmId === farmId){
-        btnDeleteFarmTop.disabled = true;
-      }
-
       await Promise.allSettled([
         supabase.from("telemetry").delete().eq("farm_id", farmId),
         supabase.from("ai_outputs").delete().eq("farm_id", farmId),
@@ -1972,7 +1951,6 @@
       const { error } = await supabase.from("farms").delete().eq("id", farmId);
       if (error){
         alert("Delete failed: " + error.message + "\nIf this is RLS policy issue, add a DELETE policy for farms where owner_id = auth.uid().");
-        updateDeleteSelectedButton();
         return;
       }
 
@@ -1998,63 +1976,6 @@
     async function deleteSelectedFarm(){
       if (!selectedFarmId) return;
       await deleteFarm(selectedFarmId);
-    }
-
-    // Demo data
-    async function createDemoData(){
-      if (!selectedFarmId) {
-        alert("Please select a farm first.");
-        return;
-      }
-
-      const now = Date.now();
-      const rows = [];
-      for (let i=0;i<24;i++){
-        const ts = new Date(now - (23-i)*30*60*1000).toISOString();
-        const soil = 18 + Math.sin(i/3)*3 + Math.random()*1.2;
-        const temp = 24 + Math.sin(i/4)*2 + Math.random()*0.8;
-        rows.push({ farm_id: selectedFarmId, metric: "soil_moisture", value: Number(soil.toFixed(2)), unit:"%", ts });
-        rows.push({ farm_id: selectedFarmId, metric: "temp_c", value: Number(temp.toFixed(2)), unit:"C", ts });
-      }
-
-      const { error: tErr } = await supabase.from("telemetry").insert(rows);
-      if (tErr) return alert("Telemetry insert failed: " + tErr.message);
-
-      const aiRows = [
-        {
-          farm_id: selectedFarmId,
-          module: "irrigation",
-          title: "Irrigation recommendation",
-          message: "Soil moisture trending down. Consider 40-55 minutes irrigation in evening (prototype).",
-          severity: "info"
-        },
-        {
-          farm_id: selectedFarmId,
-          module: "pest",
-          title: "Pest watch",
-          message: "Humidity rising pattern. Do quick leaf check tomorrow morning.",
-          severity: "warn"
-        }
-      ];
-
-      const { error: aErr } = await supabase.from("ai_outputs").insert(aiRows);
-      if (aErr) return alert("AI outputs insert failed: " + aErr.message);
-
-      await supabase.from("farm_status").update({
-        irrigation_status: "Connected",
-        fertilizer_status: "Prototype",
-        pest_status: "Prototype",
-        last_update: new Date().toISOString()
-      }).eq("farm_id", selectedFarmId);
-
-      alert("Demo data created. Now click Refresh or load telemetry.");
-      await Promise.all([
-        loadFarmStatus(selectedFarmId),
-        loadLatestAI(selectedFarmId),
-        loadTelemetry(),
-        loadLiveWeatherPreview(selectedFarmObj),
-        loadLatestNotifications(selectedFarmId)
-      ]);
     }
 
     // Add Farm modal logic
@@ -2296,16 +2217,14 @@
     }
 
     // Wire up events
+    btnWebsite.addEventListener("click", () => window.location.href = "./index.html");
+
     btnLogout.addEventListener("click", async () => {
       await stopRealtime();
       await supabase.auth.signOut();
       localStorage.removeItem("selected_farm_id");
-      window.location.href = "/login.html";
+      window.location.href = "./login.html";
     });
-
-    btnWebsite.addEventListener("click", () => window.location.href = "/");
-    btnLegacyV2.addEventListener("click", () => window.location.href = "/dashboard2.html");
-    btnLegacyV3.addEventListener("click", () => window.location.href = "/dashboard3.html");
 
     btnAddFarmTop.addEventListener("click", showModal);
     btnCloseModal.addEventListener("click", closeModal);
@@ -2353,9 +2272,6 @@
     btnTestNotif.addEventListener("click", testNotification);
     btnTestOutbox.addEventListener("click", testOutbox);
     btnDeleteFarm.addEventListener("click", deleteSelectedFarm);
-    btnDeleteFarmTop.addEventListener("click", deleteSelectedFarm);
-
-    btnDemo.addEventListener("click", createDemoData);
 
     farmSearch.addEventListener("input", applySearch);
     btnClearSearch.addEventListener("click", () => { farmSearch.value = ""; applySearch(); });
@@ -2367,7 +2283,6 @@
     clearChart();
     syncAgeUI();
     await loadFarms();
-    updateDeleteSelectedButton();
   </script>
 </body>
 </html>
