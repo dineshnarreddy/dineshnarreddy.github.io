@@ -554,6 +554,9 @@
           <div class="notice warn">
             Live weather preview uses Open-Meteo with farm coordinates.
           </div>
+          <div class="controls">
+            <button class="btn" id="btnRunWeatherAlert" type="button">Create Weather Alert (manual)</button>
+          </div>
           <div class="weather-mini" id="weatherBox" style="display:none;">
             <h3>Live Weather Preview</h3>
             <div class="notice" id="weatherMsg" style="margin-top:6px;">Loading...</div>
@@ -942,6 +945,7 @@
     const wWind = document.getElementById("wWind");
     const wRain = document.getElementById("wRain");
     const wHum = document.getElementById("wHum");
+    const btnRunWeatherAlert = document.getElementById("btnRunWeatherAlert");
 
     const setupSeason = document.getElementById("setupSeason");
     const setupStage = document.getElementById("setupStage");
@@ -1250,7 +1254,7 @@
       clearChart();
       telemetryHint.textContent = "Select a farm and click Load.";
 
-      await weatherAutoAlert(selectedFarmObj);
+      await autoWeatherAlertIfDue(selectedFarmObj);
 
       if (realtimeOn) await startRealtime();
       overviewMsg.textContent = "Ready.";
@@ -1361,17 +1365,45 @@
       }
     }
 
-    async function weatherAutoAlert(farm){
+    async function autoWeatherAlertIfDue(farm){
       if (!farm) return;
-      if (weatherAlertLock) return;
-      weatherAlertLock = true;
-      setTimeout(() => { weatherAlertLock = false; }, 60 * 1000);
+      const key = "weather_auto_last_" + farm.id;
+      const today = new Date().toISOString().slice(0,10);
+      const last = localStorage.getItem(key);
+      if (last === today) return;
+
+      await weatherAutoAlert(farm, { manual: false });
+      localStorage.setItem(key, today);
+    }
+
+    async function weatherAutoAlert(farm, opts = { manual: false }){
+      if (!farm) return;
+
+      if (!opts.manual){
+        if (weatherAlertLock) return;
+        weatherAlertLock = true;
+        setTimeout(() => { weatherAlertLock = false; }, 60 * 1000);
+      }
 
       const lat = farm?.lat;
       const lon = farm?.lon;
       if (lat == null || lon == null || Number.isNaN(Number(lat)) || Number.isNaN(Number(lon))) return;
 
       try{
+        const since = new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString();
+        const { data: recent, error: recentErr } = await supabase
+          .from("notifications")
+          .select("id,created_at")
+          .eq("farm_id", farm.id)
+          .eq("title", "Weather (auto)")
+          .gte("created_at", since)
+          .order("created_at", { ascending: false })
+          .limit(1);
+
+        if (!recentErr && recent && recent.length > 0){
+          return;
+        }
+
         const url =
           "https://api.open-meteo.com/v1/forecast?latitude=" + encodeURIComponent(lat) +
           "&longitude=" + encodeURIComponent(lon) +
@@ -1493,13 +1525,13 @@
           .select("ts,value")
           .eq("farm_id", selectedFarmId)
           .eq("metric", mA)
-          .order("ts", { ascending: true })
+          .order("ts", { ascending: false })
           .limit(n),
         supabase.from("telemetry")
           .select("ts,value")
           .eq("farm_id", selectedFarmId)
           .eq("metric", mB)
-          .order("ts", { ascending: true })
+          .order("ts", { ascending: false })
           .limit(n)
       ]);
 
@@ -1509,8 +1541,8 @@
         return;
       }
 
-      const a = (qa.data || []).map(r => Number(r.value)).filter(v => Number.isFinite(v));
-      const b = (qb.data || []).map(r => Number(r.value)).filter(v => Number.isFinite(v));
+      const a = (qa.data || []).map(r => Number(r.value)).filter(v => Number.isFinite(v)).reverse();
+      const b = (qb.data || []).map(r => Number(r.value)).filter(v => Number.isFinite(v)).reverse();
 
       if (!a.length && !b.length){
         telemetryHint.textContent = "No telemetry rows for selected metrics.";
@@ -1830,7 +1862,7 @@
     }
 
     async function startRealtime(){
-      if (!selectedFarmId) return;
+      if (!selectedFarmId) return false;
       await stopRealtime();
 
       rtChannel = supabase.channel("rt-farm-" + selectedFarmId);
@@ -1863,10 +1895,26 @@
         filter: "farm_id=eq." + selectedFarmId
       }, async () => { await loadAudit(selectedFarmId); });
 
-      rtChannel.subscribe((status) => {
-        if (status === "SUBSCRIBED"){
-          btnToggleRealtime.textContent = "Realtime: ON";
-        }
+      return await new Promise((resolve) => {
+        let done = false;
+        const timer = setTimeout(() => {
+          if (!done){ done = true; resolve(false); }
+        }, 7000);
+
+        rtChannel.subscribe((status) => {
+          if (done) return;
+          if (status === "SUBSCRIBED"){
+            clearTimeout(timer);
+            done = true;
+            btnToggleRealtime.textContent = "Realtime: ON";
+            resolve(true);
+          }
+          if (status === "CHANNEL_ERROR" || status === "TIMED_OUT"){
+            clearTimeout(timer);
+            done = true;
+            resolve(false);
+          }
+        });
       });
     }
 
@@ -1874,7 +1922,12 @@
       realtimeOn = !realtimeOn;
       if (realtimeOn){
         btnToggleRealtime.textContent = "Realtime: ON (starting)";
-        await startRealtime();
+        const ok = await startRealtime();
+        if (!ok){
+          realtimeOn = false;
+          btnToggleRealtime.textContent = "Realtime: OFF";
+          statusMsg.textContent = "Realtime failed to subscribe. Check network or Supabase config.";
+        }
       } else {
         btnToggleRealtime.textContent = "Realtime: OFF";
         await stopRealtime();
@@ -1938,14 +1991,20 @@
     }
 
     async function deleteFarm(farmId){
-      const ok = confirm("Delete Farm ID " + farmId + "? This cannot be undone. It will also try to remove telemetry, AI outputs, notifications and farm_status.");
+      const ok = confirm("Delete Farm ID " + farmId + "? This cannot be undone. It will also try to remove all related rows.");
       if (!ok) return;
 
       await Promise.allSettled([
         supabase.from("telemetry").delete().eq("farm_id", farmId),
         supabase.from("ai_outputs").delete().eq("farm_id", farmId),
         supabase.from("notifications").delete().eq("farm_id", farmId),
-        supabase.from("farm_status").delete().eq("farm_id", farmId)
+        supabase.from("farm_status").delete().eq("farm_id", farmId),
+        supabase.from("farm_setup").delete().eq("farm_id", farmId),
+        supabase.from("device_links").delete().eq("farm_id", farmId),
+        supabase.from("device_heartbeats").delete().eq("farm_id", farmId),
+        supabase.from("farm_zones").delete().eq("farm_id", farmId),
+        supabase.from("recs_outbox").delete().eq("farm_id", farmId),
+        supabase.from("decision_audit").delete().eq("farm_id", farmId)
       ]);
 
       const { error } = await supabase.from("farms").delete().eq("id", farmId);
@@ -2217,7 +2276,18 @@
     }
 
     // Wire up events
-    btnWebsite.addEventListener("click", () => window.location.href = "./index.html");
+    btnWebsite.addEventListener("click", async () => {
+      try{
+        const res = await fetch("./index.html", { method: "HEAD", cache: "no-store" });
+        if (res.ok) {
+          window.location.href = "./index.html";
+        } else {
+          window.location.href = "./";
+        }
+      } catch {
+        window.location.href = "./";
+      }
+    });
 
     btnLogout.addEventListener("click", async () => {
       await stopRealtime();
@@ -2272,6 +2342,12 @@
     btnTestNotif.addEventListener("click", testNotification);
     btnTestOutbox.addEventListener("click", testOutbox);
     btnDeleteFarm.addEventListener("click", deleteSelectedFarm);
+
+    btnRunWeatherAlert.addEventListener("click", async () => {
+      if (!selectedFarmObj) return;
+      await weatherAutoAlert(selectedFarmObj, { manual: true });
+      statusMsg.textContent = "Weather alert requested.";
+    });
 
     farmSearch.addEventListener("input", applySearch);
     btnClearSearch.addEventListener("click", () => { farmSearch.value = ""; applySearch(); });
