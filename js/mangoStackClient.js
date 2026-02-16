@@ -4,7 +4,7 @@
  */
 
 // ✅ Configure your Mango Stack API URL
-const API_BASE_URL = "https://agriedgeai.me/api" || "http://localhost:8000/api";
+const API_BASE_URL = "https://railway-add-production-dc05.up.railway.app/api";
 
 class MangoStackClient {
   constructor() {
