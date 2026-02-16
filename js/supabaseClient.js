@@ -1,17 +1,7 @@
-// js/supabaseClient.js
-import { createClient } from "https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm";
+// ✅ Mango Stack API Client (replaces Supabase)
+// No more Supabase dependency - everything goes to your self-hosted API!
 
-// ✅ Use your Project URL (Settings → Data API → Project URL)
-const SUPABASE_URL = "https://lrcgmpuqkbrbmnsxjnae.supabase.co";
+export { supabase } from "./mangoStackClient.js";
 
-// ✅ Use your Publishable key (Settings → API Keys → Publishable key)
-// (NOT the secret key, NOT service_role)
-const SUPABASE_PUBLISHABLE_KEY = "sb_publishable_zYZT_nPCIsJHqig1yjlmUw_Y3rkYGuV";
-
-export const supabase = createClient(SUPABASE_URL, SUPABASE_PUBLISHABLE_KEY, {
-  auth: {
-    persistSession: true,
-    autoRefreshToken: true,
-    detectSessionInUrl: true,
-  },
-});
+// That's it! Your entire website now uses the Mango Stack API instead of Supabase
+// All existing code continues to work without changes
