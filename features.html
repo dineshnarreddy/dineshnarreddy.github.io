@@ -3,8 +3,8 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Features – Mango Edge AI</title>
-  <meta name="description" content="Features and roadmap for irrigation, fertilizer, and pest modules." />
+  <title>Features – AgriEdgeAI | Prajas Labs</title>
+  <meta name="description" content="AgriEdgeAI features — 20+ ML models for disease detection, irrigation, soil pH, NDVI, and drone-based field analysis. Built by Prajas Labs." />
   <link rel="stylesheet" href="styles.css" />
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -13,7 +13,12 @@
 <body>
 <header class="nav">
   <div class="container nav-inner">
-    <a class="brand" href="index.html">Mango Edge AI</a>
+    <a class="brand" href="index.html">
+      <div class="brand-wordmark">
+        <span class="brand-main">AgriEdgeAI</span>
+        <span class="brand-sub">by Prajas Labs</span>
+      </div>
+    </a>
     <nav>
       <a href="about.html">About</a>
       <a href="features.html">Features</a>
@@ -29,49 +34,57 @@
   <div class="container">
     <h1>Features</h1>
     <div class="grid three">
-      <div class="card">
-        <h3>Current</h3>
+      <div class="card" style="border-color:var(--accent-green);">
+        <h3 style="color:var(--accent-green);">Live — Agriculture</h3>
         <ul>
-          <li>Edge device (Raspberry Pi) with MQTT + TimescaleDB</li>
-          <li>Irrigation recommendation — explainable rules + ML baseline</li>
-          <li>Simple dashboard & WhatsApp/SMS alerts</li>
+          <li>20+ trained ML models — mango, tomato, multi-crop disease &amp; pest detection</li>
+          <li>Irrigation scheduling &amp; soil pH intelligence (Raspberry Pi edge, offline-first)</li>
+          <li>Drone-based NDVI field analysis + automated WhatsApp/SMS alerts</li>
+          <li>Real-time dashboard — Railway cloud + WebSocket live updates</li>
         </ul>
       </div>
 
       <div class="card">
-        <h3>Next 6–12 months</h3>
+        <h3>Next — Healthcare</h3>
         <ul>
-          <li>Fertilizer planning (rules → ML)</li>
-          <li>Pest risk signals (TFLite on device)</li>
-          <li>Weather fusion (IMD, Open-Meteo, NASA POWER)</li>
+          <li>Edge AI diagnostics for rural health centres</li>
+          <li>Offline-first patient monitoring with explainable AI outputs</li>
+          <li>Same Raspberry Pi + TFLite approach as agriculture</li>
         </ul>
       </div>
 
-      <div class="card">
-        <h3>Future</h3>
+      <div class="card" style="opacity:0.75;">
+        <h3>Future — Defence &amp; Public Sector</h3>
         <ul>
-          <li>Farmer mobile app (offline-first)</li>
-          <li>Model fine-tuning on local farm data</li>
-          <li>Scaling to other crops & regions</li>
+          <li>Autonomous computer vision systems</li>
+          <li>Decision support for defence applications</li>
+          <li>Smart government infrastructure &amp; public services</li>
         </ul>
       </div>
     </div>
 
-    <h2 style="margin-top:28px">Roadmap</h2>
+    <h2 style="margin-top:28px">AgriEdgeAI Roadmap</h2>
     <ol class="timeline">
-      <li><span>P0</span> Baseline stack (DB schemas, MQTT bridge, simulated data)</li>
-      <li><span>P1</span> Irrigation module MVP + WhatsApp alerts</li>
-      <li><span>P2</span> Fertilizer recommendations</li>
-      <li><span>P3</span> Pest module (edge TFLite)</li>
-      <li><span>P4</span> Packaging for Raspberry Pi + field pilot</li>
+      <li><span>✓</span> Edge stack — Raspberry Pi, MQTT, TimescaleDB, Railway cloud</li>
+      <li><span>✓</span> 20+ ML models — disease, pest, irrigation, soil pH, NDVI</li>
+      <li><span>✓</span> Android apps — farmer mobile + drone operations (Play Store ready)</li>
+      <li><span>✓</span> Greenhouse intelligence — IOWT, UK pilot (Isle of Wight Tomatoes)</li>
+      <li><span>→</span> Multicrop expansion — rice, maize, wheat, cotton, sugarcane India-wide</li>
+      <li><span>→</span> ICAR / NABARD / government partnerships — Andhra Pradesh</li>
     </ol>
   </div>
 </main>
 
 <footer class="footer">
   <div class="container footer-inner">
-    <span>© 2025 Mango Edge AI</span>
-    <span>Built with GitHub Pages</span>
+    <div>
+      <p class="footer-brand">© 2026 Prajas Labs Private Limited, India</p>
+      <p class="footer-note">AgriEdgeAI — Research-led AI + IoT platform. Built in partnership with the University of Portsmouth.</p>
+    </div>
+    <div class="footer-links">
+      <a href="https://github.com/dineshnarreddy" target="_blank" rel="noopener">GitHub</a>
+      <a href="contact.html">Contact</a>
+    </div>
   </div>
 </footer>
 </body>
