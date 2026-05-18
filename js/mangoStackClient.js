@@ -249,10 +249,13 @@ class QueryBuilder {
 
       let data = await response.json();
 
-      // Apply client-side filtering (if API doesn't support it)
-      if (this.filters.length > 0) {
+      // Apply client-side filtering only for columns not already in the URL
+      // (farm_id is embedded in the endpoint URL, so skip it to avoid filtering
+      //  out rows where the API response omits the farm_id field)
+      const clientFilters = this.filters.filter(f => f.column !== "farm_id");
+      if (Array.isArray(data) && clientFilters.length > 0) {
         data = data.filter((row) => {
-          return this.filters.every((f) => {
+          return clientFilters.every((f) => {
             if (f.op === "eq") return row[f.column] === f.value;
             return true;
           });
